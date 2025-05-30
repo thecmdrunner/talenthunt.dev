@@ -90,6 +90,7 @@ export const aiRouter = createTRPCRouter({
         const result = await generateObject({
           //   model: openrouter("sarvamai/sarvam-m:free"),
           // model: openrouter("google/gemini-2.0-flash-001"),
+          // model: openrouter("meta-llama/llama-4-scout"),
           // model: groq("llama-3.3-70b-versatile"),
           model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
 

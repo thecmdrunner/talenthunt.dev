@@ -72,13 +72,8 @@ export default function DiscoverPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    const formData = new FormData(e.target as HTMLFormElement);
-                    const value = searchQuery;
 
-                    console.log({
-                      value,
-                    });
-                    extractJobAttributes.mutate({ query: value });
+                    extractJobAttributes.mutate({ query: searchQuery });
                   }}
                   className="relative flex-1"
                 >
@@ -149,27 +144,6 @@ export default function DiscoverPage() {
                   </SelectContent>
                 </Select>
               )}
-
-              {jobAttributes.newJob.location?.type && (
-                <Select value={jobAttributes.newJob.location.type}>
-                  <Button
-                    asChild
-                    variant={"secondary"}
-                    className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
-                  >
-                    <SelectTrigger>
-                      <SelectValue>
-                        {jobAttributes.newJob.location.type}
-                      </SelectValue>
-                    </SelectTrigger>
-                  </Button>
-                  <SelectContent>
-                    <SelectItem value={jobAttributes.newJob.location.type}>
-                      {jobAttributes.newJob.location.type}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
             </div>
 
             {/* Skills */}
@@ -202,24 +176,26 @@ export default function DiscoverPage() {
             {/* Experience */}
             {jobAttributes.pastExperience?.duration && (
               <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">with experience</span>
-                <Badge
-                  variant="outline"
-                  className="group relative border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 text-purple-700 shadow-sm transition-all hover:scale-105"
-                >
-                  {jobAttributes.pastExperience.duration.filter &&
-                  jobAttributes.pastExperience.duration.years
-                    ? `${jobAttributes.pastExperience.duration.filter} ${jobAttributes.pastExperience.duration.years} years`
-                    : jobAttributes.pastExperience.duration.years
+                <span className="text-sm text-slate-500">
+                  {jobAttributes.pastExperience.duration.filter}{" "}
+                  <Badge
+                    variant="outline"
+                    className="group relative border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 text-purple-700 shadow-sm transition-all hover:scale-105"
+                  >
+                    {jobAttributes.pastExperience.duration.years
                       ? `${jobAttributes.pastExperience.duration.years} years`
-                      : "Experience specified"}
-                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                </Badge>
+                      : jobAttributes.pastExperience.duration.years
+                        ? `${jobAttributes.pastExperience.duration.years} years`
+                        : null}{" "}
+                    <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                  </Badge>{" "}
+                  of experience
+                </span>
               </div>
             )}
 
             {/* Salary */}
-            {jobAttributes.newJob.expectedSalary && (
+            {/* {jobAttributes.newJob.expectedSalary && (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-slate-500">salary range</span>
                 <Badge
@@ -234,45 +210,63 @@ export default function DiscoverPage() {
                       : jobAttributes.newJob.expectedSalary.max
                         ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} up to ${jobAttributes.newJob.expectedSalary.max}`
                         : "Salary specified"}
+
                   <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
                 </Badge>
               </div>
-            )}
+            )} */}
 
             {/* Location */}
-            {jobAttributes.newJob.location?.city ??
-              (jobAttributes.newJob.location?.country && (
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-slate-500">in</span>
-                  <Badge
-                    variant="outline"
-                    className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
-                  >
-                    {[
-                      jobAttributes.newJob.location.city,
-                      jobAttributes.newJob.location.country,
-                    ]
-                      .filter(Boolean)
-                      .join(", ")}
-                    <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                  </Badge>
-                </div>
-              ))}
+            {(jobAttributes.newJob.location?.city ??
+              jobAttributes.newJob.location?.country) && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-slate-500">📍</span>
+                <Badge
+                  variant="outline"
+                  className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
+                >
+                  {[
+                    jobAttributes.newJob.location.city,
+                    jobAttributes.newJob.location.country,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                </Badge>
+
+                {jobAttributes.newJob.location?.type && (
+                  <Select value={jobAttributes.newJob.location.type}>
+                    <Button
+                      asChild
+                      size={"sm"}
+                      variant={"outline"}
+                      className="group relative !h-6 py-0 text-xs shadow-sm transition-all hover:scale-105"
+                    >
+                      <SelectTrigger>
+                        <SelectValue>
+                          {jobAttributes.newJob.location.type}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </Button>
+                    <SelectContent>
+                      <SelectItem value={jobAttributes.newJob.location.type}>
+                        {jobAttributes.newJob.location.type}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            )}
 
             {/* Availability */}
-            {jobAttributes.newJob.joiningNotice && (
+            {jobAttributes.newJob.joiningNotice?.immediate && (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-slate-500">available</span>
                 <Badge
                   variant="outline"
                   className="group relative border-teal-200 bg-gradient-to-r from-teal-50 to-cyan-50 text-teal-700 shadow-sm transition-all hover:scale-105"
                 >
-                  {jobAttributes.newJob.joiningNotice.immediate
-                    ? "immediately"
-                    : jobAttributes.newJob.joiningNotice.duration &&
-                        jobAttributes.newJob.joiningNotice.unit
-                      ? `in ${jobAttributes.newJob.joiningNotice.duration} ${jobAttributes.newJob.joiningNotice.unit}`
-                      : "with notice period"}
+                  Immediate Joining
                 </Badge>
               </div>
             )}

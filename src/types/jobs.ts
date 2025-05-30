@@ -25,7 +25,7 @@ export const jobAttributesSchema = z.object({
         .describe("Countries like India, US, UK, etc."),
     })
 
-    .nullable()
+    .nullish()
     .optional()
     .describe("Past experience"),
 
@@ -42,30 +42,30 @@ export const jobAttributesSchema = z.object({
     location: z
       .object({
         type: z.enum(["on-site", "remote", "hybrid"]),
-        country: z.string().optional(),
-        city: z.string().optional(),
+        country: z.string().nullish(),
+        city: z.string().nullish(),
       })
-      .nullable()
+      .nullish()
       .optional(),
 
-    expectedSalary: z
-      .object({
-        min: z
-          .number()
-          .nullish()
-          .describe("Expected Minimum salary, null if not specified"),
-        max: z
-          .number()
-          .nullish()
-          .describe("Expected Maximum salary, null if not specified"),
-        currency: z
-          .string()
-          .nullish()
-          .describe("Currency like 'USD', 'INR' etc."),
-      })
-      .nullable()
-      .optional()
-      .describe("Expected salary"),
+    // expectedSalary: z
+    //   .object({
+    //     min: z
+    //       .number()
+    //       .nullish()
+    //       .describe("Expected Minimum salary annually, null if not specified"),
+    //     max: z
+    //       .number()
+    //       .nullish()
+    //       .describe("Expected Maximum salary annually, null if not specified"),
+    //     currency: z
+    //       .string()
+    //       .nullish()
+    //       .describe("Currency like 'USD', 'INR' etc."),
+    //   })
+    //   .nullish()
+    //   .optional()
+    //   .describe("Expected salary"),
 
     joiningNotice: z
       .object({
@@ -79,7 +79,7 @@ export const jobAttributesSchema = z.object({
           .nullish()
           .describe("Whether candidate can join immediately"),
       })
-      .nullable()
+      .nullish()
       .optional()
       .describe("Joining notice period"),
 
@@ -93,7 +93,7 @@ export const jobAttributesSchema = z.object({
       institution: z.string().nullish().describe("Institution"),
       location: z.string().nullish().describe("Location"),
     })
-    .nullable()
+    .nullish()
     .optional()
     .describe("Education"),
 });
@@ -110,11 +110,11 @@ export const sampleJobAttributes: JobAttributes = {
       country: "India",
       city: "New Delhi",
     },
-    expectedSalary: {
-      min: 100000,
-      max: 150000,
-      currency: "INR",
-    },
+    // expectedSalary: {
+    //   min: 100000,
+    //   max: 150000,
+    //   currency: "INR",
+    // },
     joiningNotice: {
       duration: 30,
       unit: "days",
