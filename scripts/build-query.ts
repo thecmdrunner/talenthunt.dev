@@ -2,6 +2,11 @@ import { openrouter } from "@openrouter/ai-sdk-provider";
 import { streamObject } from "ai";
 import { z } from "zod";
 
+const query =
+  "mobile dev ios and android, flutter only, on-site work in bangalore, ready to relocate, need immediately in the next 2 weeks, 8lpa";
+
+console.log(`User: ${query}`);
+
 const result = streamObject({
   //   model: openrouter("sarvamai/sarvam-m:free"),
   model: openrouter("google/gemini-2.0-flash-001"),
@@ -9,9 +14,7 @@ const result = streamObject({
   system: [
     "You are a helpful assistant that can extracts attributes from a job description for recruiter's ideal job requirement. Make sure to include all relevant attributes in the response.",
 
-    `For example, if the requirement is 'Product developer', suggest relevant well-known roles like:`,
-
-    [
+    `For example, if the requirement is 'Product developer', suggest relevant well-known roles like: ${[
       "Software Engineer",
       "Product Engineer",
       "Data Scientist",
@@ -19,7 +22,61 @@ const result = streamObject({
       "Product Owner",
       "Product Analyst",
       "Product Designer",
-    ].join(", "),
+
+      "Mobile Developer",
+    ].join(", ")}`,
+
+    `Example set of skills for an effective search filter: ${[
+      "React",
+      "Next.js",
+      "Node.js",
+      "Bun",
+      "Vercel",
+      "Netlify",
+      "Supabase",
+      "Tailwind",
+      "Shadcn",
+      "Shadcn UI",
+      "Tailwind CSS",
+      "TypeScript",
+      "JavaScript",
+      "iOS",
+      "Android",
+      "Flutter",
+      "React Native",
+      "Swift",
+      "Kotlin",
+      "Java",
+
+      "Comfy UI",
+
+      "Replicate",
+      "OpenAI",
+      "Anthropic",
+      "Claude",
+      "Gemini",
+      "Llama",
+      "Grok",
+      "Groq",
+      "Pinecone",
+      "Qdrant",
+
+      "Amazon Web Services",
+      "Google Cloud Platform",
+      "Microsoft Azure",
+      "Docker",
+      "Kubernetes",
+      "Terraform",
+      "Ansible",
+
+      "Figma",
+      "Photoshop",
+      "Premiere Pro",
+      "After Effects",
+      "Photoshop",
+      "Illustrator",
+      "Linux",
+    ].join(", ")}`,
   ].join("\n"),
 
   schema: z.object({
@@ -91,6 +148,21 @@ const result = streamObject({
         .optional()
         .describe("Expected salary"),
 
+      joiningNotice: z
+        .object({
+          duration: z.number().optional().describe("Notice period duration"),
+          unit: z
+            .enum(["days", "weeks", "months"])
+            .optional()
+            .describe("Time unit for notice period"),
+          immediate: z
+            .boolean()
+            .optional()
+            .describe("Whether candidate can join immediately"),
+        })
+        .optional()
+        .describe("Joining notice period"),
+
       skills: z.array(z.string()).optional().describe("Skills"),
     }),
 
@@ -100,12 +172,7 @@ const result = streamObject({
   messages: [
     {
       role: "user",
-      content: [
-        {
-          type: "text",
-          text: "Chief Technology Officer 4+ years of experience who has worked at Apple, Microsoft or any Faang or fortune 500 companies from India or US.",
-        },
-      ],
+      content: query,
     },
   ],
 });

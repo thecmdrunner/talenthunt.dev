@@ -21,6 +21,38 @@ DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
 OPENROUTER_API_KEY="your_openrouter_api_key_here"
 ```
 
+## LinkedIn Integration Limitations
+
+⚠️ **Important**: LinkedIn's OAuth integration through Clerk has significant limitations:
+
+### What LinkedIn Data IS Available:
+
+- Basic profile: `id`, `firstName`, `lastName`
+- Profile picture
+- Email address (with additional scope)
+
+### What LinkedIn Data is NOT Available:
+
+- **Work experience/employment history** ❌
+- Education history ❌
+- Skills and endorsements ❌
+- Connections ❌
+- Job titles and company details ❌
+- Professional recommendations ❌
+
+### Why These Limitations Exist:
+
+1. LinkedIn restricted API access in 2018-2023 for privacy reasons
+2. Rich profile data now requires LinkedIn Partnership (expensive, $10k+/month)
+3. Current OAuth scopes (`profile`, `email`, `openid`) are very limited
+
+### Alternative Solutions:
+
+- **Manual data collection**: Prompt users to enter work experience after sign-in
+- **Resume parsing**: Allow users to upload resumes for automatic data extraction
+- **Third-party APIs**: Services like Proxycurl (with legal considerations)
+- **Alternative platforms**: Consider other professional data sources
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
