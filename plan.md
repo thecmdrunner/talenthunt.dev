@@ -12,13 +12,13 @@ We have 2 types of users: recruiters and candidates, and hence 2 modes of the UI
 
 After user signs up, they are redirected to the onboarding page to fill in their purpose of joining the platform - whether they are looking for a job, or they are looking to hire.
 
-Candidate Flow:
+Candidate Flow: User connects their LinkedIn profile to get a "Linkedin verified" badge. Similarly, they can connect their "github" profile to get a "Github verified" badge, as it's required to list their best work in a verified way.
 
 1. User is asked to upload their resume, and from the backend we extract all information and fill all the fields in the onboarding page, and ask them to fill the rest of the fields.
 2. User gets listed on the platform as a candidate and can be found by recruiters.
 3. Users can showcase their projects which appear as cards on their profile, so its easier for recruiters to understand their work experience.
 
-Recruiter Flow:
+Recruiter Flow: User connects their LinkedIn profile to get a "Linkedin verified" badge. This helps keep a check on the authenticity of the recruiter.
 
 1. Recruiter is asked about what they are looking for in a candidate in terms of location, skills, etc. in a simple text <input />, and they are redirected to /discover and are can search for candidates. A search query based on whatever they entered will be pre-filled when they are redirected to /discover.
 
