@@ -11,9 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { api } from "@/trpc/react";
 import { ArrowRight, LucideChevronDown, Plus } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 // Mock data for demonstration
 const suggestedFilters = [
@@ -31,96 +32,29 @@ const additionalFilters = [
   { type: "location", label: "location", value: "location" },
 ];
 
-interface ParsedSearch {
-  role?: string;
-  skills: string[];
-  employment?: string;
-  salary?: string;
-  rawQuery: string;
-}
-
-function parseSearchQuery(query: string): ParsedSearch {
-  const skills: string[] = [];
-  let role: string | undefined;
-  let employment: string | undefined;
-  let salary: string | undefined;
-
-  // Extract common tech skills
-  const techSkills = [
-    "nextjs",
-    "next.js",
-    "tailwind",
-    "react",
-    "typescript",
-    "node",
-    "python",
-  ];
-  techSkills.forEach((skill) => {
-    if (query.toLowerCase().includes(skill)) {
-      skills.push(skill);
-    }
-  });
-
-  // Extract employment type
-  if (
-    query.toLowerCase().includes("fulltime") ||
-    query.toLowerCase().includes("full-time")
-  ) {
-    employment = "fulltime";
-  }
-  if (query.toLowerCase().includes("contract")) {
-    employment = "contract";
-  }
-
-  // Extract role
-  if (
-    query.toLowerCase().includes("dev") ||
-    query.toLowerCase().includes("developer")
-  ) {
-    role = "Fullstack Developer";
-  }
-
-  // Extract salary (simple pattern matching)
-  const salaryMatch = query.match(/(\d+)\s*lpa/i);
-  if (salaryMatch) {
-    salary = `Rs. ${salaryMatch[1]} LPA`;
-  }
-
-  return { role, skills, employment, salary, rawQuery: query };
-}
-
 export default function DiscoverPage() {
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue: "",
   });
-  const [inputValue, setInputValue] = useState(searchQuery);
-  const [parsedSearch, setParsedSearch] = useState<ParsedSearch | null>(null);
+
+  // Use tRPC mutation for AI-powered query processing
+  const extractJobAttributes = api.ai.extractJobAttributes.useMutation();
 
   // Process search query on page load or when searchQuery changes
   useEffect(() => {
-    if (searchQuery) {
-      setParsedSearch(parseSearchQuery(searchQuery));
-      setInputValue(searchQuery);
+    if (searchQuery && searchQuery.trim() !== "") {
+      // Trigger AI extraction
+      extractJobAttributes.mutate({ query: searchQuery });
     }
-  }, [searchQuery]);
-
-  const handleSearch = () => {
-    setSearchQuery(inputValue);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
+  }, []);
 
   const clearSearch = () => {
-    setSearchQuery("");
-    setInputValue("");
-    setParsedSearch(null);
+    void setSearchQuery("");
+    extractJobAttributes.reset();
   };
 
-  const isSearchActive = Boolean(searchQuery && parsedSearch);
+  const isSearchActive = Boolean(searchQuery && extractJobAttributes.data);
+  const jobAttributes = extractJobAttributes.data;
 
   return (
     <div className="space-y-8">
@@ -131,83 +65,119 @@ export default function DiscoverPage() {
             <div className="relative">
               <div className="mb-2 text-left">
                 <span className="text-muted-foreground">
-                  I'm looking for a...
+                  I&apos;m looking for a...
                 </span>
               </div>
               <div className="flex gap-2">
-                <div className="relative flex-1">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target as HTMLFormElement);
+                    const value = searchQuery;
+
+                    console.log({
+                      value,
+                    });
+                    extractJobAttributes.mutate({ query: value });
+                  }}
+                  className="relative flex-1"
+                >
                   <Input
-                    placeholder="dev nextjs tailwind fulltime 10lpa"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={handleKeyPress}
+                    id="search-input"
+                    placeholder="product engineer more than 4 years exp"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="py-3 pr-12 text-lg"
+                    disabled={extractJobAttributes.isPending}
                   />
                   <Button
-                    onClick={handleSearch}
+                    type="submit"
                     size="sm"
-                    className="absolute top-1 right-1 h-8 w-8 p-0"
+                    className="absolute top-1 right-1 h-8 w-8 cursor-pointer p-0"
+                    disabled={
+                      extractJobAttributes.isPending ||
+                      !searchQuery ||
+                      searchQuery.length < 2
+                    }
                   >
                     <ArrowRight className="h-4 w-4" />
                   </Button>
-                </div>
+                </form>
               </div>
+              {extractJobAttributes.isPending && (
+                <div className="text-muted-foreground mt-2 text-sm">
+                  Processing your query...
+                </div>
+              )}
+              {extractJobAttributes.error && (
+                <div className="mt-2 text-sm text-red-600">
+                  Error processing query. Please try again.
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Active Search Display */}
-        {isSearchActive && parsedSearch && (
+        {isSearchActive && jobAttributes && (
           <div className="max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5">
             <div className="flex flex-wrap items-center gap-3">
               <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-2xl font-bold text-transparent">
                 I&apos;m looking for a
               </span>
 
-              {parsedSearch.role && (
-                <Select value={parsedSearch.role}>
+              {jobAttributes.newJob.role && (
+                <Select value={jobAttributes.newJob.role}>
                   <Button
                     asChild
                     variant={"secondary"}
                     className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
                   >
                     <SelectTrigger>
-                      <SelectValue>{parsedSearch.role}</SelectValue>
+                      <SelectValue>{jobAttributes.newJob.role}</SelectValue>
                     </SelectTrigger>
                   </Button>
                   <SelectContent>
-                    <SelectItem value={parsedSearch.role}>
-                      {parsedSearch.role}
+                    <SelectItem value={jobAttributes.newJob.role}>
+                      {jobAttributes.newJob.role}
                     </SelectItem>
+                    {jobAttributes.newJob.similarRoles?.map((role) => (
+                      <SelectItem key={role} value={role}>
+                        {role}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               )}
 
-              {parsedSearch.employment && (
-                <Select value={parsedSearch.employment}>
+              {jobAttributes.newJob.location?.type && (
+                <Select value={jobAttributes.newJob.location.type}>
                   <Button
                     asChild
                     variant={"secondary"}
                     className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
                   >
                     <SelectTrigger>
-                      <SelectValue>{parsedSearch.employment}</SelectValue>
+                      <SelectValue>
+                        {jobAttributes.newJob.location.type}
+                      </SelectValue>
                     </SelectTrigger>
                   </Button>
                   <SelectContent>
-                    <SelectItem value={parsedSearch.employment}>
-                      {parsedSearch.employment}
+                    <SelectItem value={jobAttributes.newJob.location.type}>
+                      {jobAttributes.newJob.location.type}
                     </SelectItem>
                   </SelectContent>
                 </Select>
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              {parsedSearch.skills.length > 0 && (
-                <>
+            {/* Skills */}
+            {jobAttributes.newJob.skills &&
+              jobAttributes.newJob.skills.length > 0 && (
+                <div className="flex flex-wrap items-center gap-3">
                   <span className="text-sm text-slate-500">who knows</span>
-                  {parsedSearch.skills.map((skill) => (
+                  {jobAttributes.newJob.skills.map((skill) => (
                     <Badge
                       key={skill}
                       variant="outline"
@@ -226,19 +196,83 @@ export default function DiscoverPage() {
                   >
                     <Plus className="h-3.5 w-3.5 text-blue-700" />
                   </Button>
-                </>
+                </div>
               )}
-            </div>
 
-            {parsedSearch.salary && (
+            {/* Experience */}
+            {jobAttributes.pastExperience?.duration && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-slate-500">with experience</span>
+                <Badge
+                  variant="outline"
+                  className="group relative border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 text-purple-700 shadow-sm transition-all hover:scale-105"
+                >
+                  {jobAttributes.pastExperience.duration.filter &&
+                  jobAttributes.pastExperience.duration.years
+                    ? `${jobAttributes.pastExperience.duration.filter} ${jobAttributes.pastExperience.duration.years} years`
+                    : jobAttributes.pastExperience.duration.years
+                      ? `${jobAttributes.pastExperience.duration.years} years`
+                      : "Experience specified"}
+                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                </Badge>
+              </div>
+            )}
+
+            {/* Salary */}
+            {jobAttributes.newJob.expectedSalary && (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-slate-500">salary range</span>
                 <Badge
                   variant="outline"
                   className="group relative border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 shadow-sm transition-all hover:scale-105"
                 >
-                  {parsedSearch.salary}
+                  {jobAttributes.newJob.expectedSalary.min &&
+                  jobAttributes.newJob.expectedSalary.max
+                    ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} ${jobAttributes.newJob.expectedSalary.min}-${jobAttributes.newJob.expectedSalary.max}`
+                    : jobAttributes.newJob.expectedSalary.min
+                      ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} ${jobAttributes.newJob.expectedSalary.min}+`
+                      : jobAttributes.newJob.expectedSalary.max
+                        ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} up to ${jobAttributes.newJob.expectedSalary.max}`
+                        : "Salary specified"}
                   <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                </Badge>
+              </div>
+            )}
+
+            {/* Location */}
+            {jobAttributes.newJob.location?.city ??
+              (jobAttributes.newJob.location?.country && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-slate-500">in</span>
+                  <Badge
+                    variant="outline"
+                    className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
+                  >
+                    {[
+                      jobAttributes.newJob.location.city,
+                      jobAttributes.newJob.location.country,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                    <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                  </Badge>
+                </div>
+              ))}
+
+            {/* Availability */}
+            {jobAttributes.newJob.joiningNotice && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-slate-500">available</span>
+                <Badge
+                  variant="outline"
+                  className="group relative border-teal-200 bg-gradient-to-r from-teal-50 to-cyan-50 text-teal-700 shadow-sm transition-all hover:scale-105"
+                >
+                  {jobAttributes.newJob.joiningNotice.immediate
+                    ? "immediately"
+                    : jobAttributes.newJob.joiningNotice.duration &&
+                        jobAttributes.newJob.joiningNotice.unit
+                      ? `in ${jobAttributes.newJob.joiningNotice.duration} ${jobAttributes.newJob.joiningNotice.unit}`
+                      : "with notice period"}
                 </Badge>
               </div>
             )}
@@ -272,7 +306,7 @@ export default function DiscoverPage() {
                 key={filter.value}
                 variant="outline"
                 size="sm"
-                onClick={() => setInputValue(inputValue + " " + filter.label)}
+                onClick={() => setSearchQuery(searchQuery + " " + filter.label)}
                 className="rounded-full"
               >
                 {filter.label}

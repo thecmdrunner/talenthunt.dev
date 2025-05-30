@@ -16,7 +16,7 @@ export const servicesRouter = createTRPCRouter({
   getGithubInfo: protectedProcedure.query(async ({ ctx }) => {
     const github = await clerk.users.getUserOauthAccessToken(
       ctx.session.userId,
-      "oauth_github",
+      "github",
     );
 
     return github;
