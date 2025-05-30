@@ -4,6 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ArrowRight, LucideChevronDown, Plus } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
@@ -158,23 +165,41 @@ export default function DiscoverPage() {
               </span>
 
               {parsedSearch.role && (
-                <Badge
-                  variant="default"
-                  className="group relative text-2xl font-medium shadow-sm transition-all hover:scale-105"
-                >
-                  {parsedSearch.role}
-                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                </Badge>
+                <Select value={parsedSearch.role}>
+                  <Button
+                    asChild
+                    variant={"secondary"}
+                    className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
+                  >
+                    <SelectTrigger>
+                      <SelectValue>{parsedSearch.role}</SelectValue>
+                    </SelectTrigger>
+                  </Button>
+                  <SelectContent>
+                    <SelectItem value={parsedSearch.role}>
+                      {parsedSearch.role}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               )}
 
               {parsedSearch.employment && (
-                <Badge
-                  variant="outline"
-                  className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-2xl font-medium text-orange-700 shadow-sm transition-all hover:scale-105"
-                >
-                  {parsedSearch.employment}
-                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                </Badge>
+                <Select value={parsedSearch.employment}>
+                  <Button
+                    asChild
+                    variant={"secondary"}
+                    className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
+                  >
+                    <SelectTrigger>
+                      <SelectValue>{parsedSearch.employment}</SelectValue>
+                    </SelectTrigger>
+                  </Button>
+                  <SelectContent>
+                    <SelectItem value={parsedSearch.employment}>
+                      {parsedSearch.employment}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               )}
             </div>
 
