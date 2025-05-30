@@ -2,6 +2,25 @@
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
+## Authentication Setup
+
+This project uses [Clerk](https://clerk.com/) for authentication. To set up authentication:
+
+1. Create a Clerk account at [https://clerk.com/](https://clerk.com/)
+2. Create a new application in your Clerk dashboard
+3. Copy your API keys from the Clerk dashboard
+4. Create a `.env.local` file in the root directory with the following variables:
+
+```env
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_publishable_key_here
+CLERK_SECRET_KEY=sk_test_your_secret_key_here
+
+# Other required environment variables
+DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
+OPENROUTER_API_KEY="your_openrouter_api_key_here"
+```
+
 ## What's next? How do I make an app with this?
 
 We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
@@ -9,7 +28,7 @@ We try to keep this project as simple as possible, so you can start with just th
 If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
 
 - [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
+- [Clerk](https://clerk.com) - Authentication
 - [Prisma](https://prisma.io)
 - [Drizzle](https://orm.drizzle.team)
 - [Tailwind CSS](https://tailwindcss.com)
