@@ -41,7 +41,7 @@ export const jobAttributesSchema = z.object({
 
     location: z
       .object({
-        type: z.enum(["on-site", "remote", "hybrid"]),
+        type: z.enum(["on-site", "remote", "hybrid"]).nullish(),
         country: z.string().nullish(),
         city: z.string().nullish(),
       })
