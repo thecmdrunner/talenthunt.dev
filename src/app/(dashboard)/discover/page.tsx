@@ -11,8 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/trpc/react";
-import { ArrowRight, LucideChevronDown, Plus } from "lucide-react";
+import { ArrowRight, LucideChevronDown, Plus, Sparkles } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useQueryState } from "nuqs";
 import { useEffect } from "react";
 
@@ -99,16 +101,35 @@ export default function DiscoverPage() {
                   </Button>
                 </form>
               </div>
-              {extractJobAttributes.isPending && (
-                <div className="text-muted-foreground mt-2 text-sm">
-                  Processing your query...
-                </div>
-              )}
               {extractJobAttributes.error && (
                 <div className="mt-2 text-sm text-red-600">
                   Error processing query. Please try again.
                 </div>
               )}
+              <AnimatePresence mode="wait">
+                {extractJobAttributes.isPending && (
+                  <motion.div
+                    key="loading-animation"
+                    initial={{ opacity: 0, y: 10, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: "100px" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="mt-4 space-y-3"
+                  >
+                    <div className="text-muted-foreground flex items-center gap-2 text-sm">
+                      <Sparkles className="h-4 w-4 text-indigo-600" />
+                      <span className="animate-pulse">
+                        AI is analyzing your query...
+                      </span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Skeleton className="h-6 w-20 animate-pulse rounded-full" />
+                      <Skeleton className="h-6 w-32 animate-pulse rounded-full" />
+                      <Skeleton className="h-6 w-24 animate-pulse rounded-full" />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
@@ -316,40 +337,88 @@ export default function DiscoverPage() {
           {isSearchActive ? "Top candidates" : "Featured candidates"}
         </h2>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
-            <Card
-              key={i}
-              className="group cursor-pointer transition-shadow hover:shadow-lg"
-            >
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {/* Placeholder avatar */}
-                  <div className="bg-muted mx-auto h-16 w-16 rounded-full" />
+        {extractJobAttributes.isPending ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <Card
+                key={i}
+                className="group animate-pulse transition-all duration-300"
+                style={{
+                  animationDelay: `${i * 100}ms`,
+                }}
+              >
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {/* Avatar skeleton */}
+                    <Skeleton className="mx-auto h-16 w-16 rounded-full" />
 
-                  {/* Placeholder content */}
-                  <div className="space-y-2 text-center">
-                    <div className="bg-muted mx-auto h-4 w-3/4 rounded" />
-                    <div className="bg-muted mx-auto h-3 w-1/2 rounded" />
-                  </div>
+                    {/* Name and title skeleton */}
+                    <div className="space-y-2 text-center">
+                      <Skeleton className="mx-auto h-4 w-32" />
+                      <Skeleton className="mx-auto h-3 w-24" />
+                    </div>
 
-                  {/* Placeholder skills */}
-                  <div className="flex flex-wrap justify-center gap-1">
-                    <div className="bg-muted h-5 w-12 rounded" />
-                    <div className="bg-muted h-5 w-16 rounded" />
-                    <div className="bg-muted h-5 w-10 rounded" />
-                  </div>
+                    {/* Skills skeleton */}
+                    <div className="flex flex-wrap justify-center gap-1">
+                      <Skeleton className="h-5 w-12 rounded-full" />
+                      <Skeleton className="h-5 w-16 rounded-full" />
+                      <Skeleton className="h-5 w-10 rounded-full" />
+                    </div>
 
-                  {/* Placeholder metrics */}
-                  <div className="space-y-1">
-                    <div className="bg-muted h-3 w-full rounded" />
-                    <div className="bg-muted h-3 w-2/3 rounded" />
+                    {/* Experience skeleton */}
+                    <div className="space-y-2">
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-3/4" />
+                    </div>
+
+                    {/* Match score skeleton */}
+                    <div className="border-t pt-2">
+                      <div className="flex items-center justify-between">
+                        <Skeleton className="h-3 w-16" />
+                        <Skeleton className="h-6 w-12 rounded-full" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <Card
+                key={i}
+                className="group cursor-pointer transition-shadow hover:shadow-lg"
+              >
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {/* Placeholder avatar */}
+                    <div className="bg-muted mx-auto h-16 w-16 rounded-full" />
+
+                    {/* Placeholder content */}
+                    <div className="space-y-2 text-center">
+                      <div className="bg-muted mx-auto h-4 w-3/4 rounded" />
+                      <div className="bg-muted mx-auto h-3 w-1/2 rounded" />
+                    </div>
+
+                    {/* Placeholder skills */}
+                    <div className="flex flex-wrap justify-center gap-1">
+                      <div className="bg-muted h-5 w-12 rounded" />
+                      <div className="bg-muted h-5 w-16 rounded" />
+                      <div className="bg-muted h-5 w-10 rounded" />
+                    </div>
+
+                    {/* Placeholder metrics */}
+                    <div className="space-y-1">
+                      <div className="bg-muted h-3 w-full rounded" />
+                      <div className="bg-muted h-3 w-2/3 rounded" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
