@@ -6,7 +6,6 @@ Tech startups, companies and enterprises struggle to quickly fill specialized ro
 
 We have to build an end-to-end hiring copilot powered by an LLM that allows recruiters to type plain-English queries (e.g., "Find senior GenAl engineers with LangChain + RAG experience in Europe, open to contract work") and instantly returns ranked, de-duplicated candidates, auto-screens them, and launches personalized outreach, dramatically reducing time, cost, and bias in hiring.
 
-Create a thorough plan for this.
 We have to solve the problem of helping recruiters to find the best candidates for their jobs by creating a platform where recruiters can find the best candidates for their jobs using natural-language queries. This is our MOAT.
 
 We have 2 types of users: recruiters and candidates, and hence 2 modes of the UI, similar to Upwork.
@@ -24,3 +23,9 @@ Recruiter Flow:
 1. Recruiter is asked about what they are looking for in a candidate in terms of location, skills, etc. in a simple text <input />, and they are redirected to /discover and are can search for candidates. A search query based on whatever they entered will be pre-filled when they are redirected to /discover.
 
 2. upon clicking on a candidate, a modal opens up with the candidate's profile, and the recruiter can see the candidate's projects, skills, experience, etc.
+
+---
+
+Pages:
+
+/disover: ideally with a search bar and a showcase of top candidates/projects. Then once the user searches, they are redirected to /discover/search?q=...
