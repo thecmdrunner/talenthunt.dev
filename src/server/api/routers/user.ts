@@ -1,24 +1,32 @@
+import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+const getUser = async (userId: string) => {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.userId, userId),
+    with: {
+      candidateProfile: true,
+      recruiterProfile: true,
+    },
+  });
+
+  return user;
+};
 
 export const userRouter = createTRPCRouter({
   getOrCreateUser: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.userId;
 
-    const existingUser = await ctx.db.query.users.findFirst({
-      where: (users, { eq }) => eq(users.userId, userId),
-    });
+    const existingUser = await getUser(userId);
 
     if (!existingUser) {
-      const newUser = await ctx.db
-        .insert(users)
-        .values({
-          userId,
-          credits: 50, // FREE Credits upon signup
-        })
-        .returning();
+      await ctx.db.insert(users).values({
+        userId,
+        credits: 50, // FREE Credits upon signup
+      });
 
-      return newUser;
+      return getUser(userId);
     }
 
     return existingUser;

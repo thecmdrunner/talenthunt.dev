@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { api } from "@/trpc/react";
 import {
   Award,
   Crown,
@@ -137,6 +138,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  api.user.getOrCreateUser.useQuery();
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
