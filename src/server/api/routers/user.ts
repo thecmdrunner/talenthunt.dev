@@ -6,6 +6,7 @@ import {
   users,
   type CandidateProfileSelect,
 } from "@/server/db/schema";
+import { parsedResumeDataSchema } from "@/types/resume";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
@@ -82,6 +83,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         resumeUrl: z.string().optional(),
+        parsedResumeData: parsedResumeDataSchema.optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -94,13 +96,17 @@ export const userRouter = createTRPCRouter({
         throw new Error("User does not have a candidate profile");
       }
 
-      // Update candidate profile step and optionally resume URL
+      // Update candidate profile step and optionally resume URL and parsed data
       const updateData: Partial<CandidateProfileSelect> = {
-        currentStep: existingUser.candidateProfile.currentStep + 1,
+        currentStep: (existingUser.candidateProfile.currentStep ?? 0) + 1,
       };
 
       if (input.resumeUrl) {
         updateData.resumeUrl = input.resumeUrl;
+      }
+
+      if (input.parsedResumeData) {
+        updateData.parsedResumeData = input.parsedResumeData;
       }
 
       await ctx.db
@@ -110,6 +116,17 @@ export const userRouter = createTRPCRouter({
 
       return getUser(userId);
     }),
+
+  getParsedResumeData: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    const user = await ctx.db.query.candidateProfiles.findFirst({
+      where: eq(candidateProfiles.userId, userId),
+      columns: { parsedResumeData: true },
+    });
+
+    return user?.parsedResumeData;
+  }),
 
   getUserCredits: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.userId;

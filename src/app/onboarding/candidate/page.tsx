@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import CompleteProfile from "../complete-profile";
 import IntroduceYourself from "../introduce-yourself";
@@ -14,14 +14,6 @@ import UploadResume from "../upload-resume";
 export default function CandidateOnboardingPage() {
   const router = useRouter();
   const { data: user, isLoading } = api.user.getOrCreateUser.useQuery();
-  const [parsedResumeData, setParsedResumeData] = useState<{
-    role: string;
-    skills: string;
-    experience: string;
-    location?: string;
-    githubUrl?: string;
-    linkedinUrl?: string;
-  } | null>(null);
 
   useEffect(() => {
     // Redirect if user doesn't have a candidate profile or has completed onboarding
@@ -59,17 +51,11 @@ export default function CandidateOnboardingPage() {
     async (resumeUrl: string) => {
       const loadingToast = toast.loading("Analyzing your resume...");
 
+      let parsedData = null;
+
       try {
         // Parse the resume first
-        const parsedData = await parseResumeMutation.mutateAsync({ resumeUrl });
-        setParsedResumeData({
-          role: parsedData.role ?? "",
-          skills: parsedData.skills ?? "",
-          experience: parsedData.experience ?? "",
-          location: parsedData.location ?? "",
-          githubUrl: parsedData.githubUrl ?? "",
-          linkedinUrl: parsedData.linkedinUrl ?? "",
-        });
+        parsedData = await parseResumeMutation.mutateAsync({ resumeUrl });
 
         toast.dismiss(loadingToast);
         toast.success("Resume analyzed successfully!");
@@ -79,9 +65,10 @@ export default function CandidateOnboardingPage() {
         console.error("Resume parsing failed:", error);
       }
 
-      // Update the step regardless of parsing success
+      // Update the step and store parsed data regardless of parsing success
       nextCandidateStepMutation.mutate({
         resumeUrl,
+        parsedResumeData: parsedData ?? undefined,
       });
     },
     [parseResumeMutation, nextCandidateStepMutation],
@@ -101,12 +88,7 @@ export default function CandidateOnboardingPage() {
       case 1:
         return <UploadResume onContinue={handleContinueToStep2} />;
       case 2:
-        return (
-          <CompleteProfile
-            onContinue={handleContinueToStep3}
-            parsedData={parsedResumeData}
-          />
-        );
+        return <CompleteProfile onContinue={handleContinueToStep3} />;
       case 3:
         return <IntroduceYourself onComplete={handleComplete} />;
       default:
@@ -134,7 +116,6 @@ export default function CandidateOnboardingPage() {
     handleContinueToStep3,
     handleComplete,
     router,
-    parsedResumeData,
   ]);
 
   if (isLoading) {

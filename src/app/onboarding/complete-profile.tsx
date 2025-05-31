@@ -3,31 +3,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "@/trpc/react";
 import { useEffect, useState } from "react";
 
 interface CompleteProfileProps {
   onContinue: () => void;
-  parsedData?: {
-    role: string;
-    skills: string;
-    experience: string;
-    location?: string;
-    githubUrl?: string;
-    linkedinUrl?: string;
-  } | null;
 }
 
-export default function CompleteProfile({
-  onContinue,
-  parsedData,
-}: CompleteProfileProps) {
+export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
+  const { data: parsedData, isLoading: isLoadingParsedData } =
+    api.user.getParsedResumeData.useQuery();
+
   const [formData, setFormData] = useState({
-    role: parsedData?.role ?? "",
-    skills: parsedData?.skills ?? "",
-    experience: parsedData?.experience ?? "",
-    location: parsedData?.location ?? "",
-    githubUrl: parsedData?.githubUrl ?? "",
-    linkedinUrl: parsedData?.linkedinUrl ?? "",
+    role: "",
+    skills: "",
+    experience: "",
+    location: "",
+    githubUrl: "",
+    linkedinUrl: "",
   });
 
   // Update form data when parsedData becomes available
@@ -51,6 +44,22 @@ export default function CompleteProfile({
 
   const isFormValid = formData.role && formData.skills && formData.experience;
 
+  if (isLoadingParsedData) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-8">
+        <div className="space-y-4 text-center">
+          <h2 className="text-2xl font-semibold text-gray-900">
+            Complete Your Profile
+          </h2>
+          <p className="text-gray-600">Loading your parsed resume data...</p>
+          <div className="flex justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <div className="space-y-4 text-center">
@@ -64,8 +73,8 @@ export default function CompleteProfile({
         {parsedData && Object.values(parsedData).some((value) => value) && (
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
             <p className="text-sm text-blue-700">
-              ✨ We've pre-filled some fields based on your resume. Feel free to
-              review and edit them.
+              ✨ We&apos;ve pre-filled some fields based on your resume. Feel
+              free to review and edit them.
             </p>
           </div>
         )}
