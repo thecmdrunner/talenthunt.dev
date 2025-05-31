@@ -9,12 +9,14 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import {
   Award,
   Crown,
   Gift,
+  LucideSparkles,
   MessageSquare,
   Play,
   Search,
@@ -189,7 +191,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <RainbowButton>Upgrade to Pro</RainbowButton>
+        <RainbowButton asChild>
+          <SidebarMenuButton>
+            <LucideSparkles className="size-4" />
+            <span>Upgrade to Pro</span>
+          </SidebarMenuButton>
+          {/* <SidebarMenuButton
+            size="lg"
+            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:border-border border border-transparent hover:bg-white"
+          >
+            🔥 Upgrade to Pro
+          </SidebarMenuButton> */}
+        </RainbowButton>
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

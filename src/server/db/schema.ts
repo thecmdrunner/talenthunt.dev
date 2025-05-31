@@ -37,7 +37,7 @@ export const SKILL_PROFICIENCY = [
   "expert",
 ] as const;
 
-export const userProfiles = createTable(
+export const users = createTable(
   "user",
   (d) => ({
     userId: d.text().primaryKey(),
@@ -79,11 +79,15 @@ export const userProfiles = createTable(
 export const candidateProfiles = createTable(
   "candidate_profile",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     userId: d
       .text()
       .notNull()
-      .references(() => userProfiles.userId),
+      .references(() => users.userId),
 
     // Basic info
     firstName: d.varchar({ length: 100 }),
@@ -145,11 +149,15 @@ export const candidateProfiles = createTable(
 export const recruiterProfiles = createTable(
   "recruiter_profile",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     userId: d
       .text()
       .notNull()
-      .references(() => userProfiles.userId),
+      .references(() => users.userId),
 
     // Basic info
     firstName: d.varchar({ length: 100 }),
@@ -184,7 +192,11 @@ export const recruiterProfiles = createTable(
 export const projects = createTable(
   "project",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     candidateId: d
       .text()
       .notNull()
@@ -232,7 +244,11 @@ export const projects = createTable(
 export const skills = createTable(
   "skill",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     candidateId: d
       .text()
       .notNull()
@@ -261,7 +277,11 @@ export const skills = createTable(
 export const workExperience = createTable(
   "work_experience",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     candidateId: d
       .text()
       .notNull()
@@ -294,7 +314,11 @@ export const workExperience = createTable(
 export const education = createTable(
   "education",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     candidateId: d
       .text()
       .notNull()
@@ -320,7 +344,11 @@ export const education = createTable(
 export const verificationQuestions = createTable(
   "verification_question",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     candidateId: d
       .text()
       .notNull()
@@ -352,7 +380,11 @@ export const verificationQuestions = createTable(
 export const searchQueries = createTable(
   "search_query",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     recruiterId: d
       .text()
       .notNull()
@@ -380,7 +412,11 @@ export const searchQueries = createTable(
 export const candidateOutreach = createTable(
   "candidate_outreach",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     recruiterId: d
       .text()
       .notNull()
@@ -416,7 +452,11 @@ export const candidateOutreach = createTable(
 export const featuredCandidates = createTable(
   "featured_candidate",
   (d) => ({
-    id: d.text().primaryKey(),
+    id: d
+      .integer("id")
+      .primaryKey()
+      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+
     candidateId: d
       .text()
       .notNull()
@@ -444,13 +484,13 @@ export const featuredCandidates = createTable(
 );
 
 // Relations
-export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
+export const userProfilesRelations = relations(users, ({ one }) => ({
   candidateProfile: one(candidateProfiles, {
-    fields: [userProfiles.userId],
+    fields: [users.userId],
     references: [candidateProfiles.userId],
   }),
   recruiterProfile: one(recruiterProfiles, {
-    fields: [userProfiles.userId],
+    fields: [users.userId],
     references: [recruiterProfiles.userId],
   }),
 }));
@@ -458,9 +498,9 @@ export const userProfilesRelations = relations(userProfiles, ({ one }) => ({
 export const candidateProfilesRelations = relations(
   candidateProfiles,
   ({ one, many }) => ({
-    user: one(userProfiles, {
+    user: one(users, {
       fields: [candidateProfiles.userId],
-      references: [userProfiles.userId],
+      references: [users.userId],
     }),
     projects: many(projects),
     skills: many(skills),
@@ -475,9 +515,9 @@ export const candidateProfilesRelations = relations(
 export const recruiterProfilesRelations = relations(
   recruiterProfiles,
   ({ one, many }) => ({
-    user: one(userProfiles, {
+    user: one(users, {
       fields: [recruiterProfiles.userId],
-      references: [userProfiles.userId],
+      references: [users.userId],
     }),
     searchQueries: many(searchQueries),
     outreach: many(candidateOutreach),

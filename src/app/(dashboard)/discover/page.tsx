@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { ArrowRight, LucideChevronDown, Plus, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -60,11 +61,21 @@ export default function DiscoverPage() {
   const jobAttributes = extractJobAttributes.data;
 
   return (
-    <div className="space-y-8">
-      {/* Search Section */}
-      <div className="space-y-6">
-        <div className="space-y-4 text-center">
-          <div className="max-w-2xl">
+    // <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-cyan-100 via-purple-50 to-pink-100">
+    //   {/* Decorative background elements */}
+    //   <div className="absolute inset-0 overflow-hidden">
+    //     <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-r from-purple-400/20 to-pink-400/20 blur-3xl" />
+    //     <div className="absolute top-20 right-20 h-32 w-32 rounded-full bg-gradient-to-r from-cyan-400/20 to-blue-400/20 blur-2xl" />
+    //     <div className="absolute bottom-20 left-1/4 h-24 w-24 rounded-full bg-gradient-to-r from-violet-400/20 to-purple-400/20 blur-2xl" />
+    //     <div className="absolute top-1/3 right-1/3 h-16 w-16 rounded-full bg-gradient-to-r from-pink-400/20 to-rose-400/20 blur-xl" />
+    //     <div className="absolute right-10 bottom-40 h-28 w-28 rounded-full bg-gradient-to-r from-indigo-400/20 to-cyan-400/20 blur-2xl" />
+    //   </div>
+
+    <div className="relative flex items-center gap-2 px-4 py-8">
+      <div className="mx-auto w-full max-w-7xl space-y-8">
+        {/* Search Section */}
+        <div className="space-y-6">
+          <div className="mx-auto max-w-2xl space-y-4 text-center">
             <div className="relative">
               <div className="mb-2 text-left">
                 <span className="text-muted-foreground">
@@ -140,20 +151,21 @@ export default function DiscoverPage() {
                       placeholder="product engineer more than 4 years exp"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="rounded-xl py-7 pr-16 pl-13 text-lg"
+                      className="rounded-xl py-9 pr-16 pl-13 text-lg font-light"
                       disabled={extractJobAttributes.isPending}
                     />
                     <Button
                       type="submit"
                       size="sm"
-                      className="absolute top-1/2 right-2 h-10 w-10 -translate-y-1/2 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-700 hover:to-violet-700"
+                      variant={"default"}
+                      className="absolute top-1/2 right-2 h-10 w-10 -translate-y-1/2 rounded-full bg-purple-500 hover:brightness-90"
                       disabled={
                         extractJobAttributes.isPending ||
                         !searchQuery ||
                         searchQuery.length < 2
                       }
                     >
-                      <ArrowRight className="h-4 w-4" />
+                      <ArrowRight className="h-5 w-5" />
                     </Button>
                   </div>
 
@@ -192,91 +204,153 @@ export default function DiscoverPage() {
               </AnimatePresence>
             </div>
           </div>
-        </div>
 
-        {/* Active Search Display */}
-        {isSearchActive && jobAttributes && (
-          <div className="max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-sm ring-1 ring-black/5">
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-2xl font-bold text-transparent">
-                I&apos;m looking for a
-              </span>
-
-              {jobAttributes.newJob.role && (
-                <Select value={jobAttributes.newJob.role}>
-                  <Button
-                    asChild
-                    variant={"secondary"}
-                    className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
-                  >
-                    <SelectTrigger>
-                      <SelectValue>{jobAttributes.newJob.role}</SelectValue>
-                    </SelectTrigger>
-                  </Button>
-                  <SelectContent>
-                    <SelectItem value={jobAttributes.newJob.role}>
-                      {jobAttributes.newJob.role}
-                    </SelectItem>
-                    {jobAttributes.newJob.similarRoles?.map((role) => (
-                      <SelectItem key={role} value={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+          <div className="relative flex w-max items-center">
+            <div
+              className={cn(
+                "flex items-center gap-2 rounded-full border border-transparent bg-gradient-to-r from-cyan-50 to-violet-50 px-6 py-3 shadow-sm",
+                "text-2xl font-semibold text-black",
+                "transition-all",
               )}
+              style={{
+                borderImage:
+                  "linear-gradient(90deg, #22d3ee 0%, #a78bfa 100%) 1",
+                borderWidth: "2px",
+                background: "linear-gradient(90deg, #ecfeff 0%, #f5f3ff 100%)",
+              }}
+            >
+              <span className="flex items-center">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  className="mr-2 h-7 w-7 text-cyan-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g>
+                    <path
+                      d="M16 7.5L17.5 13.5L23.5 15L17.5 16.5L16 22.5L14.5 16.5L8.5 15L14.5 13.5L16 7.5Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinejoin="round"
+                    />
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="15"
+                      stroke="currentColor"
+                      strokeOpacity="0.08"
+                      strokeWidth="2"
+                    />
+                  </g>
+                </svg>
+                <span className="text-2xl font-medium text-black">AI</span>
+              </span>
             </div>
+            <span
+              className={cn(
+                "absolute -top-4 left-1/2 z-10 -translate-x-1/2",
+                "rounded-full bg-violet-500 px-5 py-1.5 text-base font-semibold text-white shadow-lg",
+                "border-2 border-white",
+              )}
+              style={{
+                fontSize: "1.25rem",
+                lineHeight: "1.75rem",
+                letterSpacing: "0.01em",
+              }}
+            >
+              New
+            </span>
+            <span
+              className="pointer-events-none absolute top-1/2 -right-10 h-6 w-6 -translate-y-1/2 rounded-full bg-gradient-to-br from-violet-400 to-transparent opacity-60 blur-[6px]"
+              aria-hidden="true"
+            />
+          </div>
 
-            {/* Skills */}
-            {jobAttributes.newJob.skills &&
-              jobAttributes.newJob.skills.length > 0 && (
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="text-sm text-slate-500">who knows</span>
-                  {jobAttributes.newJob.skills.map((skill) => (
-                    <Badge
-                      key={skill}
-                      variant="outline"
-                      className="group relative border-blue-200 bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 shadow-sm transition-all hover:scale-105"
+          {/* Active Search Display */}
+          {isSearchActive && jobAttributes && (
+            <div className="max-w-4xl space-y-6 rounded-xl bg-white/80 p-6 shadow-lg ring-1 ring-white/20 backdrop-blur-sm">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-2xl font-bold text-transparent">
+                  I&apos;m looking for a
+                </span>
+
+                {jobAttributes.newJob.role && (
+                  <Select value={jobAttributes.newJob.role}>
+                    <Button
+                      asChild
+                      variant={"secondary"}
+                      className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
                     >
-                      {skill}
-                      <button className="ml-2 opacity-0 transition-opacity group-hover:opacity-100">
-                        ×
-                      </button>
-                    </Badge>
-                  ))}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 w-7 rounded-full bg-gradient-to-r from-blue-50 to-sky-50 p-0 shadow-sm transition-transform hover:scale-110"
-                  >
-                    <Plus className="h-3.5 w-3.5 text-blue-700" />
-                  </Button>
+                      <SelectTrigger>
+                        <SelectValue>{jobAttributes.newJob.role}</SelectValue>
+                      </SelectTrigger>
+                    </Button>
+                    <SelectContent>
+                      <SelectItem value={jobAttributes.newJob.role}>
+                        {jobAttributes.newJob.role}
+                      </SelectItem>
+                      {jobAttributes.newJob.similarRoles?.map((role) => (
+                        <SelectItem key={role} value={role}>
+                          {role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+
+              {/* Skills */}
+              {jobAttributes.newJob.skills &&
+                jobAttributes.newJob.skills.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-sm text-slate-500">who knows</span>
+                    {jobAttributes.newJob.skills.map((skill) => (
+                      <Badge
+                        key={skill}
+                        variant="outline"
+                        className="group relative border-blue-200 bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 shadow-sm transition-all hover:scale-105"
+                      >
+                        {skill}
+                        <button className="ml-2 opacity-0 transition-opacity group-hover:opacity-100">
+                          ×
+                        </button>
+                      </Badge>
+                    ))}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 w-7 rounded-full bg-gradient-to-r from-blue-50 to-sky-50 p-0 shadow-sm transition-transform hover:scale-110"
+                    >
+                      <Plus className="h-3.5 w-3.5 text-blue-700" />
+                    </Button>
+                  </div>
+                )}
+
+              {/* Experience */}
+              {jobAttributes.pastExperience?.duration && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-slate-500">
+                    {jobAttributes.pastExperience.duration.filter}{" "}
+                    <Badge
+                      variant="outline"
+                      className="group relative border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 text-purple-700 shadow-sm transition-all hover:scale-105"
+                    >
+                      {jobAttributes.pastExperience.duration.years
+                        ? `${jobAttributes.pastExperience.duration.years} years`
+                        : jobAttributes.pastExperience.duration.years
+                          ? `${jobAttributes.pastExperience.duration.years} years`
+                          : null}{" "}
+                      <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                    </Badge>{" "}
+                    of experience
+                  </span>
                 </div>
               )}
 
-            {/* Experience */}
-            {jobAttributes.pastExperience?.duration && (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">
-                  {jobAttributes.pastExperience.duration.filter}{" "}
-                  <Badge
-                    variant="outline"
-                    className="group relative border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 text-purple-700 shadow-sm transition-all hover:scale-105"
-                  >
-                    {jobAttributes.pastExperience.duration.years
-                      ? `${jobAttributes.pastExperience.duration.years} years`
-                      : jobAttributes.pastExperience.duration.years
-                        ? `${jobAttributes.pastExperience.duration.years} years`
-                        : null}{" "}
-                    <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                  </Badge>{" "}
-                  of experience
-                </span>
-              </div>
-            )}
-
-            {/* Salary */}
-            {/* {jobAttributes.newJob.expectedSalary && (
+              {/* Salary */}
+              {/* {jobAttributes.newJob.expectedSalary && (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-slate-500">salary range</span>
                 <Badge
@@ -297,189 +371,193 @@ export default function DiscoverPage() {
               </div>
             )} */}
 
-            {/* Location */}
-            {(jobAttributes.newJob.location?.city ??
-              jobAttributes.newJob.location?.country) && (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">📍</span>
-                <Badge
-                  variant="outline"
-                  className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
-                >
-                  {[
-                    jobAttributes.newJob.location.city,
-                    jobAttributes.newJob.location.country,
-                  ]
-                    .filter(Boolean)
-                    .join(", ")}
-                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                </Badge>
+              {/* Location */}
+              {(jobAttributes.newJob.location?.city ??
+                jobAttributes.newJob.location?.country) && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-slate-500">📍</span>
+                  <Badge
+                    variant="outline"
+                    className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
+                  >
+                    {[
+                      jobAttributes.newJob.location.city,
+                      jobAttributes.newJob.location.country,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                    <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                  </Badge>
 
-                {jobAttributes.newJob.location?.type && (
-                  <Select value={jobAttributes.newJob.location.type}>
-                    <Button
-                      asChild
-                      size={"sm"}
-                      variant={"outline"}
-                      className="group relative !h-6 py-0 text-xs shadow-sm transition-all hover:scale-105"
-                    >
-                      <SelectTrigger>
-                        <SelectValue>
+                  {jobAttributes.newJob.location?.type && (
+                    <Select value={jobAttributes.newJob.location.type}>
+                      <Button
+                        asChild
+                        size={"sm"}
+                        variant={"outline"}
+                        className="group relative !h-6 py-0 text-xs shadow-sm transition-all hover:scale-105"
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            {jobAttributes.newJob.location.type}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </Button>
+                      <SelectContent>
+                        <SelectItem value={jobAttributes.newJob.location.type}>
                           {jobAttributes.newJob.location.type}
-                        </SelectValue>
-                      </SelectTrigger>
-                    </Button>
-                    <SelectContent>
-                      <SelectItem value={jobAttributes.newJob.location.type}>
-                        {jobAttributes.newJob.location.type}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              </div>
-            )}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+              )}
 
-            {/* Availability */}
-            {jobAttributes.newJob.joiningNotice?.immediate && (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">available</span>
-                <Badge
-                  variant="outline"
-                  className="group relative border-teal-200 bg-gradient-to-r from-teal-50 to-cyan-50 text-teal-700 shadow-sm transition-all hover:scale-105"
+              {/* Availability */}
+              {jobAttributes.newJob.joiningNotice?.immediate && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-slate-500">available</span>
+                  <Badge
+                    variant="outline"
+                    className="group relative border-teal-200 bg-gradient-to-r from-teal-50 to-cyan-50 text-teal-700 shadow-sm transition-all hover:scale-105"
+                  >
+                    Immediate Joining
+                  </Badge>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3 border-t pt-4">
+                <button
+                  onClick={clearSearch}
+                  className="text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700"
                 >
-                  Immediate Joining
-                </Badge>
+                  Add more filters
+                </button>
+                <div className="h-4 w-[1px] bg-slate-200"></div>
+                {additionalFilters.map((filter) => (
+                  <Badge
+                    key={filter.value}
+                    variant="outline"
+                    className="cursor-pointer border-violet-200 bg-gradient-to-r from-violet-50 to-purple-50 text-violet-700 shadow-sm transition-all hover:scale-105"
+                  >
+                    + {filter.label}
+                  </Badge>
+                ))}
               </div>
-            )}
+            </div>
+          )}
 
-            <div className="flex items-center gap-3 border-t pt-4">
-              <button
-                onClick={clearSearch}
-                className="text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700"
-              >
-                Add more filters
-              </button>
-              <div className="h-4 w-[1px] bg-slate-200"></div>
-              {additionalFilters.map((filter) => (
-                <Badge
+          {/* Suggested Filters (only show when no active search) */}
+          {!isSearchActive && (
+            <div className="flex flex-wrap justify-center gap-2">
+              {suggestedFilters.map((filter) => (
+                <Button
                   key={filter.value}
                   variant="outline"
-                  className="cursor-pointer border-violet-200 bg-gradient-to-r from-violet-50 to-purple-50 text-violet-700 shadow-sm transition-all hover:scale-105"
+                  size="sm"
+                  onClick={() =>
+                    setSearchQuery(searchQuery + " " + filter.label)
+                  }
+                  className="rounded-full"
                 >
-                  + {filter.label}
-                </Badge>
+                  {filter.label}
+                </Button>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Suggested Filters (only show when no active search) */}
-        {!isSearchActive && (
-          <div className="flex flex-wrap justify-center gap-2">
-            {suggestedFilters.map((filter) => (
-              <Button
-                key={filter.value}
-                variant="outline"
-                size="sm"
-                onClick={() => setSearchQuery(searchQuery + " " + filter.label)}
-                className="rounded-full"
-              >
-                {filter.label}
-              </Button>
-            ))}
-          </div>
-        )}
-      </div>
+        {/* Candidates Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">
+            {isSearchActive ? "Top candidates" : "Featured candidates"}
+          </h2>
 
-      {/* Candidates Section */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold">
-          {isSearchActive ? "Top candidates" : "Featured candidates"}
-        </h2>
+          {extractJobAttributes.isPending ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <Card
+                  key={i}
+                  className="group animate-pulse transition-all duration-300"
+                  style={{
+                    animationDelay: `${i * 100}ms`,
+                  }}
+                >
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {/* Avatar skeleton */}
+                      <Skeleton className="mx-auto h-16 w-16 rounded-full" />
 
-        {extractJobAttributes.isPending ? (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <Card
-                key={i}
-                className="group animate-pulse transition-all duration-300"
-                style={{
-                  animationDelay: `${i * 100}ms`,
-                }}
-              >
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {/* Avatar skeleton */}
-                    <Skeleton className="mx-auto h-16 w-16 rounded-full" />
+                      {/* Name and title skeleton */}
+                      <div className="space-y-2 text-center">
+                        <Skeleton className="mx-auto h-4 w-32" />
+                        <Skeleton className="mx-auto h-3 w-24" />
+                      </div>
 
-                    {/* Name and title skeleton */}
-                    <div className="space-y-2 text-center">
-                      <Skeleton className="mx-auto h-4 w-32" />
-                      <Skeleton className="mx-auto h-3 w-24" />
-                    </div>
+                      {/* Skills skeleton */}
+                      <div className="flex flex-wrap justify-center gap-1">
+                        <Skeleton className="h-5 w-12 rounded-full" />
+                        <Skeleton className="h-5 w-16 rounded-full" />
+                        <Skeleton className="h-5 w-10 rounded-full" />
+                      </div>
 
-                    {/* Skills skeleton */}
-                    <div className="flex flex-wrap justify-center gap-1">
-                      <Skeleton className="h-5 w-12 rounded-full" />
-                      <Skeleton className="h-5 w-16 rounded-full" />
-                      <Skeleton className="h-5 w-10 rounded-full" />
-                    </div>
+                      {/* Experience skeleton */}
+                      <div className="space-y-2">
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-3/4" />
+                      </div>
 
-                    {/* Experience skeleton */}
-                    <div className="space-y-2">
-                      <Skeleton className="h-3 w-full" />
-                      <Skeleton className="h-3 w-3/4" />
-                    </div>
-
-                    {/* Match score skeleton */}
-                    <div className="border-t pt-2">
-                      <div className="flex items-center justify-between">
-                        <Skeleton className="h-3 w-16" />
-                        <Skeleton className="h-6 w-12 rounded-full" />
+                      {/* Match score skeleton */}
+                      <div className="border-t pt-2">
+                        <div className="flex items-center justify-between">
+                          <Skeleton className="h-3 w-16" />
+                          <Skeleton className="h-6 w-12 rounded-full" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <Card
-                key={i}
-                className="group cursor-pointer transition-shadow hover:shadow-lg"
-              >
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {/* Placeholder avatar */}
-                    <div className="bg-muted mx-auto h-16 w-16 rounded-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <Card
+                  key={i}
+                  className="group cursor-pointer transition-shadow hover:shadow-lg"
+                >
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {/* Placeholder avatar */}
+                      <div className="bg-muted mx-auto h-16 w-16 rounded-full" />
 
-                    {/* Placeholder content */}
-                    <div className="space-y-2 text-center">
-                      <div className="bg-muted mx-auto h-4 w-3/4 rounded" />
-                      <div className="bg-muted mx-auto h-3 w-1/2 rounded" />
-                    </div>
+                      {/* Placeholder content */}
+                      <div className="space-y-2 text-center">
+                        <div className="bg-muted mx-auto h-4 w-3/4 rounded" />
+                        <div className="bg-muted mx-auto h-3 w-1/2 rounded" />
+                      </div>
 
-                    {/* Placeholder skills */}
-                    <div className="flex flex-wrap justify-center gap-1">
-                      <div className="bg-muted h-5 w-12 rounded" />
-                      <div className="bg-muted h-5 w-16 rounded" />
-                      <div className="bg-muted h-5 w-10 rounded" />
-                    </div>
+                      {/* Placeholder skills */}
+                      <div className="flex flex-wrap justify-center gap-1">
+                        <div className="bg-muted h-5 w-12 rounded" />
+                        <div className="bg-muted h-5 w-16 rounded" />
+                        <div className="bg-muted h-5 w-10 rounded" />
+                      </div>
 
-                    {/* Placeholder metrics */}
-                    <div className="space-y-1">
-                      <div className="bg-muted h-3 w-full rounded" />
-                      <div className="bg-muted h-3 w-2/3 rounded" />
+                      {/* Placeholder metrics */}
+                      <div className="space-y-1">
+                        <div className="bg-muted h-3 w-full rounded" />
+                        <div className="bg-muted h-3 w-2/3 rounded" />
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
+    // </div>
   );
 }
