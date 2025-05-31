@@ -24,6 +24,7 @@ import {
   SquareTerminal,
 } from "lucide-react";
 import * as React from "react";
+import { RainbowButton } from "./magicui/rainbow-button";
 
 // This is sample data.
 const data = {
@@ -166,6 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
+        <RainbowButton>Upgrade to Pro</RainbowButton>
         <NavUser />
       </SidebarFooter>
       <SidebarRail />
