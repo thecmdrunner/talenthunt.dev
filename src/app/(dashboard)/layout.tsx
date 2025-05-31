@@ -5,10 +5,18 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { api } from "@/trpc/server";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 import { type PropsWithChildren } from "react";
 
-export default function DashboardLayout({ children }: PropsWithChildren) {
+export default async function DashboardLayout({ children }: PropsWithChildren) {
+  const user = await api.user.getOrCreateUser();
+
+  if (user && !user?.candidateProfile && !user?.recruiterProfile) {
+    return redirect("/onboarding");
+  }
+
   return (
     <>
       <SignedOut>

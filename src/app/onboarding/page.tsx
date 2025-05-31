@@ -53,8 +53,8 @@ export default function OnboardingPage() {
             Choose Your Path
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-blue-100 md:text-xl">
-            Whether you're looking for your next opportunity or seeking top
-            talent, we'll help you get there with AI-powered matching.
+            Whether you&apos;re looking for your next opportunity or seeking top
+            talent, we&apos;ll help you get there with AI-powered matching.
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export default function OnboardingPage() {
               </div>
 
               <h2 className="mb-4 text-3xl font-bold text-gray-900">
-                I'm Looking for a Job
+                I&apos;m Looking for a Job
               </h2>
 
               <p className="mb-8 text-lg leading-relaxed text-gray-600">
@@ -75,30 +75,17 @@ export default function OnboardingPage() {
               </p>
 
               <div className="mb-8 space-y-4 text-left">
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Connect LinkedIn & GitHub profiles
-                  </span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Upload resume and showcase projects
-                  </span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Get verified and featured
-                  </span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Receive personalized job opportunities
-                  </span>
-                </div>
+                {[
+                  "Connect LinkedIn & GitHub profiles",
+                  "Upload resume and showcase projects",
+                  "Get verified and featured",
+                  "Receive personalized job opportunities",
+                ].map((feature) => (
+                  <div key={feature} className="flex items-start space-x-3">
+                    <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
               </div>
 
               <Button
@@ -127,7 +114,7 @@ export default function OnboardingPage() {
               </div>
 
               <h2 className="mb-4 text-3xl font-bold text-gray-900">
-                I'm Looking to Hire
+                I&apos;m Looking to Hire
               </h2>
 
               <p className="mb-8 text-lg leading-relaxed text-gray-600">
@@ -135,30 +122,17 @@ export default function OnboardingPage() {
               </p>
 
               <div className="mb-8 space-y-4 text-left">
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Search with natural language queries
-                  </span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Access verified candidate profiles
-                  </span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Auto-screen and rank candidates
-                  </span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
-                  <span className="text-gray-700">
-                    Launch personalized outreach campaigns
-                  </span>
-                </div>
+                {[
+                  "Search with natural language queries",
+                  "Access verified candidate profiles",
+                  "Auto-screen and rank candidates",
+                  "Launch personalized outreach campaigns",
+                ].map((feature) => (
+                  <div key={feature} className="flex items-start space-x-3">
+                    <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-blue-600"></div>
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
               </div>
 
               <Button

@@ -32,7 +32,7 @@ export const userRouter = createTRPCRouter({
         credits: 50, // FREE Credits upon signup
       });
 
-      return getUser(userId);
+      return await getUser(userId);
     }
 
     return existingUser;
