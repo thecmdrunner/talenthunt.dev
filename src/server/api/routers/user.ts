@@ -41,10 +41,10 @@ export const userRouter = createTRPCRouter({
   createCandidateProfile: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.userId;
 
-    // Check if user already has a profile
+    // Check if user already has a candidate profile
     const existingUser = await getUser(userId);
-    if (existingUser?.candidateProfile || existingUser?.recruiterProfile) {
-      throw new Error("User already has a profile");
+    if (existingUser?.candidateProfile) {
+      throw new Error("User already has a candidate profile");
     }
 
     // Create candidate profile
@@ -59,10 +59,10 @@ export const userRouter = createTRPCRouter({
   createRecruiterProfile: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.userId;
 
-    // Check if user already has a profile
+    // Check if user already has a recruiter profile
     const existingUser = await getUser(userId);
-    if (existingUser?.candidateProfile || existingUser?.recruiterProfile) {
-      throw new Error("User already has a profile");
+    if (existingUser?.recruiterProfile) {
+      throw new Error("User already has a recruiter profile");
     }
 
     // Create recruiter profile
