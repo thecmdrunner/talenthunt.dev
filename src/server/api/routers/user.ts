@@ -1,5 +1,4 @@
-import { createStandardCacheKey, withCache } from "@/lib/cache";
-import { CACHE_CONFIG, CREDITS_COST } from "@/lib/constants";
+import { CREDITS_COST } from "@/lib/constants";
 import { db } from "@/server/db";
 import {
   candidateProfiles,
@@ -131,34 +130,20 @@ export const userRouter = createTRPCRouter({
   getCreditsStatus: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.userId;
 
-    // Cache user credits for a short time to reduce DB hits
-    const cacheKey = createStandardCacheKey(
-      CACHE_CONFIG.PREFIXES.USER_CREDITS,
-      userId,
-    );
+    const user = await ctx.db.query.users.findFirst({
+      where: eq(users.userId, userId),
+      columns: { credits: true },
+    });
 
-    const creditsData = await withCache(
-      cacheKey,
-      async () => {
-        const user = await ctx.db.query.users.findFirst({
-          where: eq(users.userId, userId),
-          columns: { credits: true },
-        });
+    const credits = user?.credits ?? 0;
+    const minCreditsForSearch = CREDITS_COST.NATURAL_LANGUAGE_SEARCH;
+    const lowCreditsThreshold = minCreditsForSearch * 2; // Alert when user has less than 2 searches worth
 
-        const credits = user?.credits ?? 0;
-        const minCreditsForSearch = CREDITS_COST.NATURAL_LANGUAGE_SEARCH;
-        const lowCreditsThreshold = minCreditsForSearch * 2; // Alert when user has less than 2 searches worth
-
-        return {
-          credits,
-          hasLowCredits: credits < lowCreditsThreshold,
-          canPerformSearch: credits >= minCreditsForSearch,
-          minCreditsForSearch,
-        };
-      },
-      60, // Cache for 1 minute to balance freshness and performance
-    );
-
-    return creditsData;
+    return {
+      credits,
+      hasLowCredits: credits < lowCreditsThreshold,
+      canPerformSearch: credits >= minCreditsForSearch,
+      minCreditsForSearch,
+    };
   }),
 });
