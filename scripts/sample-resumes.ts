@@ -182,39 +182,43 @@ const result = streamObject({
   ].join("\n"),
 
   schema: z.object({
-    pastExperience: z
-      .array(
-        z.object({
-          company: z.string().describe("Company name"),
-          location: z.string().describe("Work location"),
-          role: z.string().describe("Job title/role"),
-          projects: z
-            .array(
-              z.object({
-                name: z.string().describe("Project name"),
-                description: z.string().describe("Project description"),
-                link: z.string().describe("Project link (can be mock)"),
-              }),
-            )
-            .describe("Project details"),
-          duration: z.object({
-            startDate: z.string().describe("Start date of employment"),
-            endDate: z.string().describe("End date of employment"),
-          }),
-        }),
-      )
-      .min(1)
-      .max(4)
-      .describe("Array of past work experiences"),
-
-    education: z
+    resumes: z
       .object({
-        degree: z.string().describe("Degree"),
-        field: z.string().describe("Field of study"),
-        institution: z.string().describe("Institution"),
-        location: z.string().describe("Location"),
+        pastExperience: z
+          .array(
+            z.object({
+              company: z.string().describe("Company name"),
+              location: z.string().describe("Work location"),
+              role: z.string().describe("Job title/role"),
+              projects: z
+                .array(
+                  z.object({
+                    name: z.string().describe("Project name"),
+                    description: z.string().describe("Project description"),
+                    link: z.string().describe("Project link (can be mock)"),
+                  }),
+                )
+                .describe("Project details"),
+              duration: z.object({
+                startDate: z.string().describe("Start date of employment"),
+                endDate: z.string().describe("End date of employment"),
+              }),
+            }),
+          )
+          .min(1)
+          .max(4)
+          .describe("Array of past work experiences"),
+
+        education: z
+          .object({
+            degree: z.string().describe("Degree"),
+            field: z.string().describe("Field of study"),
+            institution: z.string().describe("Institution"),
+            location: z.string().describe("Location"),
+          })
+          .describe("Education"),
       })
-      .describe("Education"),
+      .array(),
   }),
 
   messages: [
