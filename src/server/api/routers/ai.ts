@@ -215,25 +215,49 @@ export const aiRouter = createTRPCRouter({
           const result = await generateObject({
             model: openrouter("google/gemini-2.0-flash-001"),
             system:
-              "You are a helpful assistant that can parse resumes and extract the following information: name, email, phone, address, education, experience, skills, and projects.",
+              "You are a helpful assistant that can parse resumes and extract profile information. Extract the most relevant role/title, top skills, years of experience, location preferences, and any social media profiles mentioned.",
 
             schema: z.object({
-              name: z.string(),
-              email: z.string(),
-              phone: z.string(),
-              address: z.string(),
-              education: z.string(),
+              name: z.string().optional(),
+              email: z.string().optional(),
+              phone: z.string().optional(),
+              role: z
+                .string()
+                .describe("Current or target role/job title from the resume"),
+              skills: z
+                .string()
+                .describe(
+                  "Top 3-5 skills mentioned in the resume, comma-separated",
+                ),
+              experience: z
+                .string()
+                .describe("Years of professional experience as a number"),
+              location: z
+                .string()
+                .optional()
+                .describe("Current location or location mentioned in resume"),
+              githubUrl: z
+                .string()
+                .optional()
+                .describe("GitHub profile URL if mentioned"),
+              linkedinUrl: z
+                .string()
+                .optional()
+                .describe("LinkedIn profile URL if mentioned"),
             }),
             messages: [
               {
                 role: "user",
                 content: [
-                  { type: "text", text: "What is the file about?" },
+                  {
+                    type: "text",
+                    text: "Parse this resume and extract the profile information. Focus on extracting the current/target role, top skills, years of experience, location, and any GitHub/LinkedIn URLs mentioned.",
+                  },
                   {
                     type: "file",
                     mimeType: "application/pdf",
                     data: Buffer.from(await resumeBlob.arrayBuffer()),
-                    filename: "Pranav CV.pdf", // optional, not used by all providers
+                    filename: "resume.pdf",
                   },
                 ],
               },

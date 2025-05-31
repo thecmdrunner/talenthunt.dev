@@ -95,10 +95,6 @@ export const userRouter = createTRPCRouter({
         throw new Error("User does not have a candidate profile");
       }
 
-      if (existingUser?.candidateProfile) {
-        throw new Error("User does not have a candidate profile");
-      }
-
       // Update candidate profile step and optionally resume URL
       const updateData: Partial<CandidateProfileSelect> = {
         currentStep: input.step,

@@ -3,21 +3,47 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CompleteProfileProps {
   onContinue: () => void;
+  parsedData?: {
+    role: string;
+    skills: string;
+    experience: string;
+    location?: string;
+    githubUrl?: string;
+    linkedinUrl?: string;
+  } | null;
 }
 
-export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
+export default function CompleteProfile({
+  onContinue,
+  parsedData,
+}: CompleteProfileProps) {
   const [formData, setFormData] = useState({
-    role: "",
-    skills: "",
-    experience: "",
-    location: "",
-    githubUrl: "",
-    linkedinUrl: "",
+    role: parsedData?.role ?? "",
+    skills: parsedData?.skills ?? "",
+    experience: parsedData?.experience ?? "",
+    location: parsedData?.location ?? "",
+    githubUrl: parsedData?.githubUrl ?? "",
+    linkedinUrl: parsedData?.linkedinUrl ?? "",
   });
+
+  // Update form data when parsedData becomes available
+  useEffect(() => {
+    if (parsedData) {
+      setFormData((prev) => ({
+        ...prev,
+        role: parsedData.role ?? prev.role,
+        skills: parsedData.skills ?? prev.skills,
+        experience: parsedData.experience ?? prev.experience,
+        location: parsedData.location ?? prev.location,
+        githubUrl: parsedData.githubUrl ?? prev.githubUrl,
+        linkedinUrl: parsedData.linkedinUrl ?? prev.linkedinUrl,
+      }));
+    }
+  }, [parsedData]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -35,12 +61,27 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
           Tell us more about your skills, preferences, and experience so we can
           match you better.
         </p>
+        {parsedData && Object.values(parsedData).some((value) => value) && (
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+            <p className="text-sm text-blue-700">
+              ✨ We've pre-filled some fields based on your resume. Feel free to
+              review and edit them.
+            </p>
+          </div>
+        )}
         <div className="text-sm text-gray-500">Step 2 of 3</div>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="role">Role you&apos;re targeting</Label>
+          <Label htmlFor="role" className="flex items-center gap-2">
+            Role you&apos;re targeting
+            {parsedData?.role && (
+              <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
+                ✨ Pre-filled from resume
+              </span>
+            )}
+          </Label>
           <Input
             id="role"
             placeholder="e.g. Frontend Developer, Product Manager"
@@ -51,7 +92,14 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="skills">Top 3 skills</Label>
+          <Label htmlFor="skills" className="flex items-center gap-2">
+            Top 3 skills
+            {parsedData?.skills && (
+              <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
+                ✨ Pre-filled from resume
+              </span>
+            )}
+          </Label>
           <Input
             id="skills"
             placeholder="e.g. React, TypeScript, Node.js"
@@ -63,7 +111,14 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="experience">Years of experience</Label>
+            <Label htmlFor="experience" className="flex items-center gap-2">
+              Years of experience
+              {parsedData?.experience && (
+                <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
+                  ✨ Pre-filled from resume
+                </span>
+              )}
+            </Label>
             <Input
               id="experience"
               type="number"
@@ -75,7 +130,14 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="location">Preferred location (optional)</Label>
+            <Label htmlFor="location" className="flex items-center gap-2">
+              Preferred location (optional)
+              {parsedData?.location && (
+                <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
+                  ✨ Pre-filled from resume
+                </span>
+              )}
+            </Label>
             <Input
               id="location"
               placeholder="e.g. San Francisco, Remote"
@@ -87,7 +149,14 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="github">GitHub URL</Label>
+          <Label htmlFor="github" className="flex items-center gap-2">
+            GitHub URL
+            {parsedData?.githubUrl && (
+              <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
+                ✨ Pre-filled from resume
+              </span>
+            )}
+          </Label>
           <Input
             id="github"
             placeholder="https://github.com/yourusername"
@@ -98,7 +167,14 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="linkedin">LinkedIn URL</Label>
+          <Label htmlFor="linkedin" className="flex items-center gap-2">
+            LinkedIn URL
+            {parsedData?.linkedinUrl && (
+              <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
+                ✨ Pre-filled from resume
+              </span>
+            )}
+          </Label>
           <Input
             id="linkedin"
             placeholder="https://linkedin.com/in/yourprofile"
