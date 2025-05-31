@@ -42,23 +42,23 @@ export default function DiscoverPage() {
   });
 
   // Use tRPC mutation for AI-powered query processing
-  const extractJobAttributes = api.ai.extractJobAttributes.useMutation();
+  const naturalLanguageQuery = api.ai.naturalLanguageQuery.useMutation();
 
   // Process search query on page load or when searchQuery changes
   useEffect(() => {
     if (searchQuery && searchQuery.trim() !== "") {
       // Trigger AI extraction
-      extractJobAttributes.mutate({ query: searchQuery });
+      naturalLanguageQuery.mutate({ query: searchQuery });
     }
   }, []);
 
   const clearSearch = () => {
     void setSearchQuery("");
-    extractJobAttributes.reset();
+    naturalLanguageQuery.reset();
   };
 
-  const isSearchActive = Boolean(searchQuery && extractJobAttributes.data);
-  const jobAttributes = extractJobAttributes.data;
+  const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
+  const jobAttributes = naturalLanguageQuery.data;
 
   return (
     // <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-cyan-100 via-purple-50 to-pink-100">
@@ -86,7 +86,7 @@ export default function DiscoverPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    extractJobAttributes.mutate({ query: searchQuery });
+                    naturalLanguageQuery.mutate({ query: searchQuery });
                   }}
                   className="group overflow- relative flex-1 rounded-2xl p-[1px]"
                 >
@@ -152,7 +152,7 @@ export default function DiscoverPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="rounded-xl py-9 pr-16 pl-13 text-lg font-light"
-                      disabled={extractJobAttributes.isPending}
+                      disabled={naturalLanguageQuery.isPending}
                     />
                     <Button
                       type="submit"
@@ -160,7 +160,7 @@ export default function DiscoverPage() {
                       variant={"default"}
                       className="absolute top-1/2 right-2 h-10 w-10 -translate-y-1/2 rounded-full bg-purple-500 hover:brightness-90"
                       disabled={
-                        extractJobAttributes.isPending ||
+                        naturalLanguageQuery.isPending ||
                         !searchQuery ||
                         searchQuery.length < 2
                       }
@@ -173,13 +173,13 @@ export default function DiscoverPage() {
                   <div className="absolute inset-0 h-full w-full rounded-[14px] bg-gradient-to-r from-cyan-600 to-violet-600 text-white opacity-30 transition-all duration-300 group-focus-within:blur-xs group-hover:blur-xs hover:from-cyan-700 hover:to-violet-700"></div>
                 </form>
               </div>
-              {extractJobAttributes.error && (
+              {naturalLanguageQuery.error && (
                 <div className="mt-2 text-sm text-red-600">
                   Error processing query. Please try again.
                 </div>
               )}
               <AnimatePresence mode="wait">
-                {extractJobAttributes.isPending && (
+                {naturalLanguageQuery.isPending && (
                   <motion.div
                     key="loading-animation"
                     initial={{ opacity: 0, y: 10, height: 0 }}
@@ -473,7 +473,7 @@ export default function DiscoverPage() {
             {isSearchActive ? "Top candidates" : "Featured candidates"}
           </h2>
 
-          {extractJobAttributes.isPending ? (
+          {naturalLanguageQuery.isPending ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <Card

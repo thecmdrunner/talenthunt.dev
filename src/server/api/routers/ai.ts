@@ -1,7 +1,11 @@
+import { CREDITS_COST, CREDIT_ERROR_MESSAGES } from "@/lib/constants";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { users } from "@/server/db/schema";
 import { jobAttributesSchema, sampleJobAttributes } from "@/types/jobs";
 import { groq } from "@ai-sdk/groq";
+import { TRPCError } from "@trpc/server";
 import { generateObject } from "ai";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 const systemPrompt = [
@@ -75,18 +79,49 @@ const systemPrompt = [
 ].join("\n");
 
 export const aiRouter = createTRPCRouter({
-  extractJobAttributes: protectedProcedure
+  naturalLanguageQuery: protectedProcedure
     .input(
       z.object({
         query: z.string().min(1, "Query cannot be empty"),
       }),
     )
     .output(jobAttributesSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const { query } = input;
-      console.log({ query });
+      const userId = ctx.session.userId;
+
+      console.log({ query, userId });
+
+      // Check if user has sufficient credits
+      const user = await ctx.db.query.users.findFirst({
+        where: eq(users.userId, userId),
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      const requiredCredits = CREDITS_COST.NATURAL_LANGUAGE_SEARCH;
+
+      if (user.credits < requiredCredits) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: CREDIT_ERROR_MESSAGES.NATURAL_LANGUAGE_SEARCH,
+        });
+      }
 
       try {
+        // Deduct credits first (optimistic deduction)
+        await ctx.db
+          .update(users)
+          .set({
+            credits: sql`${users.credits} - ${requiredCredits}`,
+          })
+          .where(eq(users.userId, userId));
+
         const result = await generateObject({
           //   model: openrouter("sarvamai/sarvam-m:free"),
           // model: openrouter("google/gemini-2.0-flash-001"),
@@ -109,8 +144,19 @@ export const aiRouter = createTRPCRouter({
 
         return finalResult;
       } catch (error) {
+        // If AI processing fails, refund the credits
+        await ctx.db
+          .update(users)
+          .set({
+            credits: sql`${users.credits} + ${requiredCredits}`,
+          })
+          .where(eq(users.userId, userId));
+
         console.error("Error extracting job attributes:", error);
-        throw new Error("Failed to extract job attributes from query");
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to extract job attributes from query",
+        });
       }
     }),
 });

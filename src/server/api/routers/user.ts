@@ -1,3 +1,4 @@
+import { CREDITS_COST } from "@/lib/constants";
 import { db } from "@/server/db";
 import {
   candidateProfiles,
@@ -114,4 +115,35 @@ export const userRouter = createTRPCRouter({
 
       return getUser(userId);
     }),
+
+  getUserCredits: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    const user = await ctx.db.query.users.findFirst({
+      where: eq(users.userId, userId),
+      columns: { credits: true },
+    });
+
+    return { credits: user?.credits ?? 0 };
+  }),
+
+  getCreditsStatus: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    const user = await ctx.db.query.users.findFirst({
+      where: eq(users.userId, userId),
+      columns: { credits: true },
+    });
+
+    const credits = user?.credits ?? 0;
+    const minCreditsForSearch = CREDITS_COST.NATURAL_LANGUAGE_SEARCH;
+    const lowCreditsThreshold = minCreditsForSearch * 2; // Alert when user has less than 2 searches worth
+
+    return {
+      credits,
+      hasLowCredits: credits < lowCreditsThreshold,
+      canPerformSearch: credits >= minCreditsForSearch,
+      minCreditsForSearch,
+    };
+  }),
 });
