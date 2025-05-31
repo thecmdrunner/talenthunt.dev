@@ -75,31 +75,90 @@ export default function DiscoverPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-
                     extractJobAttributes.mutate({ query: searchQuery });
                   }}
-                  className="relative flex-1"
+                  className="group overflow- relative flex-1 rounded-2xl p-[1px]"
                 >
-                  <Input
-                    id="search-input"
-                    placeholder="product engineer more than 4 years exp"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="py-3 pr-12 text-lg"
-                    disabled={extractJobAttributes.isPending}
-                  />
-                  <Button
-                    type="submit"
-                    size="sm"
-                    className="absolute top-1 right-1 h-8 w-8 cursor-pointer p-0"
-                    disabled={
-                      extractJobAttributes.isPending ||
-                      !searchQuery ||
-                      searchQuery.length < 2
-                    }
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="absolute top-1/2 left-4 z-20 h-6 w-6 -translate-y-1/2"
                   >
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
+                    <path
+                      d="M16.296 2.043c.407 1.817 1.284 2.716 3.317 3.089.14 0 .255.104.255.233s-.114.233-.255.233c-1.982.373-2.909 1.218-3.315 3.081a.246.246 0 0 1-.243.18.245.245 0 0 1-.245-.191c-.407-1.818-1.28-2.697-3.313-3.07-.14 0-.254-.104-.254-.233s.114-.233.254-.233c1.982-.373 2.91-1.223 3.317-3.087a.247.247 0 0 1 .241-.175c.117 0 .212.074.241.173Z"
+                      fill="url(#_3085173834__a)"
+                    />
+                    <path
+                      d="M15.094 17.436A7.5 7.5 0 1 1 10 4.046v1.503A6 6 0 1 0 16.446 11h1.504a7.466 7.466 0 0 1-1.46 5.003l4.25 4.25a1 1 0 0 1-1.414 1.414l-4.232-4.231Z"
+                      fill="url(#_3085173834__b)"
+                    />
+                    <path
+                      d="M13.666 8.964c-.857-.236-1.356-.615-1.527-1.4 0-.095-.084-.172-.187-.172s-.187.077-.187.171c-.257.786-.67 1.244-1.528 1.401-.103 0-.187.077-.187.171 0 .095.084.172.187.172.857.235 1.357.614 1.528 1.4 0 .095.084.171.187.171s.187-.076.187-.171c.257-.786.67-1.243 1.527-1.4.104 0 .187-.077.187-.172 0-.094-.083-.171-.187-.171Z"
+                      fill="url(#_3085173834__c)"
+                    />
+                    <defs>
+                      <linearGradient
+                        id="_3085173834__a"
+                        x1="-6.063"
+                        y1="11.915"
+                        x2="13.914"
+                        y2="29.878"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stopColor="#03A5AB" />
+                        <stop offset={1} stopColor="#8B3DFF" />
+                      </linearGradient>
+                      <linearGradient
+                        id="_3085173834__b"
+                        x1="-6.063"
+                        y1="11.915"
+                        x2="13.914"
+                        y2="29.878"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stopColor="#03A5AB" />
+                        <stop offset={1} stopColor="#8B3DFF" />
+                      </linearGradient>
+                      <linearGradient
+                        id="_3085173834__c"
+                        x1="-6.063"
+                        y1="11.915"
+                        x2="13.914"
+                        y2="29.878"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop stopColor="#03A5AB" />
+                        <stop offset={1} stopColor="#8B3DFF" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="relative z-10 rounded-[14px] bg-white">
+                    <Input
+                      id="search-input"
+                      spellCheck={false}
+                      placeholder="product engineer more than 4 years exp"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="rounded-xl py-7 pr-16 pl-13 text-lg"
+                      disabled={extractJobAttributes.isPending}
+                    />
+                    <Button
+                      type="submit"
+                      size="sm"
+                      className="absolute top-1/2 right-2 h-10 w-10 -translate-y-1/2 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white hover:from-indigo-700 hover:to-violet-700"
+                      disabled={
+                        extractJobAttributes.isPending ||
+                        !searchQuery ||
+                        searchQuery.length < 2
+                      }
+                    >
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="absolute inset-0 h-full w-full rounded-[14px] bg-gradient-to-r from-cyan-600 to-violet-600 text-white opacity-30 grayscale transition-all duration-300 group-focus-within:opacity-100 group-focus-within:grayscale-0 group-hover:opacity-100 group-hover:grayscale-0 hover:from-cyan-700 hover:to-violet-700"></div>
+                  <div className="absolute inset-0 h-full w-full rounded-[14px] bg-gradient-to-r from-cyan-600 to-violet-600 text-white opacity-30 transition-all duration-300 group-focus-within:blur-xs group-hover:blur-xs hover:from-cyan-700 hover:to-violet-700"></div>
                 </form>
               </div>
               {extractJobAttributes.error && (

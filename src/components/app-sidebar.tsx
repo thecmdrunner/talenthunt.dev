@@ -11,7 +11,16 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Award, MessageSquare, Search, Settings2, Users } from "lucide-react";
+import {
+  Award,
+  Crown,
+  Gift,
+  MessageSquare,
+  Play,
+  Search,
+  Settings2,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 import { RainbowButton } from "./magicui/rainbow-button";
@@ -140,6 +149,40 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               Discover Talent
             </Button>
           </Link>
+        </div>
+
+        {/* Quick Action Buttons */}
+        <div className="flex flex-col gap-2 px-3 py-2">
+          <Button
+            variant="outline"
+            className="h-10 w-full justify-start gap-2 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
+            asChild
+          >
+            <Link href="/upgrade">
+              <Crown className="h-4 w-4 fill-purple-600 stroke-none" />
+              Upgrade to Pro
+            </Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            size={"icon"}
+            className="text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
+          >
+            <Link href="/rewards">
+              <Gift className="h-4 w-4" />
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            className="h-10 w-full justify-start gap-2"
+            asChild
+          >
+            <Link href="/start">
+              <Play className="h-4 w-4" />
+              Get Started
+            </Link>
+          </Button>
         </div>
 
         <NavMain items={data.navMain} />

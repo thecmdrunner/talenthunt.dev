@@ -1,3 +1,4 @@
+import { fonts } from "@/lib/fonts";
 import "@/styles/globals.css";
 
 import { TRPCReactProvider } from "@/trpc/react";
@@ -22,7 +23,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${geist.variable}`}>
+      <html lang="en" className={`${fonts.bricolageGrotesque.className}`}>
         <body>
           <TRPCReactProvider>
             <NuqsAdapter>{children}</NuqsAdapter>
