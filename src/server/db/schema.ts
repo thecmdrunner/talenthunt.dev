@@ -2,7 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { relations } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { index, pgTableCreator, uuid } from "drizzle-orm/pg-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -10,7 +10,7 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `100x-hack-2025_${name}`);
+export const createTable = pgTableCreator((name) => `${name}`);
 
 // User types
 export const USER_TYPES = ["candidate", "recruiter"] as const;
@@ -37,10 +37,12 @@ export const SKILL_PROFICIENCY = [
   "expert",
 ] as const;
 
+const commonId = (name: string) => uuid(name);
+
 export const users = createTable(
   "user",
   (d) => ({
-    userId: d.text().primaryKey(),
+    userId: d.text().primaryKey(), // clerk user id: user_1234567890
 
     // Social profiles
     githubUsername: d.varchar({ length: 256 }),
@@ -66,11 +68,7 @@ export const users = createTable(
 export const candidateProfiles = createTable(
   "candidate_profile",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
+    id: commonId("id").primaryKey(),
     userId: d
       .text()
       .notNull()
@@ -136,15 +134,8 @@ export const candidateProfiles = createTable(
 export const recruiterProfiles = createTable(
   "recruiter_profile",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    userId: d
-      .text()
-      .notNull()
-      .references(() => users.userId),
+    id: commonId("id").primaryKey(),
+    userId: d.text().references(() => users.userId),
 
     // Basic info
     firstName: d.varchar({ length: 100 }),
@@ -179,15 +170,8 @@ export const recruiterProfiles = createTable(
 export const projects = createTable(
   "project",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    candidateId: d
-      .text()
-      .notNull()
-      .references(() => candidateProfiles.id),
+    id: commonId("id").primaryKey(),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
 
     title: d.varchar({ length: 200 }).notNull(),
     description: d.text(),
@@ -231,15 +215,8 @@ export const projects = createTable(
 export const skills = createTable(
   "skill",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    candidateId: d
-      .text()
-      .notNull()
-      .references(() => candidateProfiles.id),
+    id: commonId("id").primaryKey(),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
 
     name: d.varchar({ length: 100 }).notNull(),
     category: d.varchar({ length: 50 }), // e.g., "programming", "framework", "tool", "soft-skill"
@@ -264,15 +241,8 @@ export const skills = createTable(
 export const workExperience = createTable(
   "work_experience",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    candidateId: d
-      .text()
-      .notNull()
-      .references(() => candidateProfiles.id),
+    id: commonId("id").primaryKey(),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
 
     company: d.varchar({ length: 200 }).notNull(),
     position: d.varchar({ length: 200 }).notNull(),
@@ -301,15 +271,8 @@ export const workExperience = createTable(
 export const education = createTable(
   "education",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    candidateId: d
-      .text()
-      .notNull()
-      .references(() => candidateProfiles.id),
+    id: commonId("id").primaryKey(),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
 
     institution: d.varchar({ length: 200 }).notNull(),
     degree: d.varchar({ length: 200 }),
@@ -331,15 +294,8 @@ export const education = createTable(
 export const verificationQuestions = createTable(
   "verification_question",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    candidateId: d
-      .text()
-      .notNull()
-      .references(() => candidateProfiles.id),
+    id: commonId("id").primaryKey(),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
 
     question: d.text().notNull(),
     questionType: d.varchar({ length: 50 }), // e.g., "technical", "experience", "project"
@@ -367,17 +323,10 @@ export const verificationQuestions = createTable(
 export const searchQueries = createTable(
   "search_query",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
+    id: commonId("id").primaryKey(),
+    recruiterId: commonId("recruiterId").references(() => recruiterProfiles.id),
 
-    recruiterId: d
-      .text()
-      .notNull()
-      .references(() => recruiterProfiles.id),
-
-    query: d.text().notNull(),
+    query: d.text().notNull(), // e.g., "Senior Full Stack Engineer in San Francisco"
     filters: d.jsonb(), // Store complex filter objects
     resultCount: d.integer().default(0),
 
@@ -399,20 +348,10 @@ export const searchQueries = createTable(
 export const candidateOutreach = createTable(
   "candidate_outreach",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    recruiterId: d
-      .text()
-      .notNull()
-      .references(() => recruiterProfiles.id),
-    candidateId: d
-      .text()
-      .notNull()
-      .references(() => candidateProfiles.id),
-    searchQueryId: d.text().references(() => searchQueries.id),
+    id: commonId("id").primaryKey(),
+    recruiterId: commonId("recruiterId").references(() => recruiterProfiles.id),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
+    searchQueryId: commonId("searchQueryId").references(() => searchQueries.id),
 
     // Email details
     subject: d.varchar({ length: 300 }).notNull(),
@@ -439,15 +378,8 @@ export const candidateOutreach = createTable(
 export const featuredCandidates = createTable(
   "featured_candidate",
   (d) => ({
-    id: d
-      .integer("id")
-      .primaryKey()
-      .generatedAlwaysAsIdentity({ startWith: 1000 }),
-
-    candidateId: d
-      .text()
-      .notNull()
-      .references(() => candidateProfiles.id),
+    id: commonId("id").primaryKey(),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
 
     category: d.varchar({ length: 100 }), // e.g., "frontend", "backend", "ai-ml", "devops"
     reason: d.text(), // Why they're featured
