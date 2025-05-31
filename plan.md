@@ -31,17 +31,15 @@ Pages:
 /disover: ideally with a search bar and a showcase of top candidates/projects. Then once the user searches, they are redirected to /discover/search?q=...
 
 Once a user uploads their resume, we ask 3-4 questions to assess resume credibility.
-These questions will be based on the resume shared  -  in depth ones and user is supposed to respond to these in a video format. 
+These questions will be based on the resume shared - in depth ones and user is supposed to respond to these in a video format.
 
-Once this is cleared, only then a candidate is approved and onboarded. 
+Once this is cleared, only then a candidate is approved and onboarded.
 Highlight your top projects for recruiters to look at the very first glance.
 
 Featured Section will have top candidates in any particular flied.
 We determine this in 2 ways-
-Scoring the candidates based on the absolute score that we determine when they are onboarded (skill * number of years relevant )
-Number of people outreached to them 
+Scoring the candidates based on the absolute score that we determine when they are onboarded (skill \* number of years relevant )
+Number of people outreached to them
 
 Based on the shortlisted candidates, you can select candidates and reach out to them personally.
 Fill in the email with subject, mail id, personalized content and it opes the recruiter’s email to send out email directly.
-
-
