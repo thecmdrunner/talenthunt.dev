@@ -1,9 +1,9 @@
 "use client";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { TalentHuntBranding } from "@/components/talent-hunt-branding";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -11,105 +11,74 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { Award, MessageSquare, Search, Settings2, Users } from "lucide-react";
+import Link from "next/link";
 import * as React from "react";
 import { RainbowButton } from "./magicui/rainbow-button";
 
-// This is sample data.
+// Updated data for TalentHunt platform
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
-      title: "Playground",
+      title: "Candidates",
       url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      icon: Users,
+      isActive: false,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "All Candidates",
+          url: "/discover",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Featured",
+          url: "/discover/featured",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Saved",
+          url: "/discover/saved",
         },
       ],
     },
     {
-      title: "Models",
+      title: "My Searches",
       url: "#",
-      icon: Bot,
+      icon: Search,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Recent Searches",
+          url: "/searches",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Saved Searches",
+          url: "/searches/saved",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Search Analytics",
+          url: "/searches/analytics",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Outreach",
       url: "#",
-      icon: BookOpen,
+      icon: MessageSquare,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: "Sent Messages",
+          url: "/outreach",
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: "Templates",
+          url: "/outreach/templates",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
+          title: "Analytics",
+          url: "/outreach/analytics",
         },
       ],
     },
@@ -119,39 +88,39 @@ const data = {
       icon: Settings2,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "Profile",
+          url: "/settings/profile",
         },
         {
-          title: "Team",
-          url: "#",
+          title: "Company",
+          url: "/settings/company",
         },
         {
           title: "Billing",
-          url: "#",
+          url: "/settings/billing",
         },
         {
-          title: "Limits",
-          url: "#",
+          title: "Preferences",
+          url: "/settings/preferences",
         },
       ],
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Frontend Engineers",
+      url: "/discover?category=frontend",
+      icon: Award,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      name: "Backend Engineers",
+      url: "/discover?category=backend",
+      icon: Award,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Full Stack Engineers",
+      url: "/discover?category=fullstack",
+      icon: Award,
     },
   ],
 };
@@ -160,11 +129,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TalentHuntBranding />
       </SidebarHeader>
       <SidebarContent>
+        {/* Discover Button - First Item */}
+        <div className="px-3 py-2">
+          <Link href="/discover">
+            <Button className="bg-primary hover:bg-primary/90 h-10 w-full justify-start gap-2">
+              <Search className="h-4 w-4" />
+              Discover Talent
+            </Button>
+          </Link>
+        </div>
+
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <RainbowButton>Upgrade to Pro</RainbowButton>
