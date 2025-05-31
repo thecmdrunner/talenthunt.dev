@@ -13,8 +13,16 @@ import { type PropsWithChildren } from "react";
 export default async function DashboardLayout({ children }: PropsWithChildren) {
   const user = await api.user.getOrCreateUser();
 
-  if (user && !user?.candidateProfile && !user?.recruiterProfile) {
-    return redirect("/onboarding");
+  if (!user) {
+    return redirect("/");
+  }
+
+  if (!user?.recruiterProfile && user?.candidateProfile.currentStep === 0) {
+    return redirect("/onboarding/candidate");
+  }
+
+  if (!user?.candidateProfile && user?.recruiterProfile.currentStep === 0) {
+    return redirect("/onboarding/recruiter");
   }
 
   return (
