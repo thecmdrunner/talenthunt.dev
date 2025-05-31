@@ -213,7 +213,8 @@ export const aiRouter = createTRPCRouter({
           const resumeBlob = await fetch(resumeUrl).then((res) => res.blob());
 
           const result = await generateObject({
-            model: openrouter("google/gemini-2.0-flash-001"),
+            // model: openrouter("google/gemini-2.0-flash-001"),
+            model: openrouter("openai/gpt-4o"),
             system:
               "You are a helpful assistant that can parse resumes and extract profile information. Extract the most relevant role/title, top skills, years of experience, location preferences, and any social media profiles mentioned.",
 

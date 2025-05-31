@@ -54,7 +54,7 @@ export const userRouter = createTRPCRouter({
     // Create candidate profile
     await ctx.db.insert(candidateProfiles).values({
       userId,
-      currentStep: 1, // Move to basic info step
+      currentStep: 0, // Move to basic info step
     });
 
     return getUser(userId);
@@ -78,10 +78,9 @@ export const userRouter = createTRPCRouter({
     return getUser(userId);
   }),
 
-  updateCandidateStep: protectedProcedure
+  nextCandidateStep: protectedProcedure
     .input(
       z.object({
-        step: z.number().min(1).max(5),
         resumeUrl: z.string().optional(),
       }),
     )
@@ -97,7 +96,7 @@ export const userRouter = createTRPCRouter({
 
       // Update candidate profile step and optionally resume URL
       const updateData: Partial<CandidateProfileSelect> = {
-        currentStep: input.step,
+        currentStep: existingUser.candidateProfile.currentStep + 1,
       };
 
       if (input.resumeUrl) {

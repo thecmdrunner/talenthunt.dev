@@ -32,14 +32,15 @@ export default function CandidateOnboardingPage() {
         router.push("/dashboard");
       }
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading]);
 
   const currentStep = (user?.candidateProfile?.currentStep ?? 0) + 1;
   const steps = ["Upload Resume", "Complete Profile", "Introduce Yourself"];
 
-  const updateCandidateStepMutation = api.user.updateCandidateStep.useMutation({
+  const nextCandidateStepMutation = api.user.nextCandidateStep.useMutation({
     onSuccess: () => {
-      router.refresh();
+      // router.refresh();
+      window.location.reload();
     },
     onError: (error) => {
       console.error("Failed to update step:", error);
@@ -79,26 +80,21 @@ export default function CandidateOnboardingPage() {
       }
 
       // Update the step regardless of parsing success
-      updateCandidateStepMutation.mutate({
-        step: 2,
+      nextCandidateStepMutation.mutate({
         resumeUrl,
       });
     },
-    [parseResumeMutation, updateCandidateStepMutation],
+    [parseResumeMutation, nextCandidateStepMutation],
   );
 
   const handleContinueToStep3 = useCallback(() => {
-    updateCandidateStepMutation.mutate({
-      step: 3,
-    });
-  }, [updateCandidateStepMutation]);
+    nextCandidateStepMutation.mutate({});
+  }, [nextCandidateStepMutation]);
 
   const handleComplete = useCallback(() => {
-    updateCandidateStepMutation.mutate({
-      step: 4,
-    });
+    nextCandidateStepMutation.mutate({});
     router.push("/dashboard");
-  }, [updateCandidateStepMutation, router]);
+  }, [nextCandidateStepMutation, router]);
 
   const renderStepContent = useCallback(() => {
     switch (currentStep) {
