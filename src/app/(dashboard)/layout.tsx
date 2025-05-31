@@ -5,10 +5,26 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { api } from "@/trpc/server";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 import { type PropsWithChildren } from "react";
 
-export default function DashboardLayout({ children }: PropsWithChildren) {
+export default async function DashboardLayout({ children }: PropsWithChildren) {
+  const user = await api.user.getOrCreateUser();
+
+  if (!user) {
+    return redirect("/");
+  }
+
+  // if (!user?.recruiterProfile && user?.candidateProfile.currentStep === 0) {
+  //   return redirect("/onboarding/candidate");
+  // }
+
+  // if (!user?.candidateProfile && user?.recruiterProfile.currentStep === 0) {
+  //   return redirect("/onboarding/recruiter");
+  // }
+
   return (
     <>
       <SignedOut>

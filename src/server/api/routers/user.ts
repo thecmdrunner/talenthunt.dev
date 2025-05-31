@@ -1,26 +1,117 @@
-import { users } from "@/server/db/schema";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { db } from "@/server/db";
+import {
+  candidateProfiles,
+  recruiterProfiles,
+  users,
+  type CandidateProfileSelect,
+} from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+
+const getUser = async (userId: string) => {
+  const user = await db.query.users.findFirst({
+    where: (users, { eq }) => eq(users.userId, userId),
+    with: {
+      candidateProfile: true,
+      recruiterProfile: true,
+    },
+  });
+
+  return user;
+};
 
 export const userRouter = createTRPCRouter({
-  getOrCreateUser: protectedProcedure.query(async ({ ctx }) => {
+  getOrCreateUser: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.userId;
 
-    const existingUser = await ctx.db.query.users.findFirst({
-      where: (users, { eq }) => eq(users.userId, userId),
-    });
+    if (!userId) return;
+
+    const existingUser = await getUser(userId);
 
     if (!existingUser) {
-      const newUser = await ctx.db
-        .insert(users)
-        .values({
-          userId,
-          credits: 50, // FREE Credits upon signup
-        })
-        .returning();
+      await ctx.db.insert(users).values({
+        userId,
+        credits: 50, // FREE Credits upon signup
+      });
 
-      return newUser;
+      return await getUser(userId);
     }
 
     return existingUser;
   }),
+
+  createCandidateProfile: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    // Check if user already has a candidate profile
+    const existingUser = await getUser(userId);
+    if (existingUser?.candidateProfile) {
+      throw new Error("User already has a candidate profile");
+    }
+
+    // Create candidate profile
+    await ctx.db.insert(candidateProfiles).values({
+      userId,
+      currentStep: 1, // Move to basic info step
+    });
+
+    return getUser(userId);
+  }),
+
+  createRecruiterProfile: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    // Check if user already has a recruiter profile
+    const existingUser = await getUser(userId);
+    if (existingUser?.recruiterProfile) {
+      throw new Error("User already has a recruiter profile");
+    }
+
+    // Create recruiter profile
+    await ctx.db.insert(recruiterProfiles).values({
+      userId,
+      currentStep: 1, // Move to basic info step
+    });
+
+    return getUser(userId);
+  }),
+
+  updateCandidateStep: protectedProcedure
+    .input(
+      z.object({
+        step: z.number().min(1).max(5),
+        resumeUrl: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.userId;
+
+      // Check if user has a candidate profile
+      const existingUser = await getUser(userId);
+
+      if (!existingUser?.candidateProfile) {
+        throw new Error("User does not have a candidate profile");
+      }
+
+      if (existingUser?.candidateProfile) {
+        throw new Error("User does not have a candidate profile");
+      }
+
+      // Update candidate profile step and optionally resume URL
+      const updateData: Partial<CandidateProfileSelect> = {
+        currentStep: input.step,
+      };
+
+      if (input.resumeUrl) {
+        updateData.resumeUrl = input.resumeUrl;
+      }
+
+      await ctx.db
+        .update(candidateProfiles)
+        .set(updateData)
+        .where(eq(candidateProfiles.userId, userId));
+
+      return getUser(userId);
+    }),
 });

@@ -37,7 +37,7 @@ export const SKILL_PROFICIENCY = [
   "expert",
 ] as const;
 
-const commonId = (name: string) => uuid(name);
+const commonId = (name: string) => uuid(name).defaultRandom();
 
 export const users = createTable(
   "user",
@@ -74,6 +74,9 @@ export const candidateProfiles = createTable(
       .notNull()
       .references(() => users.userId),
 
+    // Onboarding
+    currentStep: d.integer().default(0).notNull(), // 0: role_selected, 1: basic_info, 2: experience, 3: skills, 4: projects, 5: completed
+
     // Basic info
     firstName: d.varchar({ length: 100 }),
     lastName: d.varchar({ length: 100 }),
@@ -96,7 +99,7 @@ export const candidateProfiles = createTable(
     salaryCurrency: d.varchar({ length: 3 }).default("USD"),
 
     // Resume & verification
-    resumeUrl: d.varchar({ length: 500 }),
+    resumeUrl: d.text(),
     resumeText: d.text(), // Extracted text from resume
     verificationStatus: d
       .varchar({ length: 20 })
@@ -131,11 +134,17 @@ export const candidateProfiles = createTable(
   ],
 );
 
+export type CandidateProfileSelect = typeof candidateProfiles.$inferSelect;
+export type CandidateProfileInsert = typeof candidateProfiles.$inferInsert;
+
 export const recruiterProfiles = createTable(
   "recruiter_profile",
   (d) => ({
     id: commonId("id").primaryKey(),
     userId: d.text().references(() => users.userId),
+
+    // Onboarding
+    currentStep: d.integer().default(0).notNull(), // 0: role_selected, 1: basic_info, 2: company_info, 3: preferences, 4: completed
 
     // Basic info
     firstName: d.varchar({ length: 100 }),
