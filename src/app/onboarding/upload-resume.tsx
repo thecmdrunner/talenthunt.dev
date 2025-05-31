@@ -8,7 +8,7 @@ import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 
 interface UploadResumeProps {
-  onContinue: (resumeUrl: string) => void;
+  onContinue: (resumeUrl: string) => Promise<void> | void;
 }
 
 const ACCEPTED_FILE_TYPES = ["application/pdf"];
@@ -19,6 +19,7 @@ export default function UploadResume({ onContinue }: UploadResumeProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState<string>("");
   const [resumeUrl, setResumeUrl] = useState<string>("");
+  const [isContinuing, setIsContinuing] = useState(false);
 
   const supabase = supabaseBrowserClient();
 
@@ -206,9 +207,17 @@ export default function UploadResume({ onContinue }: UploadResumeProps) {
           <Button
             size="lg"
             className="w-full bg-blue-600 hover:bg-blue-700"
-            onClick={() => onContinue(resumeUrl)}
+            onClick={async () => {
+              setIsContinuing(true);
+              try {
+                await onContinue(resumeUrl);
+              } finally {
+                setIsContinuing(false);
+              }
+            }}
+            disabled={isContinuing}
           >
-            Continue
+            {isContinuing ? "Analyzing resume..." : "Continue"}
           </Button>
         )}
       </div>

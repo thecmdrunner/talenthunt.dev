@@ -1,6 +1,7 @@
 // Example model schema from the Drizzle docs
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
+import type { ParsedResumeData } from "@/types/resume";
 import { relations } from "drizzle-orm";
 import { index, pgTableCreator, uuid } from "drizzle-orm/pg-core";
 
@@ -101,6 +102,7 @@ export const candidateProfiles = createTable(
     // Resume & verification
     resumeUrl: d.text(),
     resumeText: d.text(), // Extracted text from resume
+    parsedResumeData: d.jsonb().$type<ParsedResumeData>(), // AI-parsed resume data: role, skills, experience, location, etc.
     verificationStatus: d
       .varchar({ length: 20 })
       .default("pending")

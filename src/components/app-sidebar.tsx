@@ -15,11 +15,8 @@ import {
 import { api } from "@/trpc/react";
 import {
   Award,
-  Crown,
-  Gift,
   LucideSparkles,
   MessageSquare,
-  Play,
   Search,
   Settings2,
   Users,
@@ -147,17 +144,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {/* Discover Button - First Item */}
-        <div className="px-3 py-2">
-          <Link href="/discover">
-            <Button className="bg-primary hover:bg-primary/90 h-10 w-full justify-start gap-2">
+        <div className="flex gap-2 px-3 py-2">
+          <Link href="/discover" className="w-full">
+            <Button className="bg-primary hover:bg-primary/90 h-10 w-full justify-center gap-2 text-center">
               <Search className="h-4 w-4" />
               Discover Talent
             </Button>
           </Link>
+          {/* <Button
+            asChild
+            variant="outline"
+            className="aspect-square h-10 w-10 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
+          >
+            <Link href="/rewards">
+              <Gift className="h-4 w-4" />
+            </Link>
+          </Button> */}
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="flex flex-col gap-2 px-3 py-2">
+        {/* <div className="flex flex-col gap-2 px-3 py-2">
           <Button
             variant="outline"
             className="h-10 w-full justify-start gap-2 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
@@ -168,27 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               Upgrade to Pro
             </Link>
           </Button>
-          <Button
-            asChild
-            variant="outline"
-            size={"icon"}
-            className="text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
-          >
-            <Link href="/rewards">
-              <Gift className="h-4 w-4" />
-            </Link>
-          </Button>
-          <Button
-            variant="outline"
-            className="h-10 w-full justify-start gap-2"
-            asChild
-          >
-            <Link href="/start">
-              <Play className="h-4 w-4" />
-              Get Started
-            </Link>
-          </Button>
-        </div>
+        </div> */}
 
         <NavMain items={data.navMain} />
         {/* <NavProjects projects={data.projects} /> */}
@@ -199,12 +185,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <LucideSparkles className="size-4" />
             <span>Upgrade to Pro</span>
           </SidebarMenuButton>
-          {/* <SidebarMenuButton
-            size="lg"
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:border-border border border-transparent hover:bg-white"
-          >
-            🔥 Upgrade to Pro
-          </SidebarMenuButton> */}
         </RainbowButton>
         <NavUser />
       </SidebarFooter>

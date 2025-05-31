@@ -6,6 +6,7 @@ import { api } from "@/trpc/react";
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
+import { toast } from "react-hot-toast";
 import CompleteProfile from "../complete-profile";
 import IntroduceYourself from "../introduce-yourself";
 import UploadResume from "../upload-resume";
@@ -23,43 +24,64 @@ export default function CandidateOnboardingPage() {
         router.push("/dashboard");
       }
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading]);
 
   const currentStep = (user?.candidateProfile?.currentStep ?? 0) + 1;
   const steps = ["Upload Resume", "Complete Profile", "Introduce Yourself"];
 
-  const updateCandidateStepMutation = api.user.updateCandidateStep.useMutation({
+  const nextCandidateStepMutation = api.user.nextCandidateStep.useMutation({
     onSuccess: () => {
-      router.refresh();
+      // router.refresh();
+      window.location.reload();
     },
     onError: (error) => {
       console.error("Failed to update step:", error);
-      // Could add toast notification here if needed
+      toast.error("Failed to update step");
+    },
+  });
+
+  const parseResumeMutation = api.ai.parseResume.useMutation({
+    onError: (error) => {
+      console.error("Failed to parse resume:", error);
+      toast.error("Failed to parse resume, but you can still continue");
     },
   });
 
   const handleContinueToStep2 = useCallback(
-    (resumeUrl: string) => {
-      updateCandidateStepMutation.mutate({
-        step: 2,
+    async (resumeUrl: string) => {
+      const loadingToast = toast.loading("Analyzing your resume...");
+
+      let parsedData = null;
+
+      try {
+        // Parse the resume first
+        parsedData = await parseResumeMutation.mutateAsync({ resumeUrl });
+
+        toast.dismiss(loadingToast);
+        toast.success("Resume analyzed successfully!");
+      } catch (error) {
+        toast.dismiss(loadingToast);
+        // Continue even if parsing fails
+        console.error("Resume parsing failed:", error);
+      }
+
+      // Update the step and store parsed data regardless of parsing success
+      nextCandidateStepMutation.mutate({
         resumeUrl,
+        parsedResumeData: parsedData ?? undefined,
       });
     },
-    [updateCandidateStepMutation],
+    [parseResumeMutation, nextCandidateStepMutation],
   );
 
   const handleContinueToStep3 = useCallback(() => {
-    updateCandidateStepMutation.mutate({
-      step: 3,
-    });
-  }, [updateCandidateStepMutation]);
+    nextCandidateStepMutation.mutate({});
+  }, [nextCandidateStepMutation]);
 
   const handleComplete = useCallback(() => {
-    updateCandidateStepMutation.mutate({
-      step: 4,
-    });
+    nextCandidateStepMutation.mutate({});
     router.push("/dashboard");
-  }, [updateCandidateStepMutation, router]);
+  }, [nextCandidateStepMutation, router]);
 
   const renderStepContent = useCallback(() => {
     switch (currentStep) {

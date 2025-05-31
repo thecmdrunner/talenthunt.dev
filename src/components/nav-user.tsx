@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,20 +17,24 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { api } from "@/trpc/react";
 import { useClerk, useUser } from "@clerk/nextjs";
 import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
+  Coins,
   CreditCard,
   LogOut,
   Sparkles,
 } from "lucide-react";
+import Link from "next/link";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { user } = useUser();
   const clerk = useClerk();
+  const { data: creditsStatus } = api.user.getCreditsStatus.useQuery();
   const userName = user?.firstName;
   const userEmail = user?.emailAddresses[0]?.emailAddress;
   const userImageUrl = user?.imageUrl;
@@ -104,11 +109,59 @@ export function NavUser() {
                 </div>
               </div>
             </DropdownMenuLabel>
+
+            {/* Credits Status */}
+            {creditsStatus && (
+              <>
+                <DropdownMenuSeparator />
+                <div className="px-2 py-2">
+                  <div className="bg-muted/50 flex items-center justify-between rounded-md px-3 py-2">
+                    <div className="flex items-center gap-2">
+                      <Coins className="h-4 w-4 text-amber-600" />
+                      <span className="text-sm font-medium">Credits</span>
+                    </div>
+                    <Badge
+                      variant={
+                        creditsStatus.hasLowCredits ? "destructive" : "default"
+                      }
+                      className="font-mono"
+                    >
+                      {creditsStatus.credits}
+                    </Badge>
+                  </div>
+                  {creditsStatus.hasLowCredits && (
+                    <p className="text-muted-foreground mt-2 text-xs">
+                      Running low! Get more credits to continue searching.
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
+
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem asChild>
+                <Link href="/upgrade" className="cursor-pointer">
+                  <Sparkles
+                    className={
+                      creditsStatus?.hasLowCredits ? "text-amber-500" : ""
+                    }
+                  />
+                  <span
+                    className={
+                      creditsStatus?.hasLowCredits
+                        ? "font-medium text-amber-700"
+                        : ""
+                    }
+                  >
+                    Upgrade to Pro
+                  </span>
+                  {creditsStatus?.hasLowCredits && (
+                    <Badge variant="secondary" className="ml-auto text-xs">
+                      Recommended
+                    </Badge>
+                  )}
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
