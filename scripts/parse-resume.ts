@@ -1,8 +1,8 @@
 import { openrouter } from "@openrouter/ai-sdk-provider";
-import { streamText } from "ai";
+import { generateObject } from "ai";
 import fs from "fs";
 
-const result = streamText({
+const result = await generateObject({
   model: openrouter("google/gemini-2.0-flash-001"),
   system:
     "You are a helpful assistant that can parse resumes and extract the following information: name, email, phone, address, education, experience, skills, and projects.",

@@ -3,7 +3,10 @@ import {
   candidateProfiles,
   recruiterProfiles,
   users,
+  type CandidateProfileSelect,
 } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const getUser = async (userId: string) => {
@@ -73,4 +76,42 @@ export const userRouter = createTRPCRouter({
 
     return getUser(userId);
   }),
+
+  updateCandidateStep: protectedProcedure
+    .input(
+      z.object({
+        step: z.number().min(1).max(5),
+        resumeUrl: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.userId;
+
+      // Check if user has a candidate profile
+      const existingUser = await getUser(userId);
+
+      if (!existingUser?.candidateProfile) {
+        throw new Error("User does not have a candidate profile");
+      }
+
+      if (existingUser?.candidateProfile) {
+        throw new Error("User does not have a candidate profile");
+      }
+
+      // Update candidate profile step and optionally resume URL
+      const updateData: Partial<CandidateProfileSelect> = {
+        currentStep: input.step,
+      };
+
+      if (input.resumeUrl) {
+        updateData.resumeUrl = input.resumeUrl;
+      }
+
+      await ctx.db
+        .update(candidateProfiles)
+        .set(updateData)
+        .where(eq(candidateProfiles.userId, userId));
+
+      return getUser(userId);
+    }),
 });

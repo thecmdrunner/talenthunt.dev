@@ -99,7 +99,7 @@ export const candidateProfiles = createTable(
     salaryCurrency: d.varchar({ length: 3 }).default("USD"),
 
     // Resume & verification
-    resumeUrl: d.varchar({ length: 500 }),
+    resumeUrl: d.text(),
     resumeText: d.text(), // Extracted text from resume
     verificationStatus: d
       .varchar({ length: 20 })
@@ -133,6 +133,9 @@ export const candidateProfiles = createTable(
     index("candidate_is_active_idx").on(t.isActive),
   ],
 );
+
+export type CandidateProfileSelect = typeof candidateProfiles.$inferSelect;
+export type CandidateProfileInsert = typeof candidateProfiles.$inferInsert;
 
 export const recruiterProfiles = createTable(
   "recruiter_profile",
