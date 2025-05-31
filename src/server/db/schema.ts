@@ -42,24 +42,13 @@ export const users = createTable(
   (d) => ({
     userId: d.text().primaryKey(),
     email: d.varchar({ length: 256 }).notNull().unique(),
-    userType: d
-      .varchar({ length: 20 })
-      .notNull()
-      .$type<(typeof USER_TYPES)[number]>(),
-
-    // Verification badges
-    linkedinVerified: d.boolean().default(false).notNull(),
-    githubVerified: d.boolean().default(false).notNull(),
 
     // Social profiles
     githubUsername: d.varchar({ length: 256 }),
     linkedinEmail: d.varchar({ length: 256 }),
     linkedinUrl: d.varchar({ length: 500 }),
 
-    // Pro subscription
-    proExpiresAt: d
-      .timestamp({ withTimezone: true })
-      .default(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)), // 1 month from creation
+    credits: d.integer().default(0).notNull(),
 
     createdAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updatedAt: d
@@ -70,7 +59,6 @@ export const users = createTable(
   }),
   (t) => [
     index("user_email_idx").on(t.email),
-    index("user_type_idx").on(t.userType),
     index("user_github_username_idx").on(t.githubUsername),
     index("user_linkedin_email_idx").on(t.linkedinEmail),
   ],
