@@ -36,7 +36,8 @@ const additionalFilters = [
 
 export default function DiscoverPage() {
   const [searchQuery, setSearchQuery] = useQueryState("q", {
-    defaultValue: "",
+    defaultValue:
+      "i want a designer that has 19+yr exp, product design, figma, who has designed ai apps with product thinking and great ux, should have worked with fortune 500, on contract",
   });
 
   // Use tRPC mutation for AI-powered query processing
