@@ -56,6 +56,11 @@ export const userProfiles = createTable(
     linkedinEmail: d.varchar({ length: 256 }),
     linkedinUrl: d.varchar({ length: 500 }),
 
+    // Pro subscription
+    proExpiresAt: d
+      .timestamp({ withTimezone: true })
+      .default(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)), // 1 month from creation
+
     createdAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updatedAt: d
       .timestamp({ withTimezone: true })
