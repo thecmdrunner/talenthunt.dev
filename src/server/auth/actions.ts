@@ -22,18 +22,11 @@ export const getOrCreateUser = async () => {
   const user = await getUser(authedUser.id);
 
   if (!user) {
-    const email = authedUser.emailAddresses[0]?.emailAddress;
-
-    if (!email) {
-      throw new Error("User email not found");
-    }
-
     const newUser = await db
       .insert(users)
       .values({
         userId: authedUser.id,
         credits: 50, // FREE Credits upon signup
-        email,
       })
       .returning();
 

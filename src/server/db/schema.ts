@@ -41,7 +41,6 @@ export const users = createTable(
   "user",
   (d) => ({
     userId: d.text().primaryKey(),
-    email: d.varchar({ length: 256 }).notNull().unique(),
 
     // Social profiles
     githubUsername: d.varchar({ length: 256 }),
@@ -58,7 +57,7 @@ export const users = createTable(
       .$onUpdate(() => new Date()),
   }),
   (t) => [
-    index("user_email_idx").on(t.email),
+    // index("user_email_idx").on(t.email),
     index("user_github_username_idx").on(t.githubUsername),
     index("user_linkedin_email_idx").on(t.linkedinEmail),
   ],
