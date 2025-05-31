@@ -1,0 +1,653 @@
+{
+  "resumes": [
+    {
+      "pastExperience": [
+        {
+          "company": "Google",
+          "location": "SF",
+          "role": "Software Engineer",
+          "projects": [
+            {
+              "name": "Google Search Feature",
+              "description": "Developed a new feature for Google Search.",
+              "link": "https://www.google.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "Stanford University",
+        "location": "CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Facebook",
+          "location": "NYC",
+          "role": "Data Scientist",
+          "projects": [
+            {
+              "name": "Facebook News Feed Recommendation Algorithm",
+              "description": "Developed a new recommendation algorithm for Facebook News Feed.",
+              "link": "https://www.facebook.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master's Degree",
+        "field": "Data Science",
+        "institution": "MIT",
+        "location": "MA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Apple",
+          "location": "CA",
+          "role": "Mobile Developer",
+          "projects": [
+            {
+              "name": "iOS Feature",
+              "description": "Developed a new feature for iOS.",
+              "link": "https://www.apple.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of California, Berkeley",
+        "location": "CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Amazon",
+          "location": "NYC",
+          "role": "Full Stack Developer",
+          "projects": [
+            {
+              "name": "Amazon Prime Video Feature",
+              "description": "Developed a new feature for Amazon Prime Video.",
+              "link": "https://www.amazon.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "Carnegie Mellon University",
+        "location": "PA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Microsoft",
+          "location": "London",
+          "role": "Backend Developer",
+          "projects": [
+            {
+              "name": "Microsoft Azure Feature",
+              "description": "Developed a new feature for Microsoft Azure.",
+              "link": "https://www.microsoft.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of Oxford",
+        "location": "Oxford"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Netflix",
+          "location": "Paris",
+          "role": "Frontend Developer",
+          "projects": [
+            {
+              "name": "Netflix Feature",
+              "description": "Developed a new feature for Netflix.",
+              "link": "https://www.netflix.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "ETH Zurich",
+        "location": "Zurich"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Spotify",
+          "location": "Berlin",
+          "role": "DevOps Engineer",
+          "projects": [
+            {
+              "name": "Spotify Feature",
+              "description": "Developed a new feature for Spotify.",
+              "link": "https://www.spotify.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "Technical University of Munich",
+        "location": "Munich"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Tesla",
+          "location": "Amsterdam",
+          "role": "Product Engineer",
+          "projects": [
+            {
+              "name": "Tesla Autopilot Feature",
+              "description": "Developed a new feature for Tesla Autopilot.",
+              "link": "https://www.tesla.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "Delft University of Technology",
+        "location": "Delft"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "OpenAI",
+          "location": "SF",
+          "role": "AI/ML Engineer",
+          "projects": [
+            {
+              "name": "OpenAI AI Model",
+              "description": "Developed a new AI model for OpenAI.",
+              "link": "https://www.openai.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master's Degree",
+        "field": "Artificial Intelligence",
+        "institution": "Stanford University",
+        "location": "CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Google",
+          "location": "NYC",
+          "role": "GenAI Engineer",
+          "projects": [
+            {
+              "name": "Google GenAI Model",
+              "description": "Developed a new GenAI model for Google.",
+              "link": "https://www.google.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master's Degree",
+        "field": "Computer Science",
+        "institution": "Carnegie Mellon University",
+        "location": "PA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Flipkart",
+          "location": "India",
+          "role": "Software Engineer",
+          "projects": [
+            {
+              "name": "Flipkart Feature",
+              "description": "Developed a new feature for Flipkart.",
+              "link": "https://www.flipkart.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "IIT Delhi",
+        "location": "Delhi"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Reliance Jio",
+          "location": "India",
+          "role": "Data Scientist",
+          "projects": [
+            {
+              "name": "Reliance Jio Data Science Model",
+              "description": "Developed a new data science model for Reliance Jio.",
+              "link": "https://www.ril.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master's Degree",
+        "field": "Data Science",
+        "institution": "IIT Bombay",
+        "location": "Mumbai"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Ola",
+          "location": "India",
+          "role": "Mobile Developer",
+          "projects": [
+            {
+              "name": "Ola Feature",
+              "description": "Developed a new feature for Ola.",
+              "link": "https://www.olacabs.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "IIT Madras",
+        "location": "Chennai"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Paytm",
+          "location": "India",
+          "role": "Full Stack Developer",
+          "projects": [
+            {
+              "name": "Paytm Feature",
+              "description": "Developed a new feature for Paytm.",
+              "link": "https://www.paytm.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "IIT Kanpur",
+        "location": "Kanpur"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Infosys",
+          "location": "India",
+          "role": "Backend Developer",
+          "projects": [
+            {
+              "name": "Infosys Feature",
+              "description": "Developed a new feature for Infosys.",
+              "link": "https://www.infosys.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "IIT Kharagpur",
+        "location": "Kharagpur"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Red Bull",
+          "location": "Vienna",
+          "role": "Frontend Developer",
+          "projects": [
+            {
+              "name": "Red Bull Feature",
+              "description": "Developed a new feature for Red Bull.",
+              "link": "https://www.redbull.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of Vienna",
+        "location": "Vienna"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Credit Suisse",
+          "location": "Zurich",
+          "role": "DevOps Engineer",
+          "projects": [
+            {
+              "name": "Credit Suisse Feature",
+              "description": "Developed a new feature for Credit Suisse.",
+              "link": "https://www.credit-suisse.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of Zurich",
+        "location": "Zurich"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "BMW",
+          "location": "Munich",
+          "role": "Product Engineer",
+          "projects": [
+            {
+              "name": "BMW Feature",
+              "description": "Developed a new feature for BMW.",
+              "link": "https://www.bmw.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of Munich",
+        "location": "Munich"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "LVMH",
+          "location": "Paris",
+          "role": "AI/ML Engineer",
+          "projects": [
+            {
+              "name": "LVMH AI Model",
+              "description": "Developed a new AI model for LVMH.",
+              "link": "https://www.lvmh.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master's Degree",
+        "field": "Artificial Intelligence",
+        "institution": "University of Paris",
+        "location": "Paris"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Booking.com",
+          "location": "Amsterdam",
+          "role": "GenAI Engineer",
+          "projects": [
+            {
+              "name": "Booking.com GenAI Model",
+              "description": "Developed a new GenAI model for Booking.com.",
+              "link": "https://www.booking.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master's Degree",
+        "field": "Computer Science",
+        "institution": "University of Amsterdam",
+        "location": "Amsterdam"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Adidas",
+          "location": "Berlin",
+          "role": "Software Engineer",
+          "projects": [
+            {
+              "name": "Adidas Feature",
+              "description": "Developed a new feature for Adidas.",
+              "link": "https://www.adidas.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of Berlin",
+        "location": "Berlin"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "HSBC",
+          "location": "London",
+          "role": "Data Scientist",
+          "projects": [
+            {
+              "name": "HSBC Data Science Model",
+              "description": "Developed a new data science model for HSBC.",
+              "link": "https://www.hsbc.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master's Degree",
+        "field": "Data Science",
+        "institution": "London School of Economics",
+        "location": "London"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Deliveroo",
+          "location": "London",
+          "role": "Mobile Developer",
+          "projects": [
+            {
+              "name": "Deliveroo Feature",
+              "description": "Developed a new feature for Deliveroo.",
+              "link": "https://www.deliveroo.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "Imperial College London",
+        "location": "London"
+      }
+    }, {
+      "pastExperience": [
+        {
+          "company": "Amazon",
+          "location": "NYC",
+          "role": "Software Engineer",
+          "projects": [
+            {
+              "name": "Amazon Feature",
+              "description": "Developed a new feature for Amazon.",
+              "link": "https://www.amazon.com"
+            } 
+          ],
+          "duration": {
+            "startDate": "2022-01-01",
+            "endDate": "2023-01-01"
+          }
+        } 
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of New York",
+        "location": "New York"
+      }               
+    }, 
+    {
+      "pastExperience": [
+        {
+          "company": "Aeos Labs",
+          "location": "Remote",
+          "role": "Web Developer",
+          "projects": [
+            {
+              "name": "Aeos Platform",
+              "description": "Developed core features for the Aeos web platform.",
+              "link": "https://www.aeoslabs.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2022-01-01", 
+            "endDate": "2023-01-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor's Degree",
+        "field": "Computer Science",
+        "institution": "University of Washington",
+        "location": "Seattle"
+      }
+    }
+  ]
+}
