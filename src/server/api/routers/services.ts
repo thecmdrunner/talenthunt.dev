@@ -63,4 +63,26 @@ export const servicesRouter = createTRPCRouter({
         resumeUrl,
       };
     }),
+
+  // New procedure to get cache statistics (optional, for debugging)
+  getCacheStats: protectedProcedure.query(async () => {
+    try {
+      if (!env.KV_REST_API_URL || !env.KV_REST_API_TOKEN) {
+        return { cacheEnabled: false, message: "KV not configured" };
+      }
+
+      // Get some basic stats (this is just for debugging)
+      return {
+        cacheEnabled: true,
+        message: "Cache is enabled and configured",
+        kvConfigured: true,
+      };
+    } catch (error) {
+      return {
+        cacheEnabled: false,
+        message: "Cache error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
+    }
+  }),
 });

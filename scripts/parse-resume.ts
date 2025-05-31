@@ -1,11 +1,20 @@
 import { openrouter } from "@openrouter/ai-sdk-provider";
-import { generateObject } from "ai";
+import { streamObject } from "ai";
 import fs from "fs";
+import { z } from "zod";
 
-const result = await generateObject({
+const result = streamObject({
   model: openrouter("google/gemini-2.0-flash-001"),
   system:
     "You are a helpful assistant that can parse resumes and extract the following information: name, email, phone, address, education, experience, skills, and projects.",
+
+  schema: z.object({
+    name: z.string(),
+    email: z.string(),
+    phone: z.string(),
+    address: z.string(),
+    education: z.string(),
+  }),
   messages: [
     {
       role: "user",

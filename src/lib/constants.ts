@@ -84,5 +84,6 @@ export const CACHE_CONFIG = {
     AI_JOB_ATTRIBUTES: "ai:job-attributes:",
     USER_CREDITS: "user:credits:",
     SEARCH_RESULTS: "search:results:",
+    AI_RESUME_PARSING: "ai:resume-parsing:",
   },
 } as const;

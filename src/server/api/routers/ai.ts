@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { createStandardCacheKey, withCache } from "@/lib/cache";
 import {
   CACHE_CONFIG,
@@ -9,6 +8,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { users } from "@/server/db/schema";
 import { jobAttributesSchema, sampleJobAttributes } from "@/types/jobs";
 import { groq } from "@ai-sdk/groq";
+import { openrouter } from "@openrouter/ai-sdk-provider";
 import { TRPCError } from "@trpc/server";
 import { generateObject } from "ai";
 import { eq, sql } from "drizzle-orm";
@@ -198,25 +198,52 @@ export const aiRouter = createTRPCRouter({
       return result.data;
     }),
 
-  // New procedure to get cache statistics (optional, for debugging)
-  getCacheStats: protectedProcedure.query(async () => {
-    try {
-      if (!env.KV_REST_API_URL || !env.KV_REST_API_TOKEN) {
-        return { cacheEnabled: false, message: "KV not configured" };
-      }
+  parseResume: protectedProcedure
+    .input(z.object({ resumeUrl: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const { resumeUrl } = input;
+      const userId = ctx.session.userId;
 
-      // Get some basic stats (this is just for debugging)
-      return {
-        cacheEnabled: true,
-        message: "Cache is enabled and configured",
-        kvConfigured: true,
-      };
-    } catch (error) {
-      return {
-        cacheEnabled: false,
-        message: "Cache error",
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }),
+      const result = await withCache({
+        key: createStandardCacheKey(
+          CACHE_CONFIG.PREFIXES.AI_RESUME_PARSING,
+          [userId, resumeUrl].join(":"),
+        ),
+        callback: async () => {
+          const resumeBlob = await fetch(resumeUrl).then((res) => res.blob());
+
+          const result = await generateObject({
+            model: openrouter("google/gemini-2.0-flash-001"),
+            system:
+              "You are a helpful assistant that can parse resumes and extract the following information: name, email, phone, address, education, experience, skills, and projects.",
+
+            schema: z.object({
+              name: z.string(),
+              email: z.string(),
+              phone: z.string(),
+              address: z.string(),
+              education: z.string(),
+            }),
+            messages: [
+              {
+                role: "user",
+                content: [
+                  { type: "text", text: "What is the file about?" },
+                  {
+                    type: "file",
+                    mimeType: "application/pdf",
+                    data: Buffer.from(await resumeBlob.arrayBuffer()),
+                    filename: "Pranav CV.pdf", // optional, not used by all providers
+                  },
+                ],
+              },
+            ],
+          });
+
+          return result.object;
+        },
+      });
+
+      return result.data;
+    }),
 });
