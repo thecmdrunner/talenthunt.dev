@@ -12,7 +12,7 @@ We have 2 types of users: recruiters and candidates, and hence 2 modes of the UI
 
 After user signs up, they are redirected to the onboarding page to fill in their purpose of joining the platform - whether they are looking for a job, or they are looking to hire.
 
-Candidate Flow: User connects their LinkedIn profile to get a "Linkedin verified" badge. Similarly, they can connect their "github" profile to get a "Github verified" badge, as it's required to list their best work in a verified way.
+Candidate Flow: User connects their LinkedIn profile to get a "Linkedin verified" badge. Similarly, they can connect their "github" profile to get a "Github verified" badge, as it's required to list their best work in a verified way (LinkedIn - Mandatory, Github - Optional)
 
 1. User is asked to upload their resume, and from the backend we extract all information and fill all the fields in the onboarding page, and ask them to fill the rest of the fields.
 2. User gets listed on the platform as a candidate and can be found by recruiters.
@@ -29,3 +29,19 @@ Recruiter Flow: User connects their LinkedIn profile to get a "Linkedin verified
 Pages:
 
 /disover: ideally with a search bar and a showcase of top candidates/projects. Then once the user searches, they are redirected to /discover/search?q=...
+
+Once a user uploads their resume, we ask 3-4 questions to assess resume credibility.
+These questions will be based on the resume shared  -  in depth ones and user is supposed to respond to these in a video format. 
+
+Once this is cleared, only then a candidate is approved and onboarded. 
+Highlight your top projects for recruiters to look at the very first glance.
+
+Featured Section will have top candidates in any particular flied.
+We determine this in 2 ways-
+Scoring the candidates based on the absolute score that we determine when they are onboarded (skill * number of years relevant )
+Number of people outreached to them 
+
+Based on the shortlisted candidates, you can select candidates and reach out to them personally.
+Fill in the email with subject, mail id, personalized content and it opes the recruiter’s email to send out email directly.
+
+
