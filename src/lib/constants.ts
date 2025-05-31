@@ -71,3 +71,18 @@ export const CREDIT_ERROR_MESSAGES = {
   GENERAL_ACTION: (requiredCredits: number) =>
     `You need at least ${requiredCredits} credits to perform this action`,
 } as const;
+
+// Cache configuration
+export const CACHE_CONFIG = {
+  // TTL in seconds for different cache types
+  AI_RESPONSE_TTL: 7 * 24 * 60 * 60, // 7 days for AI responses
+  USER_PROFILE_TTL: 60 * 60, // 1 hour for user profiles
+  SEARCH_RESULTS_TTL: 30 * 60, // 30 minutes for search results
+
+  // Cache key prefixes
+  PREFIXES: {
+    AI_JOB_ATTRIBUTES: "ai:job-attributes:",
+    USER_CREDITS: "user:credits:",
+    SEARCH_RESULTS: "search:results:",
+  },
+} as const;
