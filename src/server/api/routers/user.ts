@@ -1,6 +1,10 @@
 import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import {
+  candidateProfiles,
+  recruiterProfiles,
+  users,
+} from "@/server/db/schema";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const getUser = async (userId: string) => {
   const user = await db.query.users.findFirst({
@@ -15,8 +19,10 @@ const getUser = async (userId: string) => {
 };
 
 export const userRouter = createTRPCRouter({
-  getOrCreateUser: protectedProcedure.query(async ({ ctx }) => {
+  getOrCreateUser: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.userId;
+
+    if (!userId) return;
 
     const existingUser = await getUser(userId);
 
@@ -30,5 +36,41 @@ export const userRouter = createTRPCRouter({
     }
 
     return existingUser;
+  }),
+
+  createCandidateProfile: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    // Check if user already has a profile
+    const existingUser = await getUser(userId);
+    if (existingUser?.candidateProfile || existingUser?.recruiterProfile) {
+      throw new Error("User already has a profile");
+    }
+
+    // Create candidate profile
+    await ctx.db.insert(candidateProfiles).values({
+      userId,
+      currentStep: 1, // Move to basic info step
+    });
+
+    return getUser(userId);
+  }),
+
+  createRecruiterProfile: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    // Check if user already has a profile
+    const existingUser = await getUser(userId);
+    if (existingUser?.candidateProfile || existingUser?.recruiterProfile) {
+      throw new Error("User already has a profile");
+    }
+
+    // Create recruiter profile
+    await ctx.db.insert(recruiterProfiles).values({
+      userId,
+      currentStep: 1, // Move to basic info step
+    });
+
+    return getUser(userId);
   }),
 });

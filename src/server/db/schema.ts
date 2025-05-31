@@ -37,7 +37,7 @@ export const SKILL_PROFICIENCY = [
   "expert",
 ] as const;
 
-const commonId = (name: string) => uuid(name);
+const commonId = (name: string) => uuid(name).defaultRandom();
 
 export const users = createTable(
   "user",
@@ -73,6 +73,9 @@ export const candidateProfiles = createTable(
       .text()
       .notNull()
       .references(() => users.userId),
+
+    // Onboarding
+    currentStep: d.integer().default(0).notNull(), // 0: role_selected, 1: basic_info, 2: experience, 3: skills, 4: projects, 5: completed
 
     // Basic info
     firstName: d.varchar({ length: 100 }),
@@ -136,6 +139,9 @@ export const recruiterProfiles = createTable(
   (d) => ({
     id: commonId("id").primaryKey(),
     userId: d.text().references(() => users.userId),
+
+    // Onboarding
+    currentStep: d.integer().default(0).notNull(), // 0: role_selected, 1: basic_info, 2: company_info, 3: preferences, 4: completed
 
     // Basic info
     firstName: d.varchar({ length: 100 }),
