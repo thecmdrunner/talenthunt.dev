@@ -1,13 +1,30 @@
 import { db } from "@/server/db";
-import { candidateProfiles } from "@/server/db/schema";
+import { jobs } from "@/server/db/schema";
 
-await db.insert(candidateProfiles).values({
-  userId: "user_2xrhpiAkDESg8bxHORa1louAeXt",
-  firstName: "Ajinkya",
-  lastName: "Bodke",
-  title: "Software Engineer",
-  bio: "I am a software engineer",
-  currentStep: 0,
-});
+// Mock data - replace with actual data fetching
+const mockJobs = [
+  {
+    id: "1",
+    title: "Senior Frontend Developer",
+    status: "active" as const,
+    postedAt: "2 weeks ago",
+    location: "San Francisco, CA",
+    workType: "Full-time",
+    applicationCount: 24,
+    expiresIn: "4 weeks",
+    requiredSkills: ["React", "TypeScript", "CSS", "HTML", "Redux"],
+  },
+  {
+    id: "2",
+    title: "Machine Learning Engineer",
+    status: "active" as const,
+    postedAt: "1 week ago",
+    location: "Remote",
+    workType: "Full-time",
+    applicationCount: 18,
+    expiresIn: "5 weeks",
+    requiredSkills: ["Python", "TensorFlow", "PyTorch", "Data Science"],
+  },
+];
 
-process.exit(0);
+db.insert(jobs).values(mockJobs);
