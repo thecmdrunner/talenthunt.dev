@@ -321,7 +321,7 @@ export default function LandingPage() {
                 ))}
               </ul>
 
-              <Link href="/welcome" className="block">
+              <Link href="/onboarding/candidate" className="block">
                 <Button className="w-full bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span className="relative z-10 flex items-center justify-center">
@@ -367,7 +367,7 @@ export default function LandingPage() {
                 ))}
               </ul>
 
-              <Link href="/recruiter/signup" className="block">
+              <Link href="/onboarding/recruiter" className="block">
                 <Button className="w-full bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span className="relative z-10 flex items-center justify-center">
