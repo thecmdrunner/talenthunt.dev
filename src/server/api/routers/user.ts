@@ -5,6 +5,7 @@ import {
   recruiterProfiles,
   users,
   type CandidateProfileSelect,
+  type RecruiterProfileSelect,
 } from "@/server/db/schema";
 import { parsedResumeDataSchema } from "@/types/resume";
 import { eq } from "drizzle-orm";
@@ -114,6 +115,97 @@ export const userRouter = createTRPCRouter({
         .update(candidateProfiles)
         .set(updateData)
         .where(eq(candidateProfiles.userId, userId));
+
+      return getUser(userId);
+    }),
+
+  nextRecruiterStep: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.userId;
+
+    // Check if user has a recruiter profile
+    const existingUser = await getUser(userId);
+
+    if (!existingUser?.recruiterProfile) {
+      throw new Error("User does not have a recruiter profile");
+    }
+
+    const currentStep = existingUser.recruiterProfile.currentStep ?? 0;
+    const nextStep = currentStep + 1;
+
+    // Update recruiter profile step
+    const updateData: Partial<RecruiterProfileSelect> = {
+      currentStep: nextStep,
+    };
+
+    // If completing the final step, mark onboarding as complete
+    if (nextStep >= 3) {
+      updateData.onboardingCompletedAt = new Date();
+    }
+
+    await ctx.db
+      .update(recruiterProfiles)
+      .set(updateData)
+      .where(eq(recruiterProfiles.userId, userId));
+
+    return getUser(userId);
+  }),
+
+  updateRecruiterProfile: protectedProcedure
+    .input(
+      z.object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+        title: z.string().optional(),
+        phoneNumber: z.string().optional(),
+        companyName: z.string().optional(),
+        companyUrl: z.string().optional(),
+        companySize: z.string().optional(),
+        industry: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.userId;
+
+      // Check if user has a recruiter profile
+      const existingUser = await getUser(userId);
+
+      if (!existingUser?.recruiterProfile) {
+        throw new Error("User does not have a recruiter profile");
+      }
+
+      // Update recruiter profile with provided data
+      await ctx.db
+        .update(recruiterProfiles)
+        .set(input)
+        .where(eq(recruiterProfiles.userId, userId));
+
+      return getUser(userId);
+    }),
+
+  completeRecruiterOnboarding: protectedProcedure
+    .input(
+      z.object({
+        additionalData: z.any().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.userId;
+
+      // Check if user has a recruiter profile
+      const existingUser = await getUser(userId);
+
+      if (!existingUser?.recruiterProfile) {
+        throw new Error("User does not have a recruiter profile");
+      }
+
+      // Mark onboarding as complete
+      await ctx.db
+        .update(recruiterProfiles)
+        .set({
+          currentStep: 3,
+          onboardingCompletedAt: new Date(),
+        })
+        .where(eq(recruiterProfiles.userId, userId));
 
       return getUser(userId);
     }),

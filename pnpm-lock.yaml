@@ -2818,6 +2818,7 @@ packages:
     resolution: {integrity: sha512-Nkwo9qeCvqVH0ZgYRUfPyj6o4o7StvNIxMFECeiz4y0uMOVyqc5Y9hjsdFVxdYCeiUjjXLQXA8KIz0iJL3HM0w==}
     engines: {node: '>=20.18.0'}
     hasBin: true
+    bundledDependencies: []
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
