@@ -12,7 +12,12 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { api } from "@/trpc/react";
-import { Home, LucideSparkles, Search } from "lucide-react";
+import {
+  BriefcaseBusinessIcon,
+  Home,
+  LucideSparkles,
+  Search,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 import { RainbowButton } from "./magicui/rainbow-button";
@@ -42,6 +47,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "/dashboard",
         icon: Home,
         isActive: pathname === "/dashboard",
+      },
+
+      {
+        title: "Jobs",
+        url: "/jobs",
+        icon: BriefcaseBusinessIcon,
+        isActive: pathname === "/jobs",
       },
 
       // {

@@ -16,6 +16,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export function NavMain({
@@ -45,9 +46,23 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title} asChild>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  asChild
+                  data-active={item.isActive}
+                  className={cn(
+                    item.isActive &&
+                      "text-foreground border border-slate-300 bg-white",
+                  )}
+                >
                   <Link href={item.url}>
-                    {item.icon && <item.icon />}
+                    {item.icon && (
+                      <item.icon
+                        className={
+                          item.isActive ? "text-accent-foreground" : ""
+                        }
+                      />
+                    )}
                     <span>{item.title}</span>
                     {item.items && (
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
