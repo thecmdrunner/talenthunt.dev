@@ -1,4 +1,5 @@
 import { CREDITS_COST } from "@/lib/constants";
+import { generateQuestions } from "@/server/ai";
 import { db } from "@/server/db";
 import {
   candidateProfiles,
@@ -98,10 +99,23 @@ export const userRouter = createTRPCRouter({
         throw new Error("User does not have a candidate profile");
       }
 
+      const currentStep = existingUser.candidateProfile.currentStep ?? 0;
+
       // Update candidate profile step and optionally resume URL and parsed data
       const updateData: Partial<CandidateProfileSelect> = {
-        currentStep: (existingUser.candidateProfile.currentStep ?? 0) + 1,
+        currentStep: currentStep + 1,
       };
+
+      // if new step is 2 (aka after profile submit, then pass profile data to AI to get 3 questions)
+      if (
+        // updateData.currentStep === 2 &&
+        input.parsedResumeData
+      ) {
+        const { questions } = await generateQuestions(input.parsedResumeData);
+        updateData.onboardingData = {
+          questions,
+        };
+      }
 
       if (input.resumeUrl) {
         updateData.resumeUrl = input.resumeUrl;

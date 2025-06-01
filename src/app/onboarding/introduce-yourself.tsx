@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useVideoRecording } from "@/hooks/useVideoRecording";
 import { useTracking } from "@/lib/hooks/use-tracking";
-import { useUser } from "@clerk/nextjs";
+import { api } from "@/trpc/react";
 import { Camera, Play, Square, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -24,7 +24,9 @@ export default function IntroduceYourself({
     trackExternalLinkClicked,
     trackFeatureUsed,
   } = useTracking();
-  const { user } = useUser();
+
+  const { data: user } = api.user.getOrCreateUser.useQuery();
+
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const liveVideoRef = useRef<HTMLVideoElement>(null);
@@ -130,6 +132,13 @@ export default function IntroduceYourself({
           Record a short video (up to 60 seconds) to share who you are, what
           you&apos;re passionate about, and what you&apos;re looking for.
         </p>
+        {user?.candidateProfile?.onboardingData?.questions && (
+          <div className="text-sm text-gray-500">
+            {user.candidateProfile.onboardingData.questions.map((question) => (
+              <div key={question}>{question}</div>
+            ))}
+          </div>
+        )}
         <div className="text-sm text-gray-500">Step 3 of 4</div>
       </div>
 

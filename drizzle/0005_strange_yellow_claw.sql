@@ -1,0 +1,1 @@
+ALTER TABLE "candidate_profile" ADD COLUMN "onboardingData" jsonb;

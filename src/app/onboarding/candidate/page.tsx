@@ -13,7 +13,11 @@ import UploadResume from "../upload-resume";
 
 export default function CandidateOnboardingPage() {
   const router = useRouter();
-  const { data: user, isLoading } = api.user.getOrCreateUser.useQuery();
+  const {
+    data: user,
+    isLoading,
+    refetch: refetchUser,
+  } = api.user.getOrCreateUser.useQuery();
 
   // useEffect(() => {
   //   // Redirect if user doesn't have a candidate profile or has completed onboarding
@@ -42,6 +46,9 @@ export default function CandidateOnboardingPage() {
     onError: (error) => {
       console.error("Failed to update step:", error);
       toast.error("Failed to update step");
+    },
+    onSettled: () => {
+      void refetchUser();
     },
   });
 

@@ -134,6 +134,9 @@ export const candidateProfiles = createTable(
     isOpenToWork: d.boolean().default(true),
     lastActiveAt: d.timestamp({ withTimezone: true }).defaultNow(),
 
+    onboardingData: d.jsonb().$type<{
+      questions: string[];
+    }>(),
     onboardingCompletedAt: d.timestamp({ withTimezone: true }),
     approvedAt: d.timestamp({ withTimezone: true }),
     rejectedAt: d.timestamp({ withTimezone: true }),
