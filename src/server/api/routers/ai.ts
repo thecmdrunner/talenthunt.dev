@@ -201,10 +201,12 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
         // Update candidate profile based on AI decision
         if (review.approved && review.confidence >= 0.7) {
           // Approve the candidate
+          const approvalTime = new Date(Date.now() + 5 * 60 * 1000);
           await ctx.db
             .update(candidateProfiles)
             .set({
-              onboardingCompletedAt: new Date(),
+              onboardingCompletedAt: approvalTime,
+              approvedAt: approvalTime,
               verificationStatus: "approved",
             })
             .where(eq(candidateProfiles.id, candidateProfile.id));
@@ -214,11 +216,21 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
           );
         } else {
           // Keep as pending for manual review if confidence is low or rejected
+          const updateData: {
+            verificationStatus: "pending" | "rejected";
+            rejectedAt?: Date;
+          } = {
+            verificationStatus: review.approved ? "pending" : "rejected",
+          };
+
+          // Set rejectedAt timestamp if actually rejected
+          if (!review.approved) {
+            updateData.rejectedAt = new Date(Date.now() + 5 * 60 * 1000);
+          }
+
           await ctx.db
             .update(candidateProfiles)
-            .set({
-              verificationStatus: review.approved ? "pending" : "rejected",
-            })
+            .set(updateData)
             .where(eq(candidateProfiles.id, candidateProfile.id));
 
           console.log(

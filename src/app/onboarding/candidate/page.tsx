@@ -99,6 +99,8 @@ export default function CandidateOnboardingPage() {
       default:
         const verificationStatus = user?.candidateProfile?.verificationStatus;
         const isApproved = user?.candidateProfile?.onboardingCompletedAt;
+        const approvedAt = user?.candidateProfile?.approvedAt;
+        const rejectedAt = user?.candidateProfile?.rejectedAt;
 
         if (isApproved) {
           // Approved and ready to go
@@ -123,6 +125,11 @@ export default function CandidateOnboardingPage() {
                     Your profile is now live and recruiters can discover and
                     contact you.
                   </p>
+                  {approvedAt && (
+                    <p className="mt-2 text-xs text-gray-500">
+                      Approved on {new Date(approvedAt).toLocaleString()}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -184,6 +191,11 @@ export default function CandidateOnboardingPage() {
                     Please review your profile and consider resubmitting with
                     updated information.
                   </p>
+                  {rejectedAt && (
+                    <p className="mt-2 text-xs text-gray-500">
+                      Reviewed on {new Date(rejectedAt).toLocaleString()}
+                    </p>
+                  )}
                 </div>
               </div>
 
