@@ -1,25 +1,37 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { supabaseBrowserClient } from "@/lib/supabase/browser";
 import { api } from "@/trpc/react";
-import { Check, Upload } from "lucide-react";
+import { CheckCircle, Upload } from "lucide-react";
 import { useCallback, useState } from "react";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface UploadResumeProps {
-  onContinue: (resumeUrl: string) => Promise<void> | void;
+  onComplete: () => void;
+  currentStep: number;
+  totalSteps: number;
 }
 
 const ACCEPTED_FILE_TYPES = ["application/pdf"];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
-export default function UploadResume({ onContinue }: UploadResumeProps) {
+export default function UploadResume({
+  onComplete,
+  currentStep,
+  totalSteps,
+}: UploadResumeProps) {
+  const { trackResumeUploaded, trackButtonClicked, trackFeatureUsed } =
+    useTracking();
+
   const [isResumeUploaded, setIsResumeUploaded] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadedFileName, setUploadedFileName] = useState<string>("");
   const [resumeUrl, setResumeUrl] = useState<string>("");
   const [isContinuing, setIsContinuing] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [parsedData, setParsedData] = useState<any>(null);
 
   const supabase = supabaseBrowserClient();
 
@@ -88,6 +100,10 @@ export default function UploadResume({ onContinue }: UploadResumeProps) {
         setResumeUrl(returnedResumeUrl);
         toast.success("Resume uploaded successfully!");
         toast.dismiss(toastId);
+
+        // Track resume upload
+        trackResumeUploaded(file.size, file.type);
+        trackFeatureUsed("resume_upload", "onboarding");
       } catch (error) {
         console.error(error);
         toast.dismiss(toastId);
@@ -98,7 +114,7 @@ export default function UploadResume({ onContinue }: UploadResumeProps) {
         );
       }
     },
-    [getPresignedUrl, supabase],
+    [getPresignedUrl, supabase, trackResumeUploaded, trackFeatureUsed],
   );
 
   const handleDrop = useCallback(
@@ -123,6 +139,16 @@ export default function UploadResume({ onContinue }: UploadResumeProps) {
   );
 
   const isLoading = isGettingUrl;
+
+  const handleSkip = () => {
+    trackButtonClicked("skip_resume_upload", "onboarding");
+    onComplete();
+  };
+
+  const handleContinue = () => {
+    trackButtonClicked("continue_after_resume_upload", "onboarding");
+    onComplete();
+  };
 
   return (
     <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
@@ -169,7 +195,7 @@ export default function UploadResume({ onContinue }: UploadResumeProps) {
         >
           {isResumeUploaded ? (
             <div className="space-y-4">
-              <Check className="mx-auto h-12 w-12 text-green-500" />
+              <CheckCircle className="mx-auto h-12 w-12 text-green-500" />
               <div>
                 <p className="font-medium text-green-700">
                   ✓ {uploadedFileName} uploaded successfully
@@ -210,7 +236,7 @@ export default function UploadResume({ onContinue }: UploadResumeProps) {
             onClick={async () => {
               setIsContinuing(true);
               try {
-                await onContinue(resumeUrl);
+                await handleContinue();
               } finally {
                 setIsContinuing(false);
               }

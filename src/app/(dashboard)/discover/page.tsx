@@ -19,6 +19,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import {
@@ -102,9 +103,19 @@ function getMatchLevel(score: number) {
 }
 
 export default function DiscoverPage() {
+  const {
+    trackPageVisited,
+    trackSearch,
+    trackCandidateViewed,
+    trackFilterApplied,
+    trackButtonClicked,
+    trackContactInfoViewed,
+    trackExternalLinkClicked,
+  } = useTracking();
+
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue:
-      "i want a designer that has 19+yr exp, product design, figma, who has designed ai apps with product thinking and great ux, should have worked with fortune 500, on contract",
+      "i want a next js dev experienced in AI apps and has over 2 years of experience and is open to work in Banglore",
   });
 
   // State for selected candidate sheet
@@ -118,11 +129,18 @@ export default function DiscoverPage() {
   // Use tRPC mutation for candidate search
   const searchCandidates = api.ai.searchCandidates.useMutation();
 
+  // Track page visit
+  useEffect(() => {
+    trackPageVisited("discover");
+  }, [trackPageVisited]);
+
   // Process search query on page load or when searchQuery changes
   useEffect(() => {
     if (searchQuery && searchQuery.trim() !== "") {
       // Trigger AI extraction
       naturalLanguageQuery.mutate({ query: searchQuery });
+      // Track the search
+      trackSearch(searchQuery, "natural_language");
     }
   }, []);
 
@@ -138,6 +156,28 @@ export default function DiscoverPage() {
     void setSearchQuery("");
     naturalLanguageQuery.reset();
     searchCandidates.reset();
+    trackButtonClicked("clear_search", "discover_page");
+  };
+
+  const handleCandidateView = (candidate: (typeof candidates)[0]) => {
+    setSelectedCandidate(candidate);
+
+    trackCandidateViewed(candidate.id, candidate.matchScore);
+  };
+
+  const handleFilterSelect = (filterType: string, value: string) => {
+    trackFilterApplied(filterType, value);
+  };
+
+  const handleContactView = (candidateId: string) => {
+    trackContactInfoViewed(candidateId);
+  };
+
+  const handleExternalLink = (
+    linkType: "linkedin" | "github" | "portfolio",
+    candidateId?: string,
+  ) => {
+    trackExternalLinkClicked(linkType, candidateId);
   };
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
@@ -587,7 +627,7 @@ export default function DiscoverPage() {
                 <Card
                   key={candidate.id}
                   className="group cursor-pointer transition-shadow hover:shadow-lg"
-                  onClick={() => setSelectedCandidate(candidate)}
+                  onClick={() => handleCandidateView(candidate)}
                 >
                   <CardContent className="p-6">
                     <div className="space-y-4">
@@ -811,9 +851,9 @@ export default function DiscoverPage() {
                 </div>
 
                 {/* Social Links */}
-                {(selectedCandidate?.githubUsername ||
-                  selectedCandidate?.linkedinUrl ||
-                  selectedCandidate?.parsedGithubUrl ||
+                {(selectedCandidate?.githubUsername ??
+                  selectedCandidate?.linkedinUrl ??
+                  selectedCandidate?.parsedGithubUrl ??
                   selectedCandidate?.parsedLinkedinUrl) && (
                   <div className="space-y-3">
                     <h3 className="text-lg font-semibold">Social Links</h3>
@@ -825,6 +865,12 @@ export default function DiscoverPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                          onClick={() =>
+                            handleExternalLink(
+                              "github",
+                              selectedCandidate.githubUsername ?? undefined,
+                            )
+                          }
                         >
                           <Github className="h-5 w-5" />
                           <span className="text-sm">GitHub</span>
@@ -840,6 +886,12 @@ export default function DiscoverPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                            onClick={() =>
+                              handleExternalLink(
+                                "github",
+                                selectedCandidate.parsedGithubUrl ?? undefined,
+                              )
+                            }
                           >
                             <Github className="h-5 w-5" />
                             <span className="text-sm">GitHub</span>
@@ -854,6 +906,12 @@ export default function DiscoverPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                          onClick={() =>
+                            handleExternalLink(
+                              "linkedin",
+                              selectedCandidate.linkedinUrl ?? undefined,
+                            )
+                          }
                         >
                           <Linkedin className="h-5 w-5 text-blue-600" />
                           <span className="text-sm">LinkedIn</span>
@@ -869,6 +927,13 @@ export default function DiscoverPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                            onClick={() =>
+                              handleExternalLink(
+                                "linkedin",
+                                selectedCandidate.parsedLinkedinUrl ??
+                                  undefined,
+                              )
+                            }
                           >
                             <Linkedin className="h-5 w-5 text-blue-600" />
                             <span className="text-sm">LinkedIn</span>
@@ -959,19 +1024,43 @@ export default function DiscoverPage() {
                 )}
 
                 {/* Contact Actions */}
-                {/* <div className="space-y-3">
+                <div className="space-y-3">
                   <h3 className="text-lg font-semibold">Actions</h3>
-                  <div className="flex gap-2">
-                    <Button className="flex-1">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      className="flex-1"
+                      onClick={() => handleContactView(selectedCandidate.id)}
+                    >
                       <Mail className="mr-2 h-4 w-4" />
                       Contact
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        trackButtonClicked("view_resume", "candidate_detail");
+                        // Open resume in new tab
+                        if (
+                          "resumeUrl" in selectedCandidate &&
+                          selectedCandidate.resumeUrl &&
+                          typeof selectedCandidate.resumeUrl === "string"
+                        ) {
+                          window.open(
+                            selectedCandidate.resumeUrl,
+                            "_blank",
+                            "noopener,noreferrer",
+                          );
+                        } else {
+                          // Fallback - could show a toast or alert
+                          alert("Resume not available for this candidate");
+                        }
+                      }}
+                    >
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      View Profile
+                      View Resume
                     </Button>
                   </div>
-                </div> */}
+                </div>
               </div>
             </>
           )}

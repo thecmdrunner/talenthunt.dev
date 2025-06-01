@@ -1,28 +1,27 @@
 "use client";
 
 import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TalentHuntBranding } from "@/components/talent-hunt-branding";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenuButton,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { api } from "@/trpc/react";
-import { Award, Home, LucideSparkles, Search } from "lucide-react";
-import Link from "next/link";
+import { Award, Home, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import * as React from "react";
-import { RainbowButton } from "./magicui/rainbow-button";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   api.user.getOrCreateUser.useQuery();
 
   const pathname = usePathname();
+  const { trackButtonClicked, trackPageVisited } = useTracking();
 
   const data = {
     navMain: [
@@ -130,49 +129,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TalentHuntBranding />
       </SidebarHeader>
       <SidebarContent>
-        {/* Discover Button - First Item */}
-        <div className="flex gap-2 px-3 py-2">
-          <Link href="/discover" className="w-full">
-            <Button className="bg-primary hover:bg-primary/90 h-10 w-full justify-center gap-2 text-center">
-              <Search className="h-4 w-4" />
-              Discover Talent
-            </Button>
-          </Link>
-          {/* <Button
-            asChild
-            variant="outline"
-            className="aspect-square h-10 w-10 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
-          >
-            <Link href="/rewards">
-              <Gift className="h-4 w-4" />
-            </Link>
-          </Button> */}
-        </div>
-
-        {/* Quick Action Buttons */}
-        {/* <div className="flex flex-col gap-2 px-3 py-2">
-          <Button
-            variant="outline"
-            className="h-10 w-full justify-start gap-2 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
-            asChild
-          >
-            <Link href="/upgrade">
-              <Crown className="h-4 w-4 fill-purple-600 stroke-none" />
-              Upgrade to Pro
-            </Link>
-          </Button>
-        </div> */}
-
         <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <RainbowButton asChild>
-          <SidebarMenuButton>
-            <LucideSparkles className="size-4" />
-            <span>Upgrade to Pro</span>
-          </SidebarMenuButton>
-        </RainbowButton>
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

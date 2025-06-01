@@ -3,14 +3,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { api } from "@/trpc/react";
 import { useEffect, useState } from "react";
 
 interface CompleteProfileProps {
-  onContinue: () => void;
+  onComplete: () => void;
+  currentStep: number;
+  totalSteps: number;
 }
 
-export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
+export default function CompleteProfile({
+  onComplete,
+  currentStep,
+  totalSteps,
+}: CompleteProfileProps) {
+  const { trackProfileUpdated, trackButtonClicked, trackOnboardingCompleted } =
+    useTracking();
+
   const { data: parsedData, isLoading: isLoadingParsedData } =
     api.user.getParsedResumeData.useQuery();
 
@@ -43,6 +53,25 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
   };
 
   const isFormValid = formData.role && formData.skills && formData.experience;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Track profile completion
+    trackProfileUpdated("complete_profile");
+    trackButtonClicked("complete_profile_submission", "onboarding");
+
+    // ... existing code ...
+
+    // After successful completion
+    trackOnboardingCompleted("candidate");
+    onComplete();
+  };
+
+  // Track field updates
+  const handleFieldUpdate = (field: string) => {
+    trackProfileUpdated(field);
+  };
 
   if (isLoadingParsedData) {
     return (
@@ -96,7 +125,10 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
             placeholder="e.g. Frontend Developer, Product Manager"
             className="rounded-lg"
             value={formData.role}
-            onChange={(e) => handleInputChange("role", e.target.value)}
+            onChange={(e) => {
+              handleInputChange("role", e.target.value);
+              handleFieldUpdate("role");
+            }}
           />
         </div>
 
@@ -114,7 +146,10 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
             placeholder="e.g. React, TypeScript, Node.js"
             className="rounded-lg"
             value={formData.skills}
-            onChange={(e) => handleInputChange("skills", e.target.value)}
+            onChange={(e) => {
+              handleInputChange("skills", e.target.value);
+              handleFieldUpdate("skills");
+            }}
           />
         </div>
 
@@ -134,7 +169,10 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
               placeholder="e.g. 3"
               className="rounded-lg"
               value={formData.experience}
-              onChange={(e) => handleInputChange("experience", e.target.value)}
+              onChange={(e) => {
+                handleInputChange("experience", e.target.value);
+                handleFieldUpdate("experience");
+              }}
             />
           </div>
 
@@ -152,7 +190,10 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
               placeholder="e.g. San Francisco, Remote"
               className="rounded-lg"
               value={formData.location}
-              onChange={(e) => handleInputChange("location", e.target.value)}
+              onChange={(e) => {
+                handleInputChange("location", e.target.value);
+                handleFieldUpdate("location");
+              }}
             />
           </div>
         </div>
@@ -171,7 +212,10 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
             placeholder="https://github.com/yourusername"
             className="rounded-lg"
             value={formData.githubUrl}
-            onChange={(e) => handleInputChange("githubUrl", e.target.value)}
+            onChange={(e) => {
+              handleInputChange("githubUrl", e.target.value);
+              handleFieldUpdate("githubUrl");
+            }}
           />
         </div>
 
@@ -189,14 +233,17 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
             placeholder="https://linkedin.com/in/yourprofile"
             className="rounded-lg"
             value={formData.linkedinUrl}
-            onChange={(e) => handleInputChange("linkedinUrl", e.target.value)}
+            onChange={(e) => {
+              handleInputChange("linkedinUrl", e.target.value);
+              handleFieldUpdate("linkedinUrl");
+            }}
           />
         </div>
 
         <Button
           size="lg"
           className="w-full rounded-lg bg-blue-600 hover:bg-blue-700"
-          onClick={onContinue}
+          onClick={handleSubmit}
           disabled={!isFormValid}
         >
           Continue
