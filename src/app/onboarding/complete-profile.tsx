@@ -78,7 +78,7 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
             </p>
           </div>
         )}
-        <div className="text-sm text-gray-500">Step 2 of 3</div>
+        <div className="text-sm text-gray-500">Step 2 of 4</div>
       </div>
 
       <div className="space-y-6">

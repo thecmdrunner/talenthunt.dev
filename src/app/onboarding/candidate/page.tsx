@@ -85,8 +85,8 @@ export default function CandidateOnboardingPage() {
 
   const handleComplete = useCallback(() => {
     nextCandidateStepMutation.mutate({});
-    router.push("/dashboard");
-  }, [nextCandidateStepMutation, router]);
+    // router.push("/dashboard");
+  }, [nextCandidateStepMutation]);
 
   const renderStepContent = useCallback(() => {
     switch (currentStep) {
@@ -98,20 +98,61 @@ export default function CandidateOnboardingPage() {
         return <IntroduceYourself onComplete={handleComplete} />;
       default:
         return (
-          <div className="py-12 text-center">
-            <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-              Profile Complete!
-            </h2>
-            <p className="mb-6 text-gray-600">
-              Your profile is now complete and visible to recruiters!
-            </p>
-            <Button
-              size="lg"
-              className="bg-blue-600 hover:bg-blue-700"
-              onClick={() => router.push("/dashboard")}
-            >
-              Go to Dashboard
-            </Button>
+          <div className="space-y-6">
+            <div className="rounded-xl bg-gradient-to-br from-green-50 to-blue-50 p-8 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                <div className="text-2xl">🎉</div>
+              </div>
+              <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+                Profile Complete!
+              </h2>
+              <p className="mb-4 text-gray-600">
+                Your profile has been submitted and is now under review.
+              </p>
+              <div className="rounded-lg bg-white p-4 shadow-sm">
+                <h4 className="mb-2 font-medium text-gray-900">
+                  Application Status: Under Review
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Our team is reviewing your profile. You&apos;ll be notified
+                  once approved and ready to connect with recruiters.
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-xl bg-blue-50 p-6">
+              <h4 className="mb-3 font-medium text-gray-900">
+                What happens next?
+              </h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  Profile review typically takes 1-2 business days
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  You&apos;ll receive an email notification when approved
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  Once approved, recruiters can discover and contact you
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                  You can update your profile anytime from the dashboard
+                </li>
+              </ul>
+            </div>
+
+            <div className="text-center">
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700"
+                onClick={() => router.push("/dashboard")}
+              >
+                Go to Dashboard
+              </Button>
+            </div>
           </div>
         );
     }
