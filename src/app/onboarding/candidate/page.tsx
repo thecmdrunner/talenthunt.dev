@@ -169,17 +169,6 @@ export default function CandidateOnboardingPage() {
                   </ul>
                 </div>
               </div>
-
-              <div className="text-center">
-                <Button
-                  size="lg"
-                  className="bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 px-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
-                  onClick={() => router.push("/dashboard")}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <span className="relative z-10">Go to Dashboard</span>
-                </Button>
-              </div>
             </div>
           );
         } else if (verificationStatus === "rejected") {
@@ -308,17 +297,6 @@ export default function CandidateOnboardingPage() {
                     ))}
                   </ul>
                 </div>
-              </div>
-
-              <div className="text-center">
-                <Button
-                  size="lg"
-                  className="bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 px-8 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden group"
-                  onClick={() => router.push("/dashboard")}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <span className="relative z-10">Go to Dashboard</span>
-                </Button>
               </div>
             </div>
           );
