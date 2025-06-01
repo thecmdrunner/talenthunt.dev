@@ -99,11 +99,11 @@ export default function LandingPage() {
               Pricing
               <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-300 transition-all duration-300 hover:w-full"></div>
             </Link>
-            <Link href="/auth/login">
+            <Link href="/dashboard">
               <Button className="bg-blue-600/20 hover:bg-blue-600/30 text-white border border-blue-400/30 font-medium px-6 py-2 rounded-full backdrop-blur-sm relative overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <span className="relative z-10">Sign In</span>
-              </Button>
+                <span className="relative z-10">Get Started</span>
+            </Button>
             </Link>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function LandingPage() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-16 pb-24">
         {/* Toggle Buttons with blue consistency */}
         <div className="flex items-center justify-center space-x-4 mb-12">
-          <Button
+          <Button 
             onClick={() => setActiveView("hire")}
             className={`${
               activeView === "hire"
@@ -125,7 +125,7 @@ export default function LandingPage() {
             <Zap className="w-4 h-4 mr-2 relative z-10" />
             <span className="relative z-10">Hire Talent</span>
           </Button>
-          <Button
+          <Button 
             onClick={() => setActiveView("find")}
             className={`${
               activeView === "find"
@@ -150,7 +150,7 @@ export default function LandingPage() {
             <div className="absolute -inset-2 border border-blue-400/20 rounded-full animate-pulse"></div>
           </div>
         </div>
-
+        
         {/* Main Headline with consistent blue underline */}
         <div className="text-center mb-16">
           <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
@@ -161,8 +161,8 @@ export default function LandingPage() {
               </span>
               <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-300 to-blue-100 rounded-full"></div>
               <div className="absolute -bottom-6 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
-            </span>
-          </h1>
+          </span>
+        </h1>
           <p className="text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
             TalentHunt is an AI-powered platform. Connect top talent with leading companies through intelligent
             matching.
@@ -199,20 +199,20 @@ export default function LandingPage() {
           </div>
           <div className="hidden md:flex items-center">
             <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent mx-4"></div>
-          </div>
+            </div>
           <div className="flex items-center space-x-3">
             <div className="w-3 h-3 bg-blue-300 rounded-full animate-pulse"></div>
             <span className="text-lg">500+ companies hiring</span>
-          </div>
+            </div>
           <div className="hidden md:flex items-center">
             <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent mx-4"></div>
-          </div>
+            </div>
           <div className="flex items-center space-x-3">
             <div className="w-3 h-3 bg-blue-300 rounded-full animate-pulse"></div>
             <span className="text-lg">90% faster hiring</span>
           </div>
         </div>
-      </div>
+            </div>
 
       {/* Enhanced Search Interface Demo Card with blue consistency */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 mb-24">
@@ -223,7 +223,7 @@ export default function LandingPage() {
               backgroundSize: '30px 30px'
             }}></div>
           </div>
-          
+
           <CardContent className="p-8 relative z-10">
             <div className="flex items-center space-x-3 mb-8">
               <div className="w-3 h-3 bg-red-500 rounded-full shadow-lg"></div>
@@ -255,8 +255,8 @@ export default function LandingPage() {
                       <div className="absolute inset-2 border border-white/20 rounded-full"></div>
                       <div className="w-6 h-6 bg-white rounded-full relative z-10"></div>
                     </div>
-                  </div>
-                </div>
+          </div>
+        </div>
 
                 <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-8 py-3 rounded-xl shadow-lg relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -267,7 +267,7 @@ export default function LandingPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+            </div>
 
       {/* Enhanced Welcome Cards with perfect blue consistency */}
       <div className="relative z-10 max-w-6xl mx-auto px-6 mb-24">
@@ -283,7 +283,7 @@ export default function LandingPage() {
           <div className="flex justify-center mt-4">
             <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
           </div>
-        </div>
+              </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Enhanced Job Seeker Card with blue consistency */}
@@ -294,7 +294,7 @@ export default function LandingPage() {
                 <circle cx="50" cy="50" r="15" stroke="currentColor" fill="currentColor" opacity="0.3"/>
               </svg>
             </div>
-            
+
             <CardContent className="p-8 relative z-10">
               <div className="text-center mb-8">
                 <div className="w-20 h-20 bg-blue-600/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-blue-400/30">
@@ -340,7 +340,7 @@ export default function LandingPage() {
                 <polygon points="50,35 65,50 50,65 35,50" stroke="currentColor" fill="currentColor" opacity="0.3"/>
               </svg>
             </div>
-            
+
             <CardContent className="p-8 relative z-10">
               <div className="text-center mb-8">
                 <div className="w-20 h-20 bg-blue-600/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-blue-400/30">
@@ -377,8 +377,8 @@ export default function LandingPage() {
               </Link>
             </CardContent>
           </Card>
-        </div>
-      </div>
+            </div>
+          </div>
 
       {/* Enhanced Features Section with blue consistency */}
       <div id="features" className="relative z-10 bg-gradient-to-b from-blue-800/50 to-blue-900/80 backdrop-blur-sm border-t border-blue-400/20">
@@ -494,9 +494,9 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <span className="relative z-10">Schedule Demo</span>
             </Button>
-          </div>
-        </div>
-      </div>
+                    </div>
+                    </div>
+                  </div>
 
       {/* Enhanced Footer with perfect blue consistency */}
       <footer className="relative z-10 bg-gradient-to-b from-blue-900/90 to-blue-950/95 backdrop-blur-sm border-t border-blue-400/20">
@@ -566,10 +566,10 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
+                    </div>
             ))}
 
-            <div>
+                    <div>
               <h4 className="text-white font-bold text-lg mb-6 relative">
                 Support
                 <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-gradient-to-r from-blue-400 to-transparent"></div>
@@ -631,7 +631,7 @@ export default function LandingPage() {
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse relative z-10"></div>
                   <span className="relative z-10">All Systems Operational</span>
                 </Badge>
-              </div>
+          </div>
             </div>
           </div>
         </div>
