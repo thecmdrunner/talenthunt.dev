@@ -26,6 +26,8 @@ import {
   Building,
   Calendar,
   ExternalLink,
+  Github,
+  Linkedin,
   LucideChevronDown,
   Mail,
   MapPin,
@@ -690,7 +692,7 @@ export default function DiscoverPage() {
                 </div>
               </SheetHeader>
 
-              <div className="mt-6 space-y-6">
+              <div className="space-y-6">
                 {/* Match Score */}
                 <div className="rounded-lg border p-4">
                   <div className="flex items-center justify-between">
@@ -764,6 +766,87 @@ export default function DiscoverPage() {
                   </div>
                 </div>
 
+                {/* Social Links */}
+                {(selectedCandidate?.githubUsername ||
+                  selectedCandidate?.linkedinUrl ||
+                  selectedCandidate?.parsedGithubUrl ||
+                  selectedCandidate?.parsedLinkedinUrl) && (
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold">Social Links</h3>
+                    <div className="flex flex-wrap gap-3">
+                      {/* GitHub from username */}
+                      {selectedCandidate?.githubUsername && (
+                        <a
+                          href={`https://github.com/${selectedCandidate.githubUsername}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                        >
+                          <Github className="h-5 w-5" />
+                          <span className="text-sm">GitHub</span>
+                          <ExternalLink className="h-3 w-3 opacity-60" />
+                        </a>
+                      )}
+
+                      {/* GitHub from parsed resume */}
+                      {!selectedCandidate?.githubUsername &&
+                        selectedCandidate?.parsedGithubUrl && (
+                          <a
+                            href={selectedCandidate.parsedGithubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                          >
+                            <Github className="h-5 w-5" />
+                            <span className="text-sm">GitHub</span>
+                            <ExternalLink className="h-3 w-3 opacity-60" />
+                          </a>
+                        )}
+
+                      {/* LinkedIn from URL */}
+                      {selectedCandidate?.linkedinUrl && (
+                        <a
+                          href={selectedCandidate.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                        >
+                          <Linkedin className="h-5 w-5 text-blue-600" />
+                          <span className="text-sm">LinkedIn</span>
+                          <ExternalLink className="h-3 w-3 opacity-60" />
+                        </a>
+                      )}
+
+                      {/* LinkedIn from parsed resume */}
+                      {!selectedCandidate?.linkedinUrl &&
+                        selectedCandidate?.parsedLinkedinUrl && (
+                          <a
+                            href={selectedCandidate.parsedLinkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                          >
+                            <Linkedin className="h-5 w-5 text-blue-600" />
+                            <span className="text-sm">LinkedIn</span>
+                            <ExternalLink className="h-3 w-3 opacity-60" />
+                          </a>
+                        )}
+
+                      {/* LinkedIn Email */}
+                      {selectedCandidate?.linkedinEmail &&
+                        !selectedCandidate?.linkedinUrl &&
+                        !selectedCandidate?.parsedLinkedinUrl && (
+                          <div className="flex items-center gap-2 rounded-lg border bg-gray-50 p-3">
+                            <Mail className="h-5 w-5 text-gray-500" />
+                            <span className="text-sm text-gray-600">
+                              {selectedCandidate.linkedinEmail}
+                            </span>
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Work Experience */}
                 {selectedCandidate?.workExperience.length > 0 && (
                   <div className="space-y-3">
@@ -832,7 +915,7 @@ export default function DiscoverPage() {
                 )}
 
                 {/* Contact Actions */}
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                   <h3 className="text-lg font-semibold">Actions</h3>
                   <div className="flex gap-2">
                     <Button className="flex-1">
@@ -844,7 +927,7 @@ export default function DiscoverPage() {
                       View Profile
                     </Button>
                   </div>
-                </div>
+                </div> */}
               </div>
             </>
           )}
