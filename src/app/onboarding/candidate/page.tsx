@@ -91,11 +91,33 @@ export default function CandidateOnboardingPage() {
   const renderStepContent = useCallback(() => {
     switch (currentStep) {
       case 1:
-        return <UploadResume onContinue={handleContinueToStep2} />;
+        return (
+          <UploadResume
+            onComplete={async (resumeUrl) => {
+              await handleContinueToStep2(resumeUrl);
+            }}
+            currentStep={currentStep}
+            totalSteps={steps.length}
+          />
+        );
       case 2:
-        return <CompleteProfile onContinue={handleContinueToStep3} />;
+        return (
+          <CompleteProfile
+            onComplete={() => {
+              handleContinueToStep3();
+            }}
+            currentStep={currentStep}
+            totalSteps={steps.length}
+          />
+        );
       case 3:
-        return <IntroduceYourself onComplete={handleComplete} />;
+        return (
+          <IntroduceYourself
+            onComplete={handleComplete}
+            currentStep={currentStep}
+            totalSteps={steps.length}
+          />
+        );
       default:
         const verificationStatus = user?.candidateProfile?.verificationStatus;
         const isApproved = user?.candidateProfile?.onboardingCompletedAt;

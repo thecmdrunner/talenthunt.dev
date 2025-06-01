@@ -14,41 +14,51 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { ArrowRight, LucideChevronDown, Plus, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Briefcase,
+  Building2,
+  Clock,
+  DollarSign,
+  LucideChevronDown,
+  MapPin,
+  Plus,
+  Sparkles,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useQueryState } from "nuqs";
 import { useEffect } from "react";
 
 // Mock data for demonstration
 const suggestedFilters = [
-  { type: "role", label: "ai", value: "ai" },
-  { type: "ui", label: "comfy ui", value: "comfy-ui" },
-  { type: "stack", label: "full stack", value: "full-stack" },
-  { type: "stack", label: "backend", value: "backend" },
-  { type: "employment", label: "full-time", value: "full-time" },
-  { type: "employment", label: "contract", value: "contract" },
+  { type: "type", label: "remote", value: "remote" },
+  { type: "type", label: "hybrid", value: "hybrid" },
+  { type: "type", label: "onsite", value: "onsite" },
+  { type: "level", label: "senior", value: "senior" },
+  { type: "level", label: "mid-level", value: "mid-level" },
+  { type: "level", label: "entry-level", value: "entry-level" },
 ];
 
 const additionalFilters = [
-  { type: "demographic", label: "gender", value: "gender" },
-  { type: "experience", label: "experience level", value: "experience" },
-  { type: "location", label: "location", value: "location" },
+  { type: "benefits", label: "benefits", value: "benefits" },
+  { type: "company-size", label: "company size", value: "company-size" },
+  { type: "industry", label: "industry", value: "industry" },
 ];
 
-export default function DiscoverPage() {
+export default function DiscoverJobsPage() {
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue:
-      "i want a designer that has 19+yr exp, product design, figma, who has designed ai apps with product thinking and great ux, should have worked with fortune 500, on contract",
+      "looking for a senior frontend developer role with React and TypeScript, remote work, competitive salary in a startup",
   });
 
   // Use tRPC mutation for AI-powered query processing
   const naturalLanguageQuery = api.ai.naturalLanguageQuery.useMutation();
 
-  // Use tRPC mutation for candidate search
-  const searchCandidates = api.ai.searchCandidates.useMutation();
+  // Use tRPC mutation for job search
+  const searchJobs = api.ai.searchJobs.useMutation();
 
-  console.log("answer", naturalLanguageQuery.data);
-  console.log("candidates", searchCandidates.data);
+  console.log("job query", naturalLanguageQuery.data);
+  console.log("jobs", searchJobs.data);
 
   // Process search query on page load or when searchQuery changes
   useEffect(() => {
@@ -58,23 +68,23 @@ export default function DiscoverPage() {
     }
   }, []);
 
-  // Search for candidates when natural language query completes
+  // Search for jobs when natural language query completes
   useEffect(() => {
     if (naturalLanguageQuery.data) {
-      // Trigger candidate search with the extracted job attributes
-      searchCandidates.mutate(naturalLanguageQuery.data);
+      // Trigger job search with the extracted job preferences
+      searchJobs.mutate(naturalLanguageQuery.data);
     }
   }, [naturalLanguageQuery.data]);
 
   const clearSearch = () => {
     void setSearchQuery("");
     naturalLanguageQuery.reset();
-    searchCandidates.reset();
+    searchJobs.reset();
   };
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
-  const jobAttributes = naturalLanguageQuery.data;
-  const candidates = searchCandidates.data?.candidates || [];
+  const jobPreferences = naturalLanguageQuery.data;
+  const jobs = searchJobs.data?.jobs ?? [];
 
   return (
     <div className="relative flex items-center gap-2 px-4 py-8">
@@ -85,7 +95,7 @@ export default function DiscoverPage() {
             <div className="relative">
               <div className="mb-2 text-left">
                 <span className="text-muted-foreground">
-                  I&apos;m looking for a...
+                  I&apos;m looking for...
                 </span>
               </div>
               <div className="flex gap-2">
@@ -154,7 +164,7 @@ export default function DiscoverPage() {
                     <Input
                       id="search-input"
                       spellCheck={false}
-                      placeholder="product engineer more than 4 years exp"
+                      placeholder="senior backend engineer, remote, $150k+"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="rounded-xl py-9 pr-16 pl-13 text-lg font-light"
@@ -185,8 +195,7 @@ export default function DiscoverPage() {
                 </div>
               )}
               <AnimatePresence mode="wait">
-                {(naturalLanguageQuery.isPending ||
-                  searchCandidates.isPending) && (
+                {(naturalLanguageQuery.isPending || searchJobs.isPending) && (
                   <motion.div
                     key="loading-animation"
                     initial={{ opacity: 0, y: 10, height: 0 }}
@@ -199,8 +208,8 @@ export default function DiscoverPage() {
                       <Sparkles className="h-4 w-4 text-indigo-600" />
                       <span className="animate-pulse">
                         {naturalLanguageQuery.isPending
-                          ? "AI is analyzing your query..."
-                          : "Searching for matching candidates..."}
+                          ? "AI is analyzing your job preferences..."
+                          : "Searching for matching job opportunities..."}
                       </span>
                     </div>
                     <div className="flex gap-2">
@@ -278,29 +287,29 @@ export default function DiscoverPage() {
           </div>
 
           {/* Active Search Display */}
-          {isSearchActive && jobAttributes && (
+          {isSearchActive && jobPreferences && (
             <div className="max-w-4xl space-y-6 rounded-xl bg-white/80 p-6 shadow-lg ring-1 ring-white/20 backdrop-blur-sm">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-2xl font-bold text-transparent">
-                  I&apos;m looking for a
+                  I&apos;m looking for
                 </span>
 
-                {jobAttributes.newJob.role && (
-                  <Select value={jobAttributes.newJob.role}>
+                {jobPreferences.desiredRole && (
+                  <Select value={jobPreferences.desiredRole}>
                     <Button
                       asChild
                       variant={"secondary"}
                       className="relative cursor-pointer border-none text-2xl font-medium shadow-none"
                     >
                       <SelectTrigger>
-                        <SelectValue>{jobAttributes.newJob.role}</SelectValue>
+                        <SelectValue>{jobPreferences.desiredRole}</SelectValue>
                       </SelectTrigger>
                     </Button>
                     <SelectContent>
-                      <SelectItem value={jobAttributes.newJob.role}>
-                        {jobAttributes.newJob.role}
+                      <SelectItem value={jobPreferences.desiredRole}>
+                        {jobPreferences.desiredRole}
                       </SelectItem>
-                      {jobAttributes.newJob.similarRoles?.map((role) => (
+                      {jobPreferences.similarRoles?.map((role) => (
                         <SelectItem key={role} value={role}>
                           {role}
                         </SelectItem>
@@ -310,12 +319,14 @@ export default function DiscoverPage() {
                 )}
               </div>
 
-              {/* Skills */}
-              {jobAttributes.newJob.skills &&
-                jobAttributes.newJob.skills.length > 0 && (
+              {/* Required Skills */}
+              {jobPreferences.requiredSkills &&
+                jobPreferences.requiredSkills.length > 0 && (
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-sm text-slate-500">who knows</span>
-                    {jobAttributes.newJob.skills.map((skill) => (
+                    <span className="text-sm text-slate-500">
+                      with skills in
+                    </span>
+                    {jobPreferences.requiredSkills.map((skill) => (
                       <Badge
                         key={skill}
                         variant="outline"
@@ -337,69 +348,60 @@ export default function DiscoverPage() {
                   </div>
                 )}
 
-              {/* Experience */}
-              {jobAttributes.pastExperience?.duration && (
+              {/* Experience Level */}
+              {jobPreferences.experienceLevel && (
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-slate-500">
-                    {jobAttributes.pastExperience.duration.filter}{" "}
-                    <Badge
-                      variant="outline"
-                      className="group relative border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 text-purple-700 shadow-sm transition-all hover:scale-105"
-                    >
-                      {jobAttributes.pastExperience.duration.years
-                        ? `${jobAttributes.pastExperience.duration.years} years`
-                        : jobAttributes.pastExperience.duration.years
-                          ? `${jobAttributes.pastExperience.duration.years} years`
-                          : null}{" "}
-                      <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                    </Badge>{" "}
-                    of experience
+                    experience level
                   </span>
+                  <Badge
+                    variant="outline"
+                    className="group relative border-purple-200 bg-gradient-to-r from-purple-50 to-violet-50 text-purple-700 shadow-sm transition-all hover:scale-105"
+                  >
+                    {jobPreferences.experienceLevel}
+                    <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                  </Badge>
                 </div>
               )}
 
-              {/* Salary */}
-              {/* {jobAttributes.newJob.expectedSalary && (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">salary range</span>
-                <Badge
-                  variant="outline"
-                  className="group relative border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 shadow-sm transition-all hover:scale-105"
-                >
-                  {jobAttributes.newJob.expectedSalary.min &&
-                  jobAttributes.newJob.expectedSalary.max
-                    ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} ${jobAttributes.newJob.expectedSalary.min}-${jobAttributes.newJob.expectedSalary.max}`
-                    : jobAttributes.newJob.expectedSalary.min
-                      ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} ${jobAttributes.newJob.expectedSalary.min}+`
-                      : jobAttributes.newJob.expectedSalary.max
-                        ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} up to ${jobAttributes.newJob.expectedSalary.max}`
-                        : "Salary specified"}
-
-                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                </Badge>
-              </div>
-            )} */}
-
-              {/* Location */}
-              {(jobAttributes.newJob.location?.city ??
-                jobAttributes.newJob.location?.country) && (
+              {/* Salary Range */}
+              {jobPreferences.salaryRange && (
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-slate-500">📍</span>
+                  <span className="text-sm text-slate-500">salary range</span>
                   <Badge
                     variant="outline"
-                    className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
+                    className="group relative border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 shadow-sm transition-all hover:scale-105"
                   >
-                    {[
-                      jobAttributes.newJob.location.city,
-                      jobAttributes.newJob.location.country,
-                    ]
-                      .filter(Boolean)
-                      .join(", ")}
+                    {jobPreferences.salaryRange.min &&
+                    jobPreferences.salaryRange.max
+                      ? `${jobPreferences.salaryRange.currency ?? ""} ${jobPreferences.salaryRange.min.toLocaleString()}-${jobPreferences.salaryRange.max.toLocaleString()}`
+                      : jobPreferences.salaryRange.min
+                        ? `${jobPreferences.salaryRange.currency ?? ""} ${jobPreferences.salaryRange.min.toLocaleString()}+`
+                        : jobPreferences.salaryRange.max
+                          ? `${jobPreferences.salaryRange.currency ?? ""} up to ${jobPreferences.salaryRange.max.toLocaleString()}`
+                          : "Salary specified"}
                     <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
                   </Badge>
+                </div>
+              )}
 
-                  {jobAttributes.newJob.location?.type && (
-                    <Select value={jobAttributes.newJob.location.type}>
+              {/* Location & Remote */}
+              {(jobPreferences.locations?.length > 0 ||
+                jobPreferences.remotePreference) && (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-slate-500">📍</span>
+                  {jobPreferences.locations?.length > 0 && (
+                    <Badge
+                      variant="outline"
+                      className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
+                    >
+                      {jobPreferences.locations.join(", ")}
+                      <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                    </Badge>
+                  )}
+
+                  {jobPreferences.remotePreference && (
+                    <Select value={jobPreferences.remotePreference}>
                       <Button
                         asChild
                         size={"sm"}
@@ -408,13 +410,13 @@ export default function DiscoverPage() {
                       >
                         <SelectTrigger>
                           <SelectValue>
-                            {jobAttributes.newJob.location.type}
+                            {jobPreferences.remotePreference}
                           </SelectValue>
                         </SelectTrigger>
                       </Button>
                       <SelectContent>
-                        <SelectItem value={jobAttributes.newJob.location.type}>
-                          {jobAttributes.newJob.location.type}
+                        <SelectItem value={jobPreferences.remotePreference}>
+                          {jobPreferences.remotePreference}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -422,16 +424,26 @@ export default function DiscoverPage() {
                 </div>
               )}
 
-              {/* Availability */}
-              {jobAttributes.newJob.joiningNotice?.immediate && (
+              {/* Company Preferences */}
+              {jobPreferences.companyPreferences && (
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-slate-500">available</span>
-                  <Badge
-                    variant="outline"
-                    className="group relative border-teal-200 bg-gradient-to-r from-teal-50 to-cyan-50 text-teal-700 shadow-sm transition-all hover:scale-105"
-                  >
-                    Immediate Joining
-                  </Badge>
+                  <span className="text-sm text-slate-500">at</span>
+                  {jobPreferences.companyPreferences.size && (
+                    <Badge
+                      variant="outline"
+                      className="group relative border-teal-200 bg-gradient-to-r from-teal-50 to-cyan-50 text-teal-700 shadow-sm transition-all hover:scale-105"
+                    >
+                      {jobPreferences.companyPreferences.size} company
+                    </Badge>
+                  )}
+                  {jobPreferences.companyPreferences.industries?.length > 0 && (
+                    <Badge
+                      variant="outline"
+                      className="group relative border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-700 shadow-sm transition-all hover:scale-105"
+                    >
+                      {jobPreferences.companyPreferences.industries.join(", ")}
+                    </Badge>
+                  )}
                 </div>
               )}
 
@@ -440,7 +452,7 @@ export default function DiscoverPage() {
                   onClick={clearSearch}
                   className="text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700"
                 >
-                  Add more filters
+                  Clear search
                 </button>
                 <div className="h-4 w-[1px] bg-slate-200"></div>
                 {additionalFilters.map((filter) => (
@@ -476,22 +488,22 @@ export default function DiscoverPage() {
           )}
         </div>
 
-        {/* Candidates Section */}
+        {/* Jobs Section */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">
-              {isSearchActive ? "Top candidates" : "Featured candidates"}
+              {isSearchActive ? "Matching jobs" : "Featured opportunities"}
             </h2>
-            {candidates.length > 0 && (
+            {jobs.length > 0 && (
               <div className="text-muted-foreground text-sm">
-                {searchCandidates.data?.total} candidates found
+                {searchJobs.data?.total} jobs found
               </div>
             )}
           </div>
 
-          {naturalLanguageQuery.isPending || searchCandidates.isPending ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          {naturalLanguageQuery.isPending || searchJobs.isPending ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Card
                   key={i}
                   className="group animate-pulse transition-all duration-300"
@@ -501,115 +513,147 @@ export default function DiscoverPage() {
                 >
                   <CardContent className="p-6">
                     <div className="space-y-4">
-                      {/* Avatar skeleton */}
-                      <Skeleton className="mx-auto h-16 w-16 rounded-full" />
-
-                      {/* Name and title skeleton */}
-                      <div className="space-y-2 text-center">
-                        <Skeleton className="mx-auto h-4 w-32" />
-                        <Skeleton className="mx-auto h-3 w-24" />
+                      {/* Company logo skeleton */}
+                      <div className="flex items-start gap-4">
+                        <Skeleton className="h-12 w-12 rounded-lg" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-3 w-24" />
+                        </div>
                       </div>
 
-                      {/* Skills skeleton */}
-                      <div className="flex flex-wrap justify-center gap-1">
-                        <Skeleton className="h-5 w-12 rounded-full" />
-                        <Skeleton className="h-5 w-16 rounded-full" />
-                        <Skeleton className="h-5 w-10 rounded-full" />
-                      </div>
-
-                      {/* Experience skeleton */}
+                      {/* Job title skeleton */}
                       <div className="space-y-2">
-                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-5 w-full" />
                         <Skeleton className="h-3 w-3/4" />
                       </div>
 
-                      {/* Match score skeleton */}
-                      <div className="border-t pt-2">
-                        <div className="flex items-center justify-between">
-                          <Skeleton className="h-3 w-16" />
-                          <Skeleton className="h-6 w-12 rounded-full" />
-                        </div>
+                      {/* Tags skeleton */}
+                      <div className="flex flex-wrap gap-1">
+                        <Skeleton className="h-5 w-16 rounded-full" />
+                        <Skeleton className="h-5 w-20 rounded-full" />
+                        <Skeleton className="h-5 w-12 rounded-full" />
+                      </div>
+
+                      {/* Salary and location skeleton */}
+                      <div className="space-y-2 border-t pt-4">
+                        <Skeleton className="h-3 w-32" />
+                        <Skeleton className="h-3 w-24" />
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          ) : candidates.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {candidates.map((candidate) => (
+          ) : jobs.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {jobs.map((job) => (
                 <Card
-                  key={candidate.id}
+                  key={job.id}
                   className="group cursor-pointer transition-shadow hover:shadow-lg"
                 >
                   <CardContent className="p-6">
                     <div className="space-y-4">
-                      {/* Avatar */}
-                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-xl font-semibold text-white">
-                        {candidate.firstName?.[0] || "?"}
-                        {candidate.lastName?.[0] || ""}
+                      {/* Company info */}
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-gray-100 to-gray-50">
+                          <Building2 className="h-6 w-6 text-gray-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">
+                            {job.company}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            {job.companySize && `${job.companySize} • `}
+                            {job.industry}
+                          </p>
+                        </div>
                       </div>
 
-                      {/* Name and title */}
-                      <div className="space-y-2 text-center">
-                        <h3 className="font-semibold text-gray-900">
-                          {candidate.firstName && candidate.lastName
-                            ? `${candidate.firstName} ${candidate.lastName}`
-                            : "Anonymous Candidate"}
+                      {/* Job title and description */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {job.title}
                         </h3>
-                        <p className="text-sm text-gray-600">
-                          {candidate.title || "Professional"}
-                        </p>
-                      </div>
-
-                      {/* Skills */}
-                      <div className="flex flex-wrap justify-center gap-1">
-                        {candidate.skills.slice(0, 3).map((skill, index) => (
-                          <Badge
-                            key={index}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                        {candidate.skills.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{candidate.skills.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-
-                      {/* Experience */}
-                      <div className="space-y-1 text-sm text-gray-600">
-                        {candidate.yearsOfExperience && (
-                          <p>{candidate.yearsOfExperience} years experience</p>
-                        )}
-                        {candidate.location && <p>📍 {candidate.location}</p>}
-                        {candidate.workExperience[0] && (
-                          <p className="truncate">
-                            @ {candidate.workExperience[0].company}
+                        {job.description && (
+                          <p className="mt-1 line-clamp-2 text-sm text-gray-600">
+                            {job.description}
                           </p>
                         )}
                       </div>
 
-                      {/* Match score */}
-                      <div className="border-t pt-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-500">Match</span>
-                          <Badge
-                            variant={
-                              candidate.matchScore >= 80
-                                ? "default"
-                                : candidate.matchScore >= 60
-                                  ? "secondary"
-                                  : "outline"
-                            }
-                            className="text-xs"
-                          >
-                            {candidate.matchScore.toFixed(2)}%
+                      {/* Tags */}
+                      <div className="flex flex-wrap gap-1">
+                        {job.type && (
+                          <Badge variant="secondary" className="text-xs">
+                            <Briefcase className="mr-1 h-3 w-3" />
+                            {job.type}
                           </Badge>
+                        )}
+                        {job.experienceLevel && (
+                          <Badge variant="secondary" className="text-xs">
+                            {job.experienceLevel}
+                          </Badge>
+                        )}
+                        {job.remote && (
+                          <Badge variant="secondary" className="text-xs">
+                            {job.remote}
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Required skills */}
+                      {job.requiredSkills && job.requiredSkills.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {job.requiredSkills
+                            .slice(0, 3)
+                            .map((skill, index) => (
+                              <Badge
+                                key={index}
+                                variant="outline"
+                                className="text-xs"
+                              >
+                                {skill}
+                              </Badge>
+                            ))}
+                          {job.requiredSkills.length > 3 && (
+                            <Badge variant="outline" className="text-xs">
+                              +{job.requiredSkills.length - 3}
+                            </Badge>
+                          )}
                         </div>
+                      )}
+
+                      {/* Footer info */}
+                      <div className="space-y-2 border-t pt-4 text-sm text-gray-600">
+                        {job.salary && (
+                          <div className="flex items-center gap-2">
+                            <DollarSign className="h-4 w-4" />
+                            <span>
+                              {job.salary.min && job.salary.max
+                                ? `${job.salary.currency ?? "$"}${job.salary.min.toLocaleString()}-${job.salary.max.toLocaleString()}`
+                                : job.salary.min
+                                  ? `${job.salary.currency ?? "$"}${job.salary.min.toLocaleString()}+`
+                                  : job.salary.max
+                                    ? `Up to ${job.salary.currency ?? "$"}${job.salary.max.toLocaleString()}`
+                                    : "Competitive"}
+                            </span>
+                          </div>
+                        )}
+                        {job.location && (
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-4 w-4" />
+                            <span>{job.location}</span>
+                          </div>
+                        )}
+                        {job.postedDate && (
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4" />
+                            <span>
+                              {new Date(job.postedDate).toLocaleDateString()}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -619,41 +663,47 @@ export default function DiscoverPage() {
           ) : isSearchActive ? (
             <div className="py-12 text-center">
               <p className="text-lg text-gray-500">
-                No candidates found matching your criteria.
+                No jobs found matching your criteria.
               </p>
               <p className="mt-2 text-sm text-gray-400">
-                Try adjusting your search terms or requirements.
+                Try adjusting your search terms or preferences.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {[1, 2, 3, 4].map((i) => (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
                 <Card
                   key={i}
                   className="group cursor-pointer transition-shadow hover:shadow-lg"
                 >
                   <CardContent className="p-6">
                     <div className="space-y-4">
-                      {/* Placeholder avatar */}
-                      <div className="bg-muted mx-auto h-16 w-16 rounded-full" />
-
-                      {/* Placeholder content */}
-                      <div className="space-y-2 text-center">
-                        <div className="bg-muted mx-auto h-4 w-3/4 rounded" />
-                        <div className="bg-muted mx-auto h-3 w-1/2 rounded" />
+                      {/* Placeholder company */}
+                      <div className="flex items-start gap-4">
+                        <div className="bg-muted h-12 w-12 rounded-lg" />
+                        <div className="flex-1 space-y-2">
+                          <div className="bg-muted h-4 w-3/4 rounded" />
+                          <div className="bg-muted h-3 w-1/2 rounded" />
+                        </div>
                       </div>
 
-                      {/* Placeholder skills */}
-                      <div className="flex flex-wrap justify-center gap-1">
-                        <div className="bg-muted h-5 w-12 rounded" />
-                        <div className="bg-muted h-5 w-16 rounded" />
-                        <div className="bg-muted h-5 w-10 rounded" />
-                      </div>
-
-                      {/* Placeholder metrics */}
-                      <div className="space-y-1">
-                        <div className="bg-muted h-3 w-full rounded" />
+                      {/* Placeholder title */}
+                      <div className="space-y-2">
+                        <div className="bg-muted h-5 w-full rounded" />
                         <div className="bg-muted h-3 w-2/3 rounded" />
+                      </div>
+
+                      {/* Placeholder tags */}
+                      <div className="flex flex-wrap gap-1">
+                        <div className="bg-muted h-5 w-16 rounded" />
+                        <div className="bg-muted h-5 w-20 rounded" />
+                        <div className="bg-muted h-5 w-12 rounded" />
+                      </div>
+
+                      {/* Placeholder footer */}
+                      <div className="space-y-2 border-t pt-4">
+                        <div className="bg-muted h-3 w-32 rounded" />
+                        <div className="bg-muted h-3 w-24 rounded" />
                       </div>
                     </div>
                   </CardContent>
