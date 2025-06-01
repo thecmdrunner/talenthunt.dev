@@ -121,6 +121,8 @@ export const candidateProfiles = createTable(
     lastActiveAt: d.timestamp({ withTimezone: true }).defaultNow(),
 
     onboardingCompletedAt: d.timestamp({ withTimezone: true }),
+    approvedAt: d.timestamp({ withTimezone: true }),
+    rejectedAt: d.timestamp({ withTimezone: true }),
 
     createdAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updatedAt: d

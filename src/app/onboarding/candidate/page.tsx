@@ -85,8 +85,8 @@ export default function CandidateOnboardingPage() {
 
   const handleComplete = useCallback(() => {
     nextCandidateStepMutation.mutate({});
-    router.push("/dashboard");
-  }, [nextCandidateStepMutation, router]);
+    // router.push("/dashboard");
+  }, [nextCandidateStepMutation]);
 
   const renderStepContent = useCallback(() => {
     switch (currentStep) {
@@ -97,23 +97,206 @@ export default function CandidateOnboardingPage() {
       case 3:
         return <IntroduceYourself onComplete={handleComplete} />;
       default:
-        return (
-          <div className="py-12 text-center">
-            <h2 className="mb-4 text-2xl font-semibold text-gray-900">
-              Profile Complete!
-            </h2>
-            <p className="mb-6 text-gray-600">
-              Your profile is now complete and visible to recruiters!
-            </p>
-            <Button
-              size="lg"
-              className="bg-blue-600 hover:bg-blue-700"
-              onClick={() => router.push("/dashboard")}
-            >
-              Go to Dashboard
-            </Button>
-          </div>
-        );
+        const verificationStatus = user?.candidateProfile?.verificationStatus;
+        const isApproved = user?.candidateProfile?.onboardingCompletedAt;
+        const approvedAt = user?.candidateProfile?.approvedAt;
+        const rejectedAt = user?.candidateProfile?.rejectedAt;
+
+        if (isApproved) {
+          // Approved and ready to go
+          return (
+            <div className="space-y-6">
+              <div className="rounded-xl bg-gradient-to-br from-green-50 to-blue-50 p-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                  <div className="text-2xl">🎉</div>
+                </div>
+                <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+                  Welcome to the Platform!
+                </h2>
+                <p className="mb-4 text-gray-600">
+                  Congratulations! Your profile has been approved and
+                  you&apos;re now visible to recruiters.
+                </p>
+                <div className="rounded-lg bg-white p-4 shadow-sm">
+                  <h4 className="mb-2 font-medium text-green-900">
+                    ✅ Application Status: Approved
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Your profile is now live and recruiters can discover and
+                    contact you.
+                  </p>
+                  {approvedAt && (
+                    <p className="mt-2 text-xs text-gray-500">
+                      Approved on {new Date(approvedAt).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-xl bg-blue-50 p-6">
+                <h4 className="mb-3 font-medium text-gray-900">
+                  What&apos;s next?
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    Start receiving job opportunities from recruiters
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    Update your profile anytime from the dashboard
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    Set your availability and job preferences
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    Browse and apply to featured opportunities
+                  </li>
+                </ul>
+              </div>
+
+              <div className="text-center">
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700"
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Go to Dashboard
+                </Button>
+              </div>
+            </div>
+          );
+        } else if (verificationStatus === "rejected") {
+          // Application was rejected
+          return (
+            <div className="space-y-6">
+              <div className="rounded-xl bg-gradient-to-br from-red-50 to-orange-50 p-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                  <div className="text-2xl">❌</div>
+                </div>
+                <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+                  Application Not Approved
+                </h2>
+                <p className="mb-4 text-gray-600">
+                  Unfortunately, your application doesn&apos;t meet our current
+                  requirements.
+                </p>
+                <div className="rounded-lg bg-white p-4 shadow-sm">
+                  <h4 className="mb-2 font-medium text-red-900">
+                    ❌ Application Status: Not Approved
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Please review your profile and consider resubmitting with
+                    updated information.
+                  </p>
+                  {rejectedAt && (
+                    <p className="mt-2 text-xs text-gray-500">
+                      Reviewed on {new Date(rejectedAt).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-xl bg-orange-50 p-6">
+                <h4 className="mb-3 font-medium text-gray-900">
+                  What can you do?
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                    Review and update your profile information
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                    Re-record your introduction video with more detail
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                    Ensure your video shows professional intent
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                    Contact support if you believe this was an error
+                  </li>
+                </ul>
+              </div>
+
+              <div className="text-center">
+                <Button
+                  size="lg"
+                  className="bg-orange-600 hover:bg-orange-700"
+                  onClick={() => window.location.reload()}
+                >
+                  Edit Profile
+                </Button>
+              </div>
+            </div>
+          );
+        } else {
+          // Still under review (pending)
+          return (
+            <div className="space-y-6">
+              <div className="rounded-xl bg-gradient-to-br from-yellow-50 to-blue-50 p-8 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
+                  <div className="text-2xl">⏳</div>
+                </div>
+                <h2 className="mb-3 text-2xl font-semibold text-gray-900">
+                  Profile Under Review
+                </h2>
+                <p className="mb-4 text-gray-600">
+                  Your profile has been submitted and our team is reviewing your
+                  application.
+                </p>
+                <div className="rounded-lg bg-white p-4 shadow-sm">
+                  <h4 className="mb-2 font-medium text-yellow-900">
+                    ⏳ Application Status: Under Review
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    {verificationStatus === "pending"
+                      ? "Our team is manually reviewing your profile for quality assurance."
+                      : "Your application is being processed by our AI system."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-xl bg-blue-50 p-6">
+                <h4 className="mb-3 font-medium text-gray-900">
+                  What happens next?
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    Profile review typically takes 1-2 business days
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    You&apos;ll receive an email notification when approved
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    Once approved, recruiters can discover and contact you
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                    You can update your profile anytime from the dashboard
+                  </li>
+                </ul>
+              </div>
+
+              <div className="text-center">
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700"
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Go to Dashboard
+                </Button>
+              </div>
+            </div>
+          );
+        }
     }
   }, [
     currentStep,
@@ -121,6 +304,7 @@ export default function CandidateOnboardingPage() {
     handleContinueToStep3,
     handleComplete,
     router,
+    user,
   ]);
 
   if (isLoading) {

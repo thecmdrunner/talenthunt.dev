@@ -21,8 +21,8 @@ export default function OnboardingPage() {
 
   // If user already has a profile, redirect them
   if (
-    user?.candidateProfile.onboardingCompletedAt ||
-    user?.recruiterProfile.onboardingCompletedAt
+    user?.candidateProfile?.onboardingCompletedAt ||
+    user?.recruiterProfile?.onboardingCompletedAt
   ) {
     router.push("/dashboard");
     return null;
