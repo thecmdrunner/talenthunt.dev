@@ -24,6 +24,7 @@ export const useVideoRecording = () => {
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const recordingStartTimeRef = useRef<number>(0);
+  const stopRecordingRef = useRef<(() => void) | null>(null);
 
   const supabase = supabaseBrowserClient();
 
@@ -63,6 +64,9 @@ export const useVideoRecording = () => {
     }
   }, [isRecording, currentStream]);
 
+  // Update the ref whenever stopRecording changes
+  stopRecordingRef.current = stopRecording;
+
   const startTimer = useCallback(() => {
     recordingStartTimeRef.current = Date.now();
     timerRef.current = setInterval(() => {
@@ -70,11 +74,13 @@ export const useVideoRecording = () => {
       setRecordingTime(elapsed);
 
       if (elapsed >= MAX_RECORDING_TIME) {
-        // Use a ref to avoid stale closure
-        stopRecording();
+        // Use the ref to call the latest version
+        if (stopRecordingRef.current) {
+          stopRecordingRef.current();
+        }
       }
     }, 100);
-  }, [stopRecording]);
+  }, []);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
