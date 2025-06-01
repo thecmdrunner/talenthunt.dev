@@ -24,8 +24,6 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  Coins,
-  CreditCard,
   LogOut,
   Sparkles,
 } from "lucide-react";
@@ -131,34 +129,6 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
 
-            {/* Credits Status */}
-            {creditsStatus && (
-              <>
-                <DropdownMenuSeparator />
-                <div className="px-2 py-2">
-                  <div className="bg-muted/50 flex items-center justify-between rounded-md px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      <Coins className="h-4 w-4 text-amber-600" />
-                      <span className="text-sm font-medium">Credits</span>
-                    </div>
-                    <Badge
-                      variant={
-                        creditsStatus.hasLowCredits ? "destructive" : "default"
-                      }
-                      className="font-mono"
-                    >
-                      {creditsStatus.credits}
-                    </Badge>
-                  </div>
-                  {creditsStatus.hasLowCredits && (
-                    <p className="text-muted-foreground mt-2 text-xs">
-                      Running low! Get more credits to continue searching.
-                    </p>
-                  )}
-                </div>
-              </>
-            )}
-
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
@@ -180,7 +150,7 @@ export function NavUser() {
                         : ""
                     }
                   >
-                    Upgrade to Pro
+                    Upgrade
                   </span>
                   {creditsStatus?.hasLowCredits && (
                     <Badge variant="secondary" className="ml-auto text-xs">
@@ -194,12 +164,9 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => handleMenuClick("account")}>
                 <BadgeCheck />
-                Account
+                Get Verified
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleMenuClick("billing")}>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
+
               <DropdownMenuItem
                 onClick={() => handleMenuClick("notifications")}
               >

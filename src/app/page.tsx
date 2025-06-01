@@ -1,9 +1,11 @@
 "use client";
 
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import {
   ArrowRight,
   Brain,
@@ -22,13 +24,18 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function LandingPage() {
   const [activeView, setActiveView] = useState<"hire" | "find">("hire");
   const [searchQuery, setSearchQuery] = useState("");
-  const [demoSearchQuery, setDemoSearchQuery] = useState("");
+
+  const placeholderText =
+    activeView === "hire"
+      ? "Senior AI engineers with LangChain + RAG experience in San Francisco"
+      : "Remote Product Manager roles in AI startups";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-blue-800 to-blue-700">
@@ -38,11 +45,11 @@ export default function LandingPage() {
         <div className="absolute top-0 right-0 left-0 h-1 animate-pulse bg-gradient-to-r from-blue-400 via-blue-300 to-blue-400"></div>
 
         {/* Geometric shapes at the top */}
-        <div className="absolute top-4 left-10 h-8 w-8 rotate-45 animate-spin border-2 border-blue-300/30"></div>
-        <div className="absolute top-6 right-20 h-6 w-6 animate-bounce rounded-full bg-blue-400/20"></div>
+        {/* <div className="absolute top-4 left-10 h-8 w-8 rotate-45 animate-spin border-2 border-blue-300/30"></div> */}
+        {/* <div className="absolute top-6 right-20 h-6 w-6 animate-bounce rounded-full bg-blue-400/20"></div> */}
         <div className="absolute top-8 left-1/4 h-4 w-4 rotate-12 animate-pulse bg-blue-300/40"></div>
         <div className="absolute top-4 right-1/3 h-2 w-10 bg-gradient-to-r from-blue-400/30 to-transparent"></div>
-        <div className="absolute top-12 left-1/2 h-6 w-6 animate-ping rounded-full border border-blue-300/25"></div>
+        <div className="absolute top-12 left-1/2 h-4 w-4 animate-ping rounded-full border border-blue-300/25"></div>
 
         {/* Geometric lines */}
         <svg
@@ -184,47 +191,49 @@ export default function LandingPage() {
               <div className="absolute -bottom-1 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 hover:w-full"></div>
             </Link>
             <Link href="/dashboard">
-              <Button className="bg-blue-600/20 hover:bg-blue-600/30 text-white border border-blue-400/30 font-medium px-6 py-2 rounded-full backdrop-blur-sm relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <Button className="group relative overflow-hidden rounded-full border border-blue-400/30 bg-blue-600/20 px-6 py-2 font-medium text-white backdrop-blur-sm hover:bg-blue-600/30">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 transition-opacity group-hover:opacity-100"></div>
                 <span className="relative z-10">Get Started</span>
-            </Button>
+              </Button>
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section with Enhanced Geometry and consistent blues */}
-      <div className="relative z-10 mx-auto max-w-6xl px-6 pt-16 pb-24">
+      <div className="relative z-10 mx-auto max-w-6xl px-6 pt-8 pb-24">
         {/* Toggle Buttons with blue consistency */}
-        <div className="flex items-center justify-center space-x-4 mb-12">
-          <Button 
+        <div className="mx-auto mb-12 flex max-w-sm items-center justify-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-600/20 p-1.5 backdrop-blur-sm">
+          <Button
             onClick={() => setActiveView("hire")}
-            className={`${
+            className={cn(
+              `flex-1 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300`,
+
               activeView === "hire"
-                ? "bg-white text-blue-900 shadow-lg"
-                : "border border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30"
-            } group relative overflow-hidden rounded-full px-8 py-3 font-medium backdrop-blur-sm transition-all duration-300`}
+                ? "bg-white text-blue-900 hover:bg-white"
+                : "bg-transparent hover:bg-white/10",
+            )}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-blue-600/5 opacity-0 transition-opacity group-hover:opacity-100"></div>
-            <Zap className="relative z-10 mr-2 h-4 w-4" />
-            <span className="relative z-10">Hire Talent</span>
+            <Zap className="mr-2 inline-block h-4 w-4" />
+            <span>Hire Talent</span>
           </Button>
-          <Button 
+          <Button
             onClick={() => setActiveView("find")}
-            className={`${
+            className={cn(
+              `flex-1 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300`,
+
               activeView === "find"
-                ? "bg-white text-blue-900 shadow-lg"
-                : "border border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30"
-            } group relative overflow-hidden rounded-full px-8 py-3 font-medium backdrop-blur-sm transition-all duration-300`}
+                ? "bg-white text-blue-900 hover:bg-white"
+                : "bg-transparent hover:bg-white/10",
+            )}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-blue-600/5 opacity-0 transition-opacity group-hover:opacity-100"></div>
-            <Briefcase className="relative z-10 mr-2 h-4 w-4" />
-            <span className="relative z-10">Find Work</span>
+            <Briefcase className="mr-2 inline-block h-4 w-4" />
+            <span>Find Work</span>
           </Button>
         </div>
 
         {/* Feature Badge with blue consistency */}
-        <div className="mb-12 flex justify-center">
+        {/* <div className="mb-12 flex justify-center">
           <div className="relative">
             <Badge className="relative overflow-hidden rounded-full border border-blue-400/30 bg-blue-600/20 px-6 py-3 text-lg font-medium text-white backdrop-blur-sm">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-blue-600/5"></div>
@@ -237,33 +246,121 @@ export default function LandingPage() {
             </Badge>
             <div className="absolute -inset-2 animate-pulse rounded-full border border-blue-400/20"></div>
           </div>
-        </div>
-        
+        </div> */}
+
         {/* Main Headline with consistent blue underline */}
         <div className="mb-16 text-center">
-          <h1 className="mb-6 text-6xl leading-tight font-bold text-white md:text-7xl">
-            Find the perfect{" "}
-            <span className="relative overflow-visible">
-              <span className="bg-gradient-to-tr from-blue-300 to-cyan-100 bg-clip-text text-transparent">
-                {activeView === "hire" ? "talent" : "opportunity"}
-              </span>
-              <svg
-                className="absolute left-0 -bottom-4 w-full overflow-visible"
-                viewBox="0 0 100 8"
-                preserveAspectRatio="none"
-              >
-                <path
-                  d="M0,6 Q50,2 100,6"
-                  className="fill-none stroke-blue-300 stroke-[2]"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
-          </span>
-        </h1>
-          <p className="text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
-            TalentHunt is an AI-powered platform. Connect top talent with leading companies through intelligent
-            matching.
+          {/* <AvatarCircles
+            numPeople={10}
+            avatarUrls={[
+              {
+                imageUrl: "https://avatars.githubusercontent.com/u/16860528",
+                profileUrl: "https://github.com/dillionverma",
+              },
+              {
+                imageUrl: "https://avatars.githubusercontent.com/u/20110627",
+                profileUrl: "https://github.com/tomonarifeehan",
+              },
+              {
+                imageUrl: "https://avatars.githubusercontent.com/u/106103625",
+                profileUrl: "https://github.com/BankkRoll",
+              },
+              {
+                imageUrl: "https://avatars.githubusercontent.com/u/59228569",
+                profileUrl: "https://github.com/safethecode",
+              },
+              {
+                imageUrl: "https://avatars.githubusercontent.com/u/59442788",
+                profileUrl: "https://github.com/sanjay-mali",
+              },
+              {
+                imageUrl: "https://avatars.githubusercontent.com/u/89768406",
+                profileUrl: "https://github.com/itsarghyadas",
+              },
+            ]}
+          /> */}
+
+          <motion.div className="mb-10 flex w-full flex-row items-center justify-center">
+            <AnimatedTooltip
+              items={[
+                {
+                  id: 1,
+                  name: "John",
+                  designation: "Software Engineer",
+                  image:
+                    "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3387&q=80",
+                },
+                {
+                  id: 2,
+                  name: "Robert",
+                  designation: "Product Manager",
+                  image:
+                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+                },
+                {
+                  id: 3,
+                  name: "Jane",
+                  designation: "Data Scientist",
+                  image:
+                    "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
+                },
+                {
+                  id: 4,
+                  name: "Emily",
+                  designation: "UX Designer",
+                  image:
+                    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+                },
+                {
+                  id: 5,
+                  name: "Tyler",
+                  designation: "GenAI Developer",
+                  image:
+                    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3540&q=80",
+                },
+                {
+                  id: 6,
+                  name: "Dora",
+                  designation: "GTM Lead",
+                  image:
+                    "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3534&q=80",
+                },
+              ]}
+            />
+          </motion.div>
+
+          <h1 className="mb-6 text-6xl leading-tight font-bold text-balance text-white transition-all md:text-7xl">
+            Find the Perfect
+            <br />
+            <span className="relative overflow-visible text-7xl">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={activeView}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="bg-gradient-to-tr from-blue-300 to-cyan-100 bg-clip-text text-[80px] tracking-tight text-transparent capitalize"
+                >
+                  {activeView === "hire" ? "talent" : "opportunity"}
+                </motion.span>
+                <motion.svg
+                  className="absolute -bottom-4 left-0 w-full overflow-visible"
+                  viewBox="0 0 100 8"
+                  preserveAspectRatio="none"
+                >
+                  <motion.path
+                    d="M0,6 Q50,2 100,6"
+                    className="fill-none stroke-blue-300 stroke-[2]"
+                    strokeLinecap="round"
+                  />
+                </motion.svg>
+                <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
+              </AnimatePresence>
+            </span>
+          </h1>
+
+          <p className="mx-auto my-12 max-w-xl text-2xl leading-relaxed text-balance text-white/80">
+            Connect with the leading companies through intelligent matching.
           </p>
         </div>
 
@@ -278,24 +375,21 @@ export default function LandingPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                activeView === "hire"
-                  ? "Find senior AI engineers with LangChain + RAG experience in San Francisco..."
-                  : "Search for remote product manager roles in SaaS startups..."
-              }
-              className="w-full rounded-2xl border-0 bg-white/95 py-8 pr-32 pl-16 text-xl text-gray-800 shadow-2xl backdrop-blur-sm placeholder:text-gray-500 focus:ring-2 focus:ring-blue-300/50"
+              placeholder={placeholderText}
+              className="w-full rounded-2xl border-0 bg-white/95 py-8 pr-32 pl-16 !text-xl text-gray-800 shadow-2xl backdrop-blur-sm placeholder:text-gray-500 focus:ring-2 focus:ring-blue-300/50"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && searchQuery.trim()) {
                   window.location.href = `/discover?q=${encodeURIComponent(searchQuery.trim())}`;
                 }
               }}
             />
-            <Button 
+            <Button
+              type="button"
+              id="search-button"
               className="absolute right-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 font-semibold text-white shadow-lg hover:from-blue-700 hover:to-blue-800"
               onClick={() => {
-                if (searchQuery.trim()) {
-                  window.location.href = `/discover?q=${encodeURIComponent(searchQuery.trim())}`;
-                }
+                const query = searchQuery.trim() || placeholderText;
+                window.location.href = `/discover?q=${encodeURIComponent(query)}`;
               }}
             >
               Search
@@ -309,22 +403,22 @@ export default function LandingPage() {
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">10,000+ verified developers</span>
           </div>
-          <div className="hidden md:flex items-center">
-            <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent mx-4"></div>
-            </div>
+          <div className="hidden items-center md:flex">
+            <div className="mx-4 h-0.5 w-8 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent"></div>
+          </div>
           <div className="flex items-center space-x-3">
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">500+ companies hiring</span>
-            </div>
-          <div className="hidden md:flex items-center">
-            <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent mx-4"></div>
-            </div>
+          </div>
+          <div className="hidden items-center md:flex">
+            <div className="mx-4 h-0.5 w-8 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent"></div>
+          </div>
           <div className="flex items-center space-x-3">
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">90% faster hiring</span>
           </div>
         </div>
-            </div>
+      </div>
 
       {/* Enhanced Search Interface Demo Card with browser mockup */}
       <div className="relative z-10 mx-auto mb-24 max-w-5xl px-6">
@@ -339,14 +433,16 @@ export default function LandingPage() {
             ></div>
           </div>
 
-          <CardContent className="p-8 relative z-10">
+          <CardContent className="relative z-10 p-8">
             {/* Browser Chrome */}
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-3 h-3 bg-red-500 rounded-full shadow-lg"></div>
-              <div className="w-3 h-3 bg-yellow-500 rounded-full shadow-lg"></div>
-              <div className="w-3 h-3 bg-green-500 rounded-full shadow-lg"></div>
-              <div className="flex-1 bg-blue-800/60 backdrop-blur-sm rounded-lg px-4 py-2 ml-4 border border-blue-500/30">
-                <span className="text-blue-200 text-sm">talenthunt.dev/search</span>
+            <div className="mb-6 flex items-center space-x-3">
+              <div className="h-3 w-3 rounded-full bg-red-500 shadow-lg"></div>
+              <div className="h-3 w-3 rounded-full bg-yellow-500 shadow-lg"></div>
+              <div className="h-3 w-3 rounded-full bg-green-500 shadow-lg"></div>
+              <div className="ml-4 flex-1 rounded-lg border border-blue-500/30 bg-blue-800/60 px-4 py-2 backdrop-blur-sm">
+                <span className="text-sm text-blue-200">
+                  talenthunt.dev/search
+                </span>
               </div>
             </div>
 
@@ -354,13 +450,31 @@ export default function LandingPage() {
             <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-800/80 to-blue-900/80 p-12 backdrop-blur-sm">
               {/* Geometric Background Elements */}
               <div className="absolute top-0 right-0 h-32 w-32 opacity-10">
-                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                  <polygon points="50,10 90,50 50,90 10,50" stroke="currentColor" fill="none" strokeWidth="1" />
+                <svg
+                  viewBox="0 0 100 100"
+                  className="h-full w-full text-blue-300"
+                >
+                  <polygon
+                    points="50,10 90,50 50,90 10,50"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="1"
+                  />
                 </svg>
               </div>
               <div className="absolute bottom-0 left-0 h-24 w-24 opacity-10">
-                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                  <circle cx="50" cy="50" r="40" stroke="currentColor" fill="none" strokeWidth="1" />
+                <svg
+                  viewBox="0 0 100 100"
+                  className="h-full w-full text-blue-300"
+                >
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="1"
+                  />
                 </svg>
               </div>
 
@@ -373,11 +487,11 @@ export default function LandingPage() {
                 {/* Search Input Area */}
                 <div className="relative mb-8 overflow-hidden rounded-2xl border border-blue-500/20 bg-blue-700/30 p-8 backdrop-blur-sm">
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-blue-500/5"></div>
-                  
+
                   {/* Search Text */}
                   <div className="relative z-10 mb-6">
-                    <p className="text-xl text-white/90 leading-relaxed">
-                      Senior GenAI engineers with LangChain + RAG experience in Europe...
+                    <p className="text-xl leading-relaxed text-white/90">
+                      {placeholderText}
                     </p>
                   </div>
 
@@ -389,14 +503,16 @@ export default function LandingPage() {
                       <div className="absolute h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 opacity-90"></div>
                       <div className="relative h-6 w-6 rounded-full bg-white shadow-lg"></div>
                     </div>
-          </div>
-        </div>
+                  </div>
+                </div>
 
                 {/* Search Button */}
-                <Button 
-                  className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-12 py-4 text-lg font-semibold text-white shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300"
+                <Button
+                  type="button"
+                  id="search-button"
+                  className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-12 py-4 text-lg font-semibold text-white shadow-xl transition-all duration-300 hover:from-blue-700 hover:to-blue-800"
                   onClick={() => {
-                    const query = demoSearchQuery.trim() || "Senior GenAI engineers with LangChain + RAG experience in Europe";
+                    const query = searchQuery.trim() || placeholderText;
                     window.location.href = `/discover?q=${encodeURIComponent(query)}`;
                   }}
                 >
@@ -408,7 +524,7 @@ export default function LandingPage() {
             </div>
           </CardContent>
         </Card>
-            </div>
+      </div>
 
       {/* Enhanced Welcome Cards with perfect blue consistency */}
       <div className="relative z-10 mx-auto mb-24 max-w-6xl px-6">
@@ -428,7 +544,7 @@ export default function LandingPage() {
           <div className="mt-4 flex justify-center">
             <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
           </div>
-              </div>
+        </div>
 
         <div className="grid gap-8 md:grid-cols-2">
           {/* Enhanced Job Seeker Card with blue consistency */}
@@ -457,14 +573,14 @@ export default function LandingPage() {
               </svg>
             </div>
 
-            <CardContent className="p-8 relative z-10">
-              <div className="text-center mb-8">
-                <div className="w-20 h-20 bg-blue-600/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-blue-400/30">
-                  <div className="absolute inset-3 border border-white/20 rounded-lg"></div>
-                  <Users className="w-10 h-10 text-white relative z-10" />
+            <CardContent className="relative z-10 p-8">
+              <div className="mb-8 text-center">
+                <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
+                  <div className="absolute inset-3 rounded-lg border border-white/20"></div>
+                  <Users className="relative z-10 h-10 w-10 text-white" />
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-white">
-                  I'm Looking for a Job
+                  I&apos;m Looking for a Job
                 </h3>
                 <p className="text-lg leading-relaxed text-white/80">
                   Showcase your skills and get discovered by top recruiters
@@ -486,8 +602,8 @@ export default function LandingPage() {
               </ul>
 
               <Link href="/onboarding/candidate" className="block">
-                <Button className="w-full bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <Button className="group relative w-full overflow-hidden rounded-xl bg-white py-4 font-semibold text-blue-900 shadow-lg transition-all duration-300 hover:bg-blue-50 hover:shadow-xl">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
                   <span className="relative z-10 flex items-center justify-center">
                     Join as Candidate <ArrowRight className="ml-2 h-4 w-4" />
                   </span>
@@ -518,14 +634,14 @@ export default function LandingPage() {
               </svg>
             </div>
 
-            <CardContent className="p-8 relative z-10">
-              <div className="text-center mb-8">
-                <div className="w-20 h-20 bg-blue-600/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-blue-400/30">
-                  <div className="absolute inset-3 border border-white/20 rounded-lg"></div>
-                  <Search className="w-10 h-10 text-white relative z-10" />
+            <CardContent className="relative z-10 p-8">
+              <div className="mb-8 text-center">
+                <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
+                  <div className="absolute inset-3 rounded-lg border border-white/20"></div>
+                  <Search className="relative z-10 h-10 w-10 text-white" />
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-white">
-                  I'm Looking to Hire
+                  I&apos;m Looking to Hire
                 </h3>
                 <p className="text-lg leading-relaxed text-white/80">
                   Find perfect candidates using AI-powered natural language
@@ -548,8 +664,8 @@ export default function LandingPage() {
               </ul>
 
               <Link href="/onboarding/recruiter" className="block">
-                <Button className="w-full bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <Button className="group relative w-full overflow-hidden rounded-xl bg-white py-4 font-semibold text-blue-900 shadow-lg transition-all duration-300 hover:bg-blue-50 hover:shadow-xl">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
                   <span className="relative z-10 flex items-center justify-center">
                     Start Hiring <ArrowRight className="ml-2 h-4 w-4" />
                   </span>
@@ -557,8 +673,8 @@ export default function LandingPage() {
               </Link>
             </CardContent>
           </Card>
-            </div>
-          </div>
+        </div>
+      </div>
 
       {/* Enhanced Features Section with blue consistency */}
       <div
@@ -630,7 +746,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-          </div>
+      </div>
 
       {/* Enhanced Verification Section with blue consistency */}
       <div className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-900/80 to-blue-800/60 backdrop-blur-sm">
@@ -679,9 +795,9 @@ export default function LandingPage() {
                   LinkedIn Verified
                 </h3>
                 <p className="text-white/80">
-                All users verify their professional identity through LinkedIn
-                authentication
-              </p>
+                  All users verify their professional identity through LinkedIn
+                  authentication
+                </p>
               </CardContent>
             </Card>
 
@@ -716,9 +832,9 @@ export default function LandingPage() {
                   GitHub Verified
                 </h3>
                 <p className="text-white/80">
-                Developers showcase verified projects and contributions from
-                GitHub
-              </p>
+                  Developers showcase verified projects and contributions from
+                  GitHub
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -748,9 +864,9 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
               <span className="relative z-10">Schedule Demo</span>
             </Button>
-                    </div>
-                    </div>
-                  </div>
+          </div>
+        </div>
+      </div>
 
       {/* Enhanced Footer with perfect blue consistency */}
       <footer className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-900/90 to-blue-950/95 backdrop-blur-sm">
@@ -826,15 +942,15 @@ export default function LandingPage() {
                       >
                         <span className="relative z-10">{link.name}</span>
                         <div className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 group-hover:w-full"></div>
-                  </Link>
-                </li>
+                      </Link>
+                    </li>
                   ))}
-              </ul>
-            </div>
+                </ul>
+              </div>
             ))}
 
             <div>
-              <h4 className="text-white font-bold text-lg mb-6 relative">
+              <h4 className="relative mb-6 text-lg font-bold text-white">
                 Support
                 <div className="absolute -bottom-2 left-0 h-0.5 w-8 bg-gradient-to-r from-blue-400 to-transparent"></div>
               </h4>
@@ -854,8 +970,8 @@ export default function LandingPage() {
                     >
                       <span className="relative z-10">{link.name}</span>
                       <div className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 group-hover:w-full"></div>
-                  </Link>
-                </li>
+                    </Link>
+                  </li>
                 ))}
               </ul>
 
@@ -886,7 +1002,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
               <div className="flex flex-col items-center space-y-2 text-white/60 md:flex-row md:space-y-0 md:space-x-6">
-            <p>&copy; 2024 TalentHunt.dev. All rights reserved.</p>
+                <p>&copy; 2024 TalentHunt.dev. All rights reserved.</p>
                 <div className="flex items-center space-x-6">
                   {["Privacy", "Terms", "Cookies"].map((item) => (
                     <Link
@@ -896,7 +1012,7 @@ export default function LandingPage() {
                     >
                       <span className="relative z-10">{item}</span>
                       <div className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 group-hover:w-full"></div>
-              </Link>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -907,7 +1023,7 @@ export default function LandingPage() {
                   <div className="relative z-10 mr-2 h-2 w-2 animate-pulse rounded-full bg-green-400"></div>
                   <span className="relative z-10">All Systems Operational</span>
                 </Badge>
-          </div>
+              </div>
             </div>
           </div>
         </div>
@@ -916,7 +1032,7 @@ export default function LandingPage() {
       {/* Start Your Journey CTA - Fixed at Bottom */}
       <div className="relative z-20 border-t border-blue-400/20 bg-gradient-to-b from-blue-950/95 to-blue-950 backdrop-blur-sm">
         <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-transparent via-blue-300/30 to-transparent"></div>
-        
+
         <div className="mx-auto max-w-4xl px-6 py-12 text-center">
           <div className="space-y-6">
             <h3 className="text-2xl font-bold text-white">
@@ -925,9 +1041,9 @@ export default function LandingPage() {
             <p className="text-lg text-white/70">
               Join thousands of professionals already using TalentHunt
             </p>
-            
+
             <Link href="/dashboard">
-              <Button className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-16 py-6 text-xl font-bold text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-blue-700 hover:shadow-3xl">
+              <Button className="group hover:shadow-3xl relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-16 py-6 text-xl font-bold text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-blue-700">
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                 <div className="relative z-10 flex items-center gap-3">
                   <Sparkles className="h-6 w-6" />

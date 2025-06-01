@@ -12,7 +12,6 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useTracking } from "@/lib/hooks/use-tracking";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import {
@@ -36,7 +35,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   api.user.getOrCreateUser.useQuery();
 
   const pathname = usePathname();
-  const { trackButtonClicked, trackPageVisited } = useTracking();
 
   const data = {
     navMain: [
