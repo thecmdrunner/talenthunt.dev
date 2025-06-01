@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import React, { useMemo, type PropsWithChildren } from "react";
@@ -49,6 +50,8 @@ export default function Shell(props: PropsWithChildren) {
     );
   }, [pathname]);
 
+  const isMobile = useIsMobile();
+
   return (
     <div
       className={cn(
@@ -59,9 +62,10 @@ export default function Shell(props: PropsWithChildren) {
       )}
     >
       <header className="border-border sticky top-0 left-0 z-20 flex shrink-0 items-center gap-2 border-b bg-slate-50 py-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        {state === "collapsed" ||
+          (isMobile && <SidebarTrigger className="ml-1" />)}
         {state === "collapsed" && (
           <>
-            <SidebarTrigger className="ml-1" />
             <Separator
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"

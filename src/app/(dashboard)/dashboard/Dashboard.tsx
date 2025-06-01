@@ -21,7 +21,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type TabValue = "candidate" | "recruiter";
 
@@ -183,7 +183,11 @@ export default function Dashboard({
       </div>
 
       {hasBothProfiles ? (
-        <Tabs value={tabValue} className="w-full" onValueChange={setTabValue}>
+        <Tabs
+          value={tabValue}
+          className="w-full"
+          onValueChange={(value) => setTabValue(value as TabValue)}
+        >
           <TabsContent value="candidate">
             <CandidateDashboard user={user} />
           </TabsContent>

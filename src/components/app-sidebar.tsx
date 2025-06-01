@@ -1,7 +1,6 @@
 "use client";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TalentHuntBranding } from "@/components/talent-hunt-branding";
 import {
@@ -9,6 +8,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -169,7 +169,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div> */}
 
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <TooltipProvider>
