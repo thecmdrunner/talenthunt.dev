@@ -57,8 +57,12 @@ export default function IntroduceYourself({
     const videoUrl = await uploadRecordedVideo();
     if (videoUrl) {
       setVideoUploaded(true);
+      // Automatically progress to next step after upload
+      setTimeout(() => {
+        onComplete();
+      }, 2000); // Give user 2 seconds to see the success message
     }
-  }, [uploadRecordedVideo]);
+  }, [uploadRecordedVideo, onComplete]);
 
   // Create preview URL when recording is done
   const createPreview = useCallback(() => {
@@ -95,12 +99,12 @@ export default function IntroduceYourself({
           Record a short video (up to 60 seconds) to share who you are, what
           you&apos;re passionate about, and what you&apos;re looking for.
         </p>
-        <div className="text-sm text-gray-500">Step 3 of 3</div>
+        <div className="text-sm text-gray-500">Step 3 of 4</div>
       </div>
 
       <div className="space-y-8">
         {/* Start Recording Button */}
-        {!recordedBlob && !isRecording && (
+        {!recordedBlob && !isRecording && !videoUploaded && (
           <div className="flex justify-center">
             <Button
               size="lg"
@@ -165,7 +169,7 @@ export default function IntroduceYourself({
         )}
 
         {/* Recording Preview */}
-        {recordedBlob && previewUrl && (
+        {recordedBlob && previewUrl && !videoUploaded && (
           <div className="space-y-4">
             <div className="text-center">
               <h3 className="text-lg font-medium text-gray-900">
@@ -221,7 +225,7 @@ export default function IntroduceYourself({
           </div>
         )}
 
-        {/* Success state */}
+        {/* Simple Success State */}
         {videoUploaded && (
           <div className="rounded-xl bg-green-50 p-6 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
@@ -231,49 +235,42 @@ export default function IntroduceYourself({
               Video Uploaded Successfully!
             </h3>
             <p className="text-sm text-green-700">
-              Your introduction video has been saved to your profile.
+              Your introduction video has been saved. Proceeding to final
+              step...
             </p>
           </div>
         )}
 
-        {/* Tips section */}
-        <div className="rounded-xl bg-blue-50 p-6">
-          <h3 className="mb-3 font-medium text-gray-900">
-            Tips for a great video:
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-600">
-            <li className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-              Keep it under 60 seconds
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-              Look directly at the camera
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-              Speak clearly about your background
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-              Mention what you&apos;re looking for
-            </li>
-            <li className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
-              Be authentic and smile!
-            </li>
-          </ul>
-        </div>
-
-        {/* Complete profile button */}
-        <Button
-          size="lg"
-          className="w-full rounded-lg bg-blue-600 hover:bg-blue-700"
-          onClick={onComplete}
-          disabled={!canComplete}
-        >
-          {canComplete ? "Complete Profile" : "Record a video to continue"}
-        </Button>
+        {/* Tips section - only show when not uploaded */}
+        {!videoUploaded && (
+          <div className="rounded-xl bg-blue-50 p-6">
+            <h3 className="mb-3 font-medium text-gray-900">
+              Tips for a great video:
+            </h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                Keep it under 60 seconds
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                Look directly at the camera
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                Speak clearly about your background
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                Mention what you&apos;re looking for
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                Be authentic and smile!
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

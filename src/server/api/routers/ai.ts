@@ -9,7 +9,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { users } from "@/server/db/schema";
+import { candidateProfiles, users } from "@/server/db/schema";
 import { jobAttributesSchema, sampleJobAttributes } from "@/types/jobs";
 import { parsedResumeDataSchema } from "@/types/resume";
 import { groq } from "@ai-sdk/groq";
@@ -90,7 +90,192 @@ const systemPrompt = [
   `Example of the JSON output: ${JSON.stringify(sampleJobAttributes)}`,
 ].join("\n");
 
+const videoReviewSchema = z.object({
+  approved: z.boolean(),
+  confidence: z.number().min(0).max(1),
+  reasoning: z.string(),
+  feedback: z.string().optional(),
+  concerns: z.array(z.string()).optional(),
+});
+
 export const aiRouter = createTRPCRouter({
+  reviewCandidateVideo: protectedProcedure
+    .input(
+      z.object({
+        videoUrl: z.string().url(),
+        candidateId: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { videoUrl } = input;
+      const userId = ctx.session.userId;
+
+      console.log(`🎥 Starting video review for user: ${userId}`);
+
+      try {
+        // Get candidate profile
+        const candidateProfile = await ctx.db.query.candidateProfiles.findFirst(
+          {
+            where: eq(candidateProfiles.userId, userId),
+          },
+        );
+
+        if (!candidateProfile) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Candidate profile not found",
+          });
+        }
+
+        // Download video for analysis
+        console.log("📥 Downloading video for AI analysis...");
+        const videoResponse = await fetch(videoUrl);
+        if (!videoResponse.ok) {
+          throw new Error("Failed to download video");
+        }
+
+        const videoBuffer = await videoResponse.arrayBuffer();
+        const videoData = Buffer.from(videoBuffer);
+
+        console.log(
+          `📱 Video downloaded: ${(videoData.length / 1024 / 1024).toFixed(2)}MB`,
+        );
+
+        // Use Gemini Flash to analyze the video
+        const result = await generateObject({
+          model: openrouter("google/gemini-2.0-flash-001"),
+
+          schema: videoReviewSchema,
+          system: `You are an expert HR professional reviewing candidate introduction videos for a tech talent platform. 
+
+Your job is to evaluate whether this candidate should be approved for the platform based on their video introduction.
+
+APPROVAL CRITERIA:
+✅ APPROVE if the candidate:
+- Speaks clearly and professionally about their background
+- Mentions relevant technical skills or experience  
+- Shows genuine personality and enthusiasm
+- Appears to be a real person (not AI-generated or fake)
+- Video quality is reasonable (doesn't need to be perfect)
+- Speaks about career goals or what they're looking for
+- Shows basic communication skills suitable for professional environment
+
+❌ REJECT if the candidate:
+- Video is clearly fake, AI-generated, or not a real person
+- Contains inappropriate content (offensive language, inappropriate background)
+- Is completely unrelated to professional introduction (random content)
+- Shows clear signs of being spam or malicious
+- Person appears intoxicated or unprofessional
+- Video is corrupted or completely unintelligible
+
+IMPORTANT GUIDELINES:
+- Be lenient with accents, nervousness, or imperfect English
+- Don't reject based on video quality alone unless completely unusable
+- Focus on authenticity and professional intent, not perfection
+- Consider that candidates may be nervous or new to video introductions
+- Approve unless there are clear red flags
+
+Provide confidence score (0-1) and detailed reasoning for your decision.`,
+          messages: [
+            {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: "Please review this candidate introduction video and determine if they should be approved for our tech talent platform. Focus on authenticity, professionalism, and genuine career intent.",
+                },
+                {
+                  type: "file",
+                  mimeType:
+                    videoResponse.headers.get("content-type") ?? "video/mp4",
+                  data: videoData,
+                },
+              ],
+            },
+          ],
+        });
+
+        const review = result.object;
+        console.log("🤖 AI Review Result:", review);
+
+        // Update candidate profile based on AI decision
+        if (review.approved && review.confidence >= 0.7) {
+          // Approve the candidate
+          const approvalTime = new Date(Date.now() + 5 * 60 * 1000);
+          await ctx.db
+            .update(candidateProfiles)
+            .set({
+              onboardingCompletedAt: approvalTime,
+              approvedAt: approvalTime,
+              verificationStatus: "approved",
+            })
+            .where(eq(candidateProfiles.id, candidateProfile.id));
+
+          console.log(
+            `✅ Candidate ${userId} approved and onboarding completed`,
+          );
+        } else {
+          // Keep as pending for manual review if confidence is low or rejected
+          const updateData: {
+            verificationStatus: "pending" | "rejected";
+            rejectedAt?: Date;
+          } = {
+            verificationStatus: review.approved ? "pending" : "rejected",
+          };
+
+          // Set rejectedAt timestamp if actually rejected
+          if (!review.approved) {
+            updateData.rejectedAt = new Date(Date.now() + 5 * 60 * 1000);
+          }
+
+          await ctx.db
+            .update(candidateProfiles)
+            .set(updateData)
+            .where(eq(candidateProfiles.id, candidateProfile.id));
+
+          console.log(
+            `⏳ Candidate ${userId} marked for manual review or rejected`,
+          );
+        }
+
+        return {
+          approved: review.approved,
+          confidence: review.confidence,
+          reasoning: review.reasoning,
+          feedback: review.feedback,
+          autoApproved: review.approved && review.confidence >= 0.7,
+          status:
+            review.approved && review.confidence >= 0.7
+              ? "approved"
+              : review.approved
+                ? "pending_manual_review"
+                : "rejected",
+        };
+      } catch (error) {
+        console.error("❌ Video review failed:", error);
+
+        // On error, mark as pending for manual review
+        const candidateProfile = await ctx.db.query.candidateProfiles.findFirst(
+          {
+            where: eq(candidateProfiles.userId, userId),
+          },
+        );
+
+        if (candidateProfile) {
+          await ctx.db
+            .update(candidateProfiles)
+            .set({ verificationStatus: "pending" })
+            .where(eq(candidateProfiles.id, candidateProfile.id));
+        }
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "Failed to review video. Your application has been marked for manual review.",
+        });
+      }
+    }),
+
   naturalLanguageQuery: protectedProcedure
     .input(
       z.object({
