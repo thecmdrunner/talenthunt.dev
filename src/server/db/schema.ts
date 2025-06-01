@@ -119,6 +119,8 @@ export const candidateProfiles = createTable(
     isOpenToWork: d.boolean().default(true),
     lastActiveAt: d.timestamp({ withTimezone: true }).defaultNow(),
 
+    onboardingCompletedAt: d.timestamp({ withTimezone: true }),
+
     createdAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updatedAt: d
       .timestamp({ withTimezone: true })
@@ -164,6 +166,8 @@ export const recruiterProfiles = createTable(
 
     // Verification
     isCompanyVerified: d.boolean().default(false),
+
+    onboardingCompletedAt: d.timestamp({ withTimezone: true }),
 
     createdAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
     updatedAt: d

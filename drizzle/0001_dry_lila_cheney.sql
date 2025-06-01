@@ -1,0 +1,2 @@
+ALTER TABLE "candidate_profile" ADD COLUMN "onboardingCompletedAt" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "recruiter_profile" ADD COLUMN "onboardingCompletedAt" timestamp with time zone;
