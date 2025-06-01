@@ -9,14 +9,14 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { candidateProfiles, users } from "@/server/db/schema";
+import { candidateProfiles, users, workExperience } from "@/server/db/schema";
 import { jobAttributesSchema, sampleJobAttributes } from "@/types/jobs";
 import { parsedResumeDataSchema } from "@/types/resume";
 import { groq } from "@ai-sdk/groq";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { TRPCError } from "@trpc/server";
 import { generateObject } from "ai";
-import { eq, sql } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
 import PDFParser from "pdf2json";
 import { z } from "zod";
 
@@ -516,5 +516,365 @@ ${extractedText}`,
       console.log(result.data);
 
       return result.data;
+    }),
+
+  searchCandidates: protectedProcedure
+    .input(jobAttributesSchema)
+    .output(
+      z.object({
+        candidates: z.array(
+          z.object({
+            id: z.string(),
+            firstName: z.string().nullable(),
+            lastName: z.string().nullable(),
+            title: z.string().nullable(),
+            bio: z.string().nullable(),
+            location: z.string().nullable(),
+            yearsOfExperience: z.number().nullable(),
+            skills: z.array(z.string()),
+            workExperience: z.array(
+              z.object({
+                company: z.string(),
+                position: z.string(),
+                startDate: z.date().nullable(),
+                endDate: z.date().nullable(),
+                isCurrent: z.boolean().nullable(),
+              }),
+            ),
+            totalScore: z.number().nullable(),
+            isOpenToWork: z.boolean().nullable(),
+            expectedSalaryMin: z.number().nullable(),
+            expectedSalaryMax: z.number().nullable(),
+            salaryCurrency: z.string().nullable(),
+            isRemoteOpen: z.boolean().nullable(),
+            workTypes: z.array(z.string()).nullable(),
+            matchScore: z.number(), // Calculated match score based on criteria
+          }),
+        ),
+        total: z.number(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { newJob, pastExperience } = input;
+
+      console.log("🔍 Searching candidates with criteria:", input);
+
+      // Build the where conditions based on job attributes
+      const whereConditions: any[] = [
+        eq(candidateProfiles.verificationStatus, "approved"),
+        eq(candidateProfiles.isActive, true),
+        eq(candidateProfiles.isOpenToWork, true),
+      ];
+
+      // Filter by experience years if specified
+      if (pastExperience?.duration?.years && pastExperience?.duration?.filter) {
+        const years = pastExperience.duration.years;
+        const filter = pastExperience.duration.filter;
+
+        if (filter === "more than") {
+          whereConditions.push(gte(candidateProfiles.yearsOfExperience, years));
+        } else if (filter === "less than") {
+          whereConditions.push(lte(candidateProfiles.yearsOfExperience, years));
+        } else if (filter === "equal") {
+          whereConditions.push(eq(candidateProfiles.yearsOfExperience, years));
+        }
+      }
+
+      // Filter by location if specified
+      if (newJob.location?.country || newJob.location?.city) {
+        const locationFilters = [];
+        if (newJob.location.country) {
+          locationFilters.push(
+            ilike(candidateProfiles.location, `%${newJob.location.country}%`),
+          );
+        }
+        if (newJob.location.city) {
+          locationFilters.push(
+            ilike(candidateProfiles.location, `%${newJob.location.city}%`),
+          );
+        }
+        if (locationFilters.length > 0) {
+          whereConditions.push(or(...locationFilters));
+        }
+      }
+
+      // Filter by work type preferences if specified
+      if (
+        newJob.location?.type &&
+        ["remote", "on-site", "hybrid"].includes(newJob.location.type)
+      ) {
+        if (newJob.location.type === "remote") {
+          whereConditions.push(eq(candidateProfiles.isRemoteOpen, true));
+        }
+        // For on-site and hybrid, we'll include all candidates as most are flexible
+      }
+
+      // Query candidates with related data
+      const candidatesQuery = await ctx.db.query.candidateProfiles.findMany({
+        where: and(...whereConditions),
+        columns: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          title: true,
+          bio: true,
+          location: true,
+          yearsOfExperience: true,
+          totalScore: true,
+          isOpenToWork: true,
+          expectedSalaryMin: true,
+          expectedSalaryMax: true,
+          salaryCurrency: true,
+          isRemoteOpen: true,
+          workTypes: true,
+          parsedResumeData: true, // Include parsed resume data for skills
+        },
+        with: {
+          skills: {
+            columns: {
+              name: true,
+              proficiency: true,
+              yearsOfExperience: true,
+            },
+          },
+          workExperience: {
+            columns: {
+              company: true,
+              position: true,
+              startDate: true,
+              endDate: true,
+              isCurrent: true,
+            },
+            orderBy: [desc(workExperience.startDate)],
+            limit: 3, // Only get last 3 work experiences
+          },
+        },
+        limit: 50, // Limit to 50 candidates for performance
+        orderBy: [desc(candidateProfiles.totalScore)],
+      });
+
+      // Calculate match scores for each candidate
+      const candidatesWithScores = candidatesQuery.map((candidate) => {
+        let matchScore = 0;
+        const maxScore = 100;
+
+        // Collect all skills from multiple sources
+        const candidateSkillsFromTable = candidate.skills.map((s) =>
+          s.name.toLowerCase(),
+        );
+
+        // Extract skills from parsedResumeData if available
+        const parsedSkills: string[] = [];
+        if (candidate.parsedResumeData?.skills) {
+          // Skills are comma-separated in parsedResumeData
+          const skillsFromResume = candidate.parsedResumeData.skills
+            .split(",")
+            .map((skill) => skill.trim().toLowerCase())
+            .filter(Boolean);
+          parsedSkills.push(...skillsFromResume);
+        }
+
+        // Combine all candidate skills (remove duplicates)
+        const allCandidateSkills = [
+          ...new Set([...candidateSkillsFromTable, ...parsedSkills]),
+        ];
+
+        // Score based on skills match
+        if (newJob.skills && newJob.skills.length > 0) {
+          const requiredSkills = newJob.skills.map((s) => s.toLowerCase());
+
+          const matchingSkills = requiredSkills.filter((skill) =>
+            allCandidateSkills.some(
+              (candidateSkill) =>
+                candidateSkill.includes(skill) ||
+                skill.includes(candidateSkill),
+            ),
+          );
+
+          const skillScore =
+            (matchingSkills.length / requiredSkills.length) * 40;
+          matchScore += skillScore;
+
+          // Bonus points for having more skills than required
+          if (matchingSkills.length > requiredSkills.length * 0.8) {
+            matchScore += 5; // Extra points for comprehensive skill match
+          }
+        } else {
+          matchScore += 20; // Base score if no specific skills required
+        }
+
+        // Score based on role/title match (check both current title and parsed resume role)
+        let roleMatchFound = false;
+
+        if (newJob.role) {
+          const roleWords = newJob.role.toLowerCase().split(" ");
+
+          // Check current title
+          if (candidate.title) {
+            const titleWords = candidate.title.toLowerCase().split(" ");
+            const titleMatches = roleWords.some((roleWord) =>
+              titleWords.some(
+                (titleWord) =>
+                  titleWord.includes(roleWord) || roleWord.includes(titleWord),
+              ),
+            );
+
+            if (titleMatches) {
+              matchScore += 20;
+              roleMatchFound = true;
+            }
+          }
+
+          // Check parsed resume role if title didn't match
+          if (!roleMatchFound && candidate.parsedResumeData?.role) {
+            const parsedRoleWords = candidate.parsedResumeData.role
+              .toLowerCase()
+              .split(" ");
+            const parsedRoleMatches = roleWords.some((roleWord) =>
+              parsedRoleWords.some(
+                (parsedRoleWord) =>
+                  parsedRoleWord.includes(roleWord) ||
+                  roleWord.includes(parsedRoleWord),
+              ),
+            );
+
+            if (parsedRoleMatches) {
+              matchScore += 15; // Slightly less points for parsed role match
+              roleMatchFound = true;
+            }
+          }
+
+          // Check similar roles if no direct match found
+          if (!roleMatchFound && newJob.similarRoles) {
+            const titleWords = candidate.title?.toLowerCase().split(" ") || [];
+            const parsedRoleWords =
+              candidate.parsedResumeData?.role?.toLowerCase().split(" ") || [];
+            const allRoleWords = [...titleWords, ...parsedRoleWords];
+
+            const similarRoleMatch = newJob.similarRoles.some((similarRole) =>
+              allRoleWords.some((roleWord) =>
+                similarRole
+                  .toLowerCase()
+                  .split(" ")
+                  .some(
+                    (simRoleWord) =>
+                      roleWord.includes(simRoleWord) ||
+                      simRoleWord.includes(roleWord),
+                  ),
+              ),
+            );
+            if (similarRoleMatch) {
+              matchScore += 15;
+              roleMatchFound = true;
+            }
+          }
+        }
+
+        if (!roleMatchFound) {
+          matchScore += 10; // Base score if no role requirement or match
+        }
+
+        // Score based on experience level match
+        if (pastExperience?.duration?.years && candidate.yearsOfExperience) {
+          const requiredYears = pastExperience.duration.years;
+          const candidateYears = candidate.yearsOfExperience;
+
+          if (
+            pastExperience.duration.filter === "more than" &&
+            candidateYears >= requiredYears
+          ) {
+            matchScore += 25;
+          } else if (
+            pastExperience.duration.filter === "less than" &&
+            candidateYears <= requiredYears
+          ) {
+            matchScore += 25;
+          } else if (
+            pastExperience.duration.filter === "equal" &&
+            Math.abs(candidateYears - requiredYears) <= 1
+          ) {
+            matchScore += 25;
+          } else {
+            // Partial score based on how close they are
+            const difference = Math.abs(candidateYears - requiredYears);
+            const partialScore = Math.max(0, 25 - difference * 5);
+            matchScore += partialScore;
+          }
+        } else {
+          matchScore += 15; // Base score if no experience requirement
+        }
+
+        // Score based on location preference (check both current location and parsed location)
+        if (newJob.location?.country) {
+          let locationMatch = false;
+
+          if (
+            candidate.location &&
+            candidate.location
+              .toLowerCase()
+              .includes(newJob.location.country.toLowerCase())
+          ) {
+            locationMatch = true;
+          }
+
+          if (
+            !locationMatch &&
+            candidate.parsedResumeData?.location &&
+            candidate.parsedResumeData.location
+              .toLowerCase()
+              .includes(newJob.location.country.toLowerCase())
+          ) {
+            locationMatch = true;
+          }
+
+          if (locationMatch) {
+            matchScore += 10;
+          }
+        }
+
+        // Score based on availability
+        if (newJob.joiningNotice?.immediate && candidate.isOpenToWork) {
+          matchScore += 5;
+        }
+
+        // Transform the candidate data to match the expected output schema
+        return {
+          id: candidate.id,
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          title: candidate.title,
+          bio: candidate.bio,
+          location: candidate.location,
+          yearsOfExperience: candidate.yearsOfExperience,
+          skills: allCandidateSkills, // Return all skills (from table + parsed resume)
+          workExperience: candidate.workExperience.map((we) => ({
+            company: we.company,
+            position: we.position,
+            startDate: we.startDate ? new Date(we.startDate) : null,
+            endDate: we.endDate ? new Date(we.endDate) : null,
+            isCurrent: we.isCurrent,
+          })),
+          totalScore: candidate.totalScore,
+          isOpenToWork: candidate.isOpenToWork,
+          expectedSalaryMin: candidate.expectedSalaryMin,
+          expectedSalaryMax: candidate.expectedSalaryMax,
+          salaryCurrency: candidate.salaryCurrency,
+          isRemoteOpen: candidate.isRemoteOpen,
+          workTypes: candidate.workTypes,
+          matchScore: Math.min(matchScore, maxScore), // Cap at 100
+        };
+      });
+
+      // Sort by match score descending
+      candidatesWithScores.sort((a, b) => b.matchScore - a.matchScore);
+
+      console.log(
+        `✅ Found ${candidatesWithScores.length} matching candidates`,
+      );
+
+      return {
+        candidates: candidatesWithScores,
+        total: candidatesWithScores.length,
+      };
     }),
 });

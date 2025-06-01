@@ -44,6 +44,12 @@ export default function DiscoverPage() {
   // Use tRPC mutation for AI-powered query processing
   const naturalLanguageQuery = api.ai.naturalLanguageQuery.useMutation();
 
+  // Use tRPC mutation for candidate search
+  const searchCandidates = api.ai.searchCandidates.useMutation();
+
+  console.log("answer", naturalLanguageQuery.data);
+  console.log("candidates", searchCandidates.data);
+
   // Process search query on page load or when searchQuery changes
   useEffect(() => {
     if (searchQuery && searchQuery.trim() !== "") {
@@ -52,13 +58,23 @@ export default function DiscoverPage() {
     }
   }, []);
 
+  // Search for candidates when natural language query completes
+  useEffect(() => {
+    if (naturalLanguageQuery.data) {
+      // Trigger candidate search with the extracted job attributes
+      searchCandidates.mutate(naturalLanguageQuery.data);
+    }
+  }, [naturalLanguageQuery.data]);
+
   const clearSearch = () => {
     void setSearchQuery("");
     naturalLanguageQuery.reset();
+    searchCandidates.reset();
   };
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
   const jobAttributes = naturalLanguageQuery.data;
+  const candidates = searchCandidates.data?.candidates || [];
 
   return (
     // <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-cyan-100 via-purple-50 to-pink-100">
@@ -179,7 +195,8 @@ export default function DiscoverPage() {
                 </div>
               )}
               <AnimatePresence mode="wait">
-                {naturalLanguageQuery.isPending && (
+                {(naturalLanguageQuery.isPending ||
+                  searchCandidates.isPending) && (
                   <motion.div
                     key="loading-animation"
                     initial={{ opacity: 0, y: 10, height: 0 }}
@@ -191,7 +208,9 @@ export default function DiscoverPage() {
                     <div className="text-muted-foreground flex items-center gap-2 text-sm">
                       <Sparkles className="h-4 w-4 text-indigo-600" />
                       <span className="animate-pulse">
-                        AI is analyzing your query...
+                        {naturalLanguageQuery.isPending
+                          ? "AI is analyzing your query..."
+                          : "Searching for matching candidates..."}
                       </span>
                     </div>
                     <div className="flex gap-2">
@@ -469,11 +488,18 @@ export default function DiscoverPage() {
 
         {/* Candidates Section */}
         <div className="space-y-6">
-          <h2 className="text-2xl font-bold">
-            {isSearchActive ? "Top candidates" : "Featured candidates"}
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold">
+              {isSearchActive ? "Top candidates" : "Featured candidates"}
+            </h2>
+            {candidates.length > 0 && (
+              <div className="text-muted-foreground text-sm">
+                {searchCandidates.data?.total} candidates found
+              </div>
+            )}
+          </div>
 
-          {naturalLanguageQuery.isPending ? (
+          {naturalLanguageQuery.isPending || searchCandidates.isPending ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <Card
@@ -518,6 +544,96 @@ export default function DiscoverPage() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          ) : candidates.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {candidates.map((candidate) => (
+                <Card
+                  key={candidate.id}
+                  className="group cursor-pointer transition-shadow hover:shadow-lg"
+                >
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      {/* Avatar */}
+                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-xl font-semibold text-white">
+                        {candidate.firstName?.[0] || "?"}
+                        {candidate.lastName?.[0] || ""}
+                      </div>
+
+                      {/* Name and title */}
+                      <div className="space-y-2 text-center">
+                        <h3 className="font-semibold text-gray-900">
+                          {candidate.firstName && candidate.lastName
+                            ? `${candidate.firstName} ${candidate.lastName}`
+                            : "Anonymous Candidate"}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {candidate.title || "Professional"}
+                        </p>
+                      </div>
+
+                      {/* Skills */}
+                      <div className="flex flex-wrap justify-center gap-1">
+                        {candidate.skills.slice(0, 3).map((skill, index) => (
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                        {candidate.skills.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{candidate.skills.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Experience */}
+                      <div className="space-y-1 text-sm text-gray-600">
+                        {candidate.yearsOfExperience && (
+                          <p>{candidate.yearsOfExperience} years experience</p>
+                        )}
+                        {candidate.location && <p>📍 {candidate.location}</p>}
+                        {candidate.workExperience[0] && (
+                          <p className="truncate">
+                            @ {candidate.workExperience[0].company}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Match score */}
+                      <div className="border-t pt-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">Match</span>
+                          <Badge
+                            variant={
+                              candidate.matchScore >= 80
+                                ? "default"
+                                : candidate.matchScore >= 60
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                            className="text-xs"
+                          >
+                            {candidate.matchScore.toFixed(2)}%
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : isSearchActive ? (
+            <div className="py-12 text-center">
+              <p className="text-lg text-gray-500">
+                No candidates found matching your criteria.
+              </p>
+              <p className="mt-2 text-sm text-gray-400">
+                Try adjusting your search terms or requirements.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
