@@ -115,7 +115,7 @@ export default function DiscoverPage() {
 
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue:
-      "i want a designer that has 19+yr exp, product design, figma, who has designed ai apps with product thinking and great ux, should have worked with fortune 500, on contract",
+      "i want a next js dev experienced in AI apps and has over 2 years of experience and is open to work in Banglore",
   });
 
   // State for selected candidate sheet
