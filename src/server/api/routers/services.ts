@@ -64,6 +64,45 @@ export const servicesRouter = createTRPCRouter({
       };
     }),
 
+  getVideoUploadUrl: protectedProcedure
+    .input(
+      z.object({
+        fileName: z.string(),
+        fileType: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.userId;
+      const fileExtension = input.fileName.split(".").pop() ?? "mp4";
+      const fileName = `${userId}/${Date.now()}_intro_video.${fileExtension}`;
+
+      const supabase = await supabaseServerClient();
+
+      // Generate presigned URL for upload
+      const { data, error } = await supabase.storage
+        .from("videos")
+        .createSignedUploadUrl(fileName, {
+          upsert: true,
+        });
+
+      if (error) {
+        console.error("Supabase error:", error);
+        throw new Error("Failed to generate upload URL");
+      }
+
+      // Construct the public URL for the uploaded file
+      const videoUrl = `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/videos/${fileName}`;
+
+      return {
+        presigned: {
+          path: fileName,
+          token: data.token,
+          signedUrl: data.signedUrl,
+        },
+        videoUrl,
+      };
+    }),
+
   // New procedure to get cache statistics (optional, for debugging)
   getCacheStats: protectedProcedure.query(async () => {
     try {
