@@ -27,6 +27,8 @@ import { useState } from "react";
 
 export default function LandingPage() {
   const [activeView, setActiveView] = useState<"hire" | "find">("hire");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [demoSearchQuery, setDemoSearchQuery] = useState("");
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-blue-800 to-blue-700">
@@ -245,9 +247,20 @@ export default function LandingPage() {
               <span className="bg-gradient-to-tr from-blue-300 to-cyan-100 bg-clip-text text-transparent">
                 {activeView === "hire" ? "talent" : "opportunity"}
               </span>
-              <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-300 to-blue-100 rounded-full"></div>
-              <div className="absolute -bottom-6 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
-          </span>
+              <svg
+                className="absolute right-0 -bottom-5 w-full overflow-visible"
+                viewBox="0 0 100 10"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M0,2 Q50,8 100,2"
+                  transform="scale(1, -1)"
+                  className="fill-none stroke-blue-300 stroke-[3]"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
+            </span>
         </h1>
           <p className="text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
             TalentHunt is an AI-powered platform. Connect top talent with leading companies through intelligent
@@ -264,14 +277,28 @@ export default function LandingPage() {
             </div>
             <Input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
                 activeView === "hire"
                   ? "Find senior AI engineers with LangChain + RAG experience in San Francisco..."
                   : "Search for remote product manager roles in SaaS startups..."
               }
               className="w-full rounded-2xl border-0 bg-white/95 py-8 pr-32 pl-16 text-xl text-gray-800 shadow-2xl backdrop-blur-sm placeholder:text-gray-500 focus:ring-2 focus:ring-blue-300/50"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && searchQuery.trim()) {
+                  window.location.href = `/discover?q=${encodeURIComponent(searchQuery.trim())}`;
+                }
+              }}
             />
-            <Button className="absolute right-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 font-semibold text-white shadow-lg hover:from-blue-700 hover:to-blue-800">
+            <Button 
+              className="absolute right-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 font-semibold text-white shadow-lg hover:from-blue-700 hover:to-blue-800"
+              onClick={() => {
+                if (searchQuery.trim()) {
+                  window.location.href = `/discover?q=${encodeURIComponent(searchQuery.trim())}`;
+                }
+              }}
+            >
               Search
             </Button>
           </div>
@@ -300,7 +327,7 @@ export default function LandingPage() {
         </div>
             </div>
 
-      {/* Enhanced Search Interface Demo Card with blue consistency */}
+      {/* Enhanced Search Interface Demo Card with browser mockup */}
       <div className="relative z-10 mx-auto mb-24 max-w-5xl px-6">
         <Card className="relative overflow-hidden rounded-3xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-2xl backdrop-blur-xl">
           <div className="absolute inset-0 opacity-5">
@@ -314,7 +341,8 @@ export default function LandingPage() {
           </div>
 
           <CardContent className="p-8 relative z-10">
-            <div className="flex items-center space-x-3 mb-8">
+            {/* Browser Chrome */}
+            <div className="flex items-center space-x-3 mb-6">
               <div className="w-3 h-3 bg-red-500 rounded-full shadow-lg"></div>
               <div className="w-3 h-3 bg-yellow-500 rounded-full shadow-lg"></div>
               <div className="w-3 h-3 bg-green-500 rounded-full shadow-lg"></div>
@@ -323,51 +351,65 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-800/80 to-blue-900/80 p-8 backdrop-blur-sm">
+            {/* Main Search Interface */}
+            <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-800/80 to-blue-900/80 p-12 backdrop-blur-sm">
+              {/* Geometric Background Elements */}
               <div className="absolute top-0 right-0 h-32 w-32 opacity-10">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="h-full w-full text-blue-300"
-                >
-                  <polygon
-                    points="50,10 90,50 50,90 10,50"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeWidth="1"
-                  />
+                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
+                  <polygon points="50,10 90,50 50,90 10,50" stroke="currentColor" fill="none" strokeWidth="1" />
+                </svg>
+              </div>
+              <div className="absolute bottom-0 left-0 h-24 w-24 opacity-10">
+                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
+                  <circle cx="50" cy="50" r="40" stroke="currentColor" fill="none" strokeWidth="1" />
                 </svg>
               </div>
 
-              <div className="relative z-10 mb-8 text-center">
-                <p className="mb-6 text-xl font-medium text-white/90">
+              <div className="relative z-10 text-center">
+                {/* Title */}
+                <h2 className="mb-8 text-3xl font-bold text-white">
                   What kind of talent are you looking for?
-                </p>
+                </h2>
 
-                <div className="relative mb-6 overflow-hidden rounded-xl border border-blue-500/30 bg-blue-700/40 p-6 backdrop-blur-sm">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-blue-500/5"></div>
-                  <p className="relative z-10 mb-4 text-lg text-white">
-                    Senior GenAI engineers with LangChain + RAG experience in
-                    Europe...
-                  </p>
+                {/* Search Input Area */}
+                <div className="relative mb-8 overflow-hidden rounded-2xl border border-blue-500/20 bg-blue-700/30 p-8 backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-blue-500/5"></div>
+                  
+                  {/* Search Text */}
+                  <div className="relative z-10 mb-6">
+                    <p className="text-xl text-white/90 leading-relaxed">
+                      Senior GenAI engineers with LangChain + RAG experience in Europe...
+                    </p>
+                  </div>
 
-                  <div className="relative z-10 mb-4 flex justify-center">
-                    <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
-                      <div className="absolute inset-2 rounded-full border border-white/20"></div>
-                      <div className="relative z-10 h-6 w-6 rounded-full bg-white"></div>
+                  {/* Central Purple Circle Icon */}
+                  <div className="relative z-10 mb-6 flex justify-center">
+                    <div className="relative flex h-20 w-20 items-center justify-center">
+                      <div className="absolute h-20 w-20 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 opacity-80"></div>
+                      <div className="absolute h-16 w-16 rounded-full bg-blue-700/40"></div>
+                      <div className="absolute h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 opacity-90"></div>
+                      <div className="relative h-6 w-6 rounded-full bg-white shadow-lg"></div>
                     </div>
-          </div>
-        </div>
+                  </div>
+                </div>
 
-                <Button className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-3 font-semibold text-white shadow-lg hover:from-blue-700 hover:to-blue-800">
+                {/* Search Button */}
+                <Button 
+                  className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-12 py-4 text-lg font-semibold text-white shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300"
+                  onClick={() => {
+                    const query = demoSearchQuery.trim() || "Senior GenAI engineers with LangChain + RAG experience in Europe";
+                    window.location.href = `/discover?q=${encodeURIComponent(query)}`;
+                  }}
+                >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
-                  <Sparkles className="relative z-10 mr-2 h-4 w-4" />
+                  <Sparkles className="relative z-10 mr-3 h-5 w-5" />
                   <span className="relative z-10">Search</span>
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
-            </div>
+      </div>
 
       {/* Enhanced Welcome Cards with perfect blue consistency */}
       <div className="relative z-10 mx-auto mb-24 max-w-6xl px-6">
