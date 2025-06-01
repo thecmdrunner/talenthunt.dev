@@ -1,3 +1,4 @@
+import { AuroraText } from "@/components/magicui/aurora-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -100,18 +101,16 @@ export default function LandingPage() {
                   AI-Powered Talent Matching
                 </span>
               </div>
-              <h1 className="mb-6 text-5xl leading-tight font-bold md:text-7xl">
-                Find the perfect{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  candidates
-                </span>{" "}
-                with AI
+              <h1 className="mx-auto mb-6 max-w-2xl text-5xl leading-tight font-bold text-balance md:text-4xl">
+                Find the best{" "}
+                <AuroraText className="border-border w-60 rounded-lg border bg-white [box-shadow:3px_3px_1px_theme(colors.indigo.600)]">
+                  Candidates
+                </AuroraText>
+                <br />
               </h1>
-              <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
-                TalentHunt.dev revolutionizes hiring with natural language
-                search. Simply describe your ideal candidate and find them
-                instantly.
-              </p>
+
+              <p className="">with a simple search.</p>
+
               <div className="mx-auto mb-12 max-w-2xl">
                 <div className="relative">
                   <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
@@ -209,17 +208,16 @@ export default function LandingPage() {
                   AI-Powered Job Matching
                 </span>
               </div>
-              <h1 className="mb-6 text-5xl leading-tight font-bold md:text-7xl">
-                Find your next{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  opportunity
-                </span>{" "}
-                with AI
+              <h1 className="mx-auto mb-6 max-w-2xl text-5xl leading-tight font-bold text-balance md:text-4xl">
+                Find the best{" "}
+                <AuroraText className="border-border w-60 rounded-lg border bg-white [box-shadow:3px_3px_1px_theme(colors.indigo.600)]">
+                  Opportunity
+                </AuroraText>{" "}
+                <br />
               </h1>
-              <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
-                Let TalentHunt.dev match you to top jobs. Describe your skills
-                and preferences to discover roles tailored for you.
-              </p>
+
+              <p className="">with a simple search.</p>
+
               <div className="mx-auto mb-12 max-w-2xl">
                 <div className="relative">
                   <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
