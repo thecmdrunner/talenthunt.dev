@@ -113,7 +113,7 @@ export default function UploadResume({
         );
       }
     },
-    [getPresignedUrl, supabase, trackResumeUploaded, trackFeatureUsed],
+    [supabase],
   );
 
   const handleDrop = useCallback(

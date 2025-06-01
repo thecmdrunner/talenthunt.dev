@@ -36,11 +36,6 @@ export default function Shell(props: PropsWithChildren) {
     return pathname.startsWith("/discover");
   }, [pathname]);
 
-  console.log({
-    isDiscoverPage,
-    pathname,
-  });
-
   const breadcrumbItems = useMemo(() => {
     return (
       pathname
@@ -61,50 +56,53 @@ export default function Shell(props: PropsWithChildren) {
           : "bg-white",
       )}
     >
-      <header className="border-border sticky top-0 left-0 z-20 flex shrink-0 items-center gap-2 border-b bg-slate-50 py-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-        {state === "collapsed" ||
-          (isMobile && <SidebarTrigger className="ml-1" />)}
-        {state === "collapsed" && (
-          <>
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-          </>
-        )}
-        <Breadcrumb className="ml-5">
-          <BreadcrumbList>
-            {breadcrumbItems.map((segment, index, array) => {
-              const path = `/${array.slice(0, index + 1).join("/")}`;
-              const isLast = index === array.length - 1;
-              const fullPath = `/${array.join("/")}`;
+      {state === "collapsed" ||
+        (isMobile && <SidebarTrigger className="sticky top-0 z-20 ml-1" />)}
+      {!isDiscoverPage && (
+        <header className="border-border sticky top-0 left-0 z-20 flex shrink-0 items-center gap-2 border-b bg-slate-50 py-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+          {state === "collapsed" && (
+            <>
+              <Separator
+                orientation="vertical"
+                className="mr-2 data-[orientation=vertical]:h-4"
+              />
+            </>
+          )}
 
-              // Use convertPathnameToBreadcrumbs for the last segment if available
-              const label =
-                isLast && convertPathnameToBreadcrumbs(fullPath)
-                  ? convertPathnameToBreadcrumbs(fullPath)
-                  : segment.charAt(0).toUpperCase() + segment.slice(1);
+          <Breadcrumb className="ml-5">
+            <BreadcrumbList>
+              {breadcrumbItems.map((segment, index, array) => {
+                const path = `/${array.slice(0, index + 1).join("/")}`;
+                const isLast = index === array.length - 1;
+                const fullPath = `/${array.join("/")}`;
 
-              return (
-                <React.Fragment key={path}>
-                  <BreadcrumbItem key={path} className="">
-                    {isLast ? (
-                      <BreadcrumbPage>{label}</BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink href={path}>
-                        {segment.charAt(0).toUpperCase() + segment.slice(1)}
-                      </BreadcrumbLink>
+                // Use convertPathnameToBreadcrumbs for the last segment if available
+                const label =
+                  isLast && convertPathnameToBreadcrumbs(fullPath)
+                    ? convertPathnameToBreadcrumbs(fullPath)
+                    : segment.charAt(0).toUpperCase() + segment.slice(1);
+
+                return (
+                  <React.Fragment key={path}>
+                    <BreadcrumbItem key={path} className="">
+                      {isLast ? (
+                        <BreadcrumbPage>{label}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink href={path}>
+                          {segment.charAt(0).toUpperCase() + segment.slice(1)}
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                    {(!isLast || breadcrumbItems.length === 1) && (
+                      <BreadcrumbSeparator className="" />
                     )}
-                  </BreadcrumbItem>
-                  {(!isLast || breadcrumbItems.length === 1) && (
-                    <BreadcrumbSeparator className="" />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </header>
+                  </React.Fragment>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
+      )}
 
       {/* Decorative background elements */}
       {isDiscoverPage && (
