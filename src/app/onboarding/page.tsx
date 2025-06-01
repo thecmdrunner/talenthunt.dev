@@ -2,31 +2,49 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { api } from "@/trpc/react";
-import { ArrowRight, Search, Users } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { Search, Target, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function OnboardingPage() {
+  const { user } = useUser();
   const router = useRouter();
-  const { data: user, isLoading } = api.user.getOrCreateUser.useQuery();
+  const { trackPageVisited, trackOnboardingStarted, trackButtonClicked } =
+    useTracking();
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  const { data: userData } = api.user.getOrCreateUser.useQuery();
 
-  // If user already has a profile, redirect them
-  if (
-    user?.candidateProfile?.onboardingCompletedAt ||
-    user?.recruiterProfile?.onboardingCompletedAt
-  ) {
-    router.push("/dashboard");
-    return null;
-  }
+  // Track page visit
+  useEffect(() => {
+    trackPageVisited("onboarding_selection");
+  }, [trackPageVisited]);
+
+  useEffect(() => {
+    if (userData) {
+      const isCandidateOnboarded =
+        !!userData.candidateProfile.onboardingCompletedAt;
+      const isRecruiterOnboarded =
+        !!userData.recruiterProfile.onboardingCompletedAt;
+
+      if (isCandidateOnboarded || isRecruiterOnboarded) {
+        router.push("/dashboard");
+      }
+    }
+  }, [userData, router]);
+
+  const handleCandidateStart = () => {
+    trackOnboardingStarted("candidate");
+    trackButtonClicked("start_candidate_onboarding", "onboarding_selection");
+  };
+
+  const handleRecruiterStart = () => {
+    trackOnboardingStarted("recruiter");
+    trackButtonClicked("start_recruiter_onboarding", "onboarding_selection");
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 p-4">
@@ -46,7 +64,7 @@ export default function OnboardingPage() {
           <Card className="hover:shadow-3xl transform border-0 bg-white/95 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-105">
             <CardContent className="p-8 text-center">
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100">
-                <Users className="h-8 w-8 text-blue-600" />
+                <User className="h-8 w-8 text-blue-600" />
               </div>
 
               <h2 className="mb-4 text-3xl font-bold text-gray-900">
@@ -75,9 +93,10 @@ export default function OnboardingPage() {
                 <Link
                   href="/onboarding/candidate"
                   className="group flex w-full items-center gap-2 bg-blue-600 py-4 text-lg font-semibold text-white hover:bg-blue-700"
+                  onClick={handleCandidateStart}
                 >
                   Join as Candidate
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <Target className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </CardContent>
@@ -116,9 +135,10 @@ export default function OnboardingPage() {
                 <Link
                   href="/onboarding/recruiter"
                   className="group flex w-full items-center gap-2 bg-blue-600 py-4 text-lg font-semibold text-white hover:bg-blue-700"
+                  onClick={handleRecruiterStart}
                 >
                   Start Hiring
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  <Target className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </CardContent>

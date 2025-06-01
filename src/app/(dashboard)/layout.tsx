@@ -4,6 +4,7 @@ import { api } from "@/trpc/server";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { type PropsWithChildren } from "react";
+import { PostHogProvider } from "../providers";
 import Shell from "./shell";
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
@@ -35,7 +36,10 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
         <SidebarProvider>
           <AppSidebar />
           <SidebarInset>
-            <Shell> {children} </Shell>
+            <Shell>
+              {" "}
+              <PostHogProvider>{children}</PostHogProvider>{" "}
+            </Shell>
           </SidebarInset>
         </SidebarProvider>
       </SignedIn>

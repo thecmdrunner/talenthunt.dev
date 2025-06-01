@@ -2,16 +2,29 @@
 
 import { Button } from "@/components/ui/button";
 import { useVideoRecording } from "@/hooks/useVideoRecording";
+import { useTracking } from "@/lib/hooks/use-tracking";
+import { useUser } from "@clerk/nextjs";
 import { Camera, Play, Square, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface IntroduceYourselfProps {
   onComplete: () => void;
+  currentStep: number;
+  totalSteps: number;
 }
 
 export default function IntroduceYourself({
   onComplete,
+  currentStep,
+  totalSteps,
 }: IntroduceYourselfProps) {
+  const {
+    trackProfileUpdated,
+    trackButtonClicked,
+    trackExternalLinkClicked,
+    trackFeatureUsed,
+  } = useTracking();
+  const { user } = useUser();
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const liveVideoRef = useRef<HTMLVideoElement>(null);
@@ -46,23 +59,40 @@ export default function IntroduceYourself({
       }
     }
 
+    trackButtonClicked("start_video_recording", "onboarding");
+    trackFeatureUsed("video_introduction", "onboarding");
     await startRecording();
-  }, [startRecording, recordedBlob, resetRecording, previewUrl]);
+  }, [
+    startRecording,
+    recordedBlob,
+    resetRecording,
+    previewUrl,
+    trackButtonClicked,
+    trackFeatureUsed,
+  ]);
 
   const handleStopRecording = useCallback(() => {
+    trackButtonClicked("stop_video_recording", "onboarding");
     stopRecording();
-  }, [stopRecording]);
+  }, [stopRecording, trackButtonClicked]);
 
   const handleUploadRecorded = useCallback(async () => {
+    trackButtonClicked("upload_video_introduction", "onboarding");
     const videoUrl = await uploadRecordedVideo();
     if (videoUrl) {
       setVideoUploaded(true);
+      trackProfileUpdated("video_introduction");
       // Automatically progress to next step after upload
       setTimeout(() => {
         onComplete();
       }, 2000); // Give user 2 seconds to see the success message
     }
-  }, [uploadRecordedVideo, onComplete]);
+  }, [
+    uploadRecordedVideo,
+    onComplete,
+    trackButtonClicked,
+    trackProfileUpdated,
+  ]);
 
   // Create preview URL when recording is done
   const createPreview = useCallback(() => {
@@ -80,12 +110,13 @@ export default function IntroduceYourself({
   }, [recordedBlob, previewUrl, createPreview]);
 
   const handleDiscardRecording = useCallback(() => {
+    trackButtonClicked("discard_video_recording", "onboarding");
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
     }
     resetRecording();
-  }, [previewUrl, resetRecording]);
+  }, [previewUrl, resetRecording, trackButtonClicked]);
 
   const canComplete = videoUploaded;
 

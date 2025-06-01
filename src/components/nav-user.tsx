@@ -17,6 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { api } from "@/trpc/react";
 import { useClerk, useUser } from "@clerk/nextjs";
 import {
@@ -34,10 +35,27 @@ export function NavUser() {
   const { isMobile } = useSidebar();
   const { user } = useUser();
   const clerk = useClerk();
+  const { trackButtonClicked, trackPageVisited } = useTracking();
   const { data: creditsStatus } = api.user.getCreditsStatus.useQuery();
   const userName = user?.firstName;
   const userEmail = user?.emailAddresses[0]?.emailAddress;
   const userImageUrl = user?.imageUrl;
+
+  const handleMenuClick = (action: string) => {
+    trackButtonClicked(`user_menu_${action}`, "nav_user");
+  };
+
+  const handlePageNavigation = (page: string) => {
+    trackPageVisited(page, "user_menu");
+    trackButtonClicked(`nav_to_${page}`, "nav_user");
+  };
+
+  const handleLogout = () => {
+    trackButtonClicked("user_logout", "nav_user");
+    void clerk.signOut().then(() => {
+      window.location.reload();
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -145,7 +163,11 @@ export function NavUser() {
 
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/upgrade" className="cursor-pointer">
+                <Link
+                  href="/upgrade"
+                  className="cursor-pointer"
+                  onClick={() => handlePageNavigation("upgrade")}
+                >
                   <Sparkles
                     className={
                       creditsStatus?.hasLowCredits ? "text-amber-500" : ""
@@ -170,27 +192,23 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleMenuClick("account")}>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleMenuClick("billing")}>
                 <CreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleMenuClick("notifications")}
+              >
                 <Bell />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                void clerk.signOut().then(() => {
-                  window.location.reload();
-                });
-              }}
-            >
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

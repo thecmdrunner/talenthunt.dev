@@ -20,6 +20,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import {
@@ -55,10 +56,67 @@ const additionalFilters = [
   { type: "location", label: "location", value: "location" },
 ];
 
+// Convert match score to intuitive match level
+function getMatchLevel(score: number) {
+  if (score >= 85) {
+    return {
+      label: "Perfect",
+      variant: "default" as const,
+      color: "bg-green-500 text-white",
+      icon: "🎯",
+    };
+  } else if (score >= 75) {
+    return {
+      label: "Strong",
+      variant: "default" as const,
+      color: "bg-blue-500 text-white",
+      icon: "⭐",
+    };
+  } else if (score >= 65) {
+    return {
+      label: "Good",
+      variant: "secondary" as const,
+      color: "bg-purple-500 text-white",
+      icon: "💪",
+    };
+  } else if (score >= 50) {
+    return {
+      label: "Decent",
+      variant: "secondary" as const,
+      color: "bg-orange-500 text-white",
+      icon: "👍",
+    };
+  } else if (score >= 35) {
+    return {
+      label: "Potential",
+      variant: "outline" as const,
+      color: "bg-yellow-500 text-white",
+      icon: "🤔",
+    };
+  } else {
+    return {
+      label: "Basic",
+      variant: "outline" as const,
+      color: "bg-gray-500 text-white",
+      icon: "📋",
+    };
+  }
+}
+
 export default function DiscoverPage() {
+  const {
+    trackPageVisited,
+    trackSearch,
+    trackCandidateViewed,
+    trackFilterApplied,
+    trackButtonClicked,
+    trackContactInfoViewed,
+    trackExternalLinkClicked,
+  } = useTracking();
+
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue:
-      "i want a designer that has 19+yr exp, product design, figma, who has designed ai apps with product thinking and great ux, should have worked with fortune 500, on contract",
+      "i want a next js dev experienced in AI apps and has over 2 years of experience and is open to work in Banglore",
   });
 
   // State for selected candidate sheet
@@ -72,11 +130,18 @@ export default function DiscoverPage() {
   // Use tRPC mutation for candidate search
   const searchCandidates = api.ai.searchCandidates.useMutation();
 
+  // Track page visit
+  useEffect(() => {
+    trackPageVisited("discover");
+  }, [trackPageVisited]);
+
   // Process search query on page load or when searchQuery changes
   useEffect(() => {
     if (searchQuery && searchQuery.trim() !== "") {
       // Trigger AI extraction
       naturalLanguageQuery.mutate({ query: searchQuery });
+      // Track the search
+      trackSearch(searchQuery, "natural_language");
     }
   }, []);
 
@@ -92,6 +157,28 @@ export default function DiscoverPage() {
     void setSearchQuery("");
     naturalLanguageQuery.reset();
     searchCandidates.reset();
+    trackButtonClicked("clear_search", "discover_page");
+  };
+
+  const handleCandidateView = (candidate: (typeof candidates)[0]) => {
+    setSelectedCandidate(candidate);
+
+    trackCandidateViewed(candidate.id, candidate.matchScore);
+  };
+
+  const handleFilterSelect = (filterType: string, value: string) => {
+    trackFilterApplied(filterType, value);
+  };
+
+  const handleContactView = (candidateId: string) => {
+    trackContactInfoViewed(candidateId);
+  };
+
+  const handleExternalLink = (
+    linkType: "linkedin" | "github" | "portfolio",
+    candidateId?: string,
+  ) => {
+    trackExternalLinkClicked(linkType, candidateId);
   };
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
@@ -541,7 +628,7 @@ export default function DiscoverPage() {
                 <Card
                   key={candidate.id}
                   className="group cursor-pointer transition-shadow hover:shadow-lg"
-                  onClick={() => setSelectedCandidate(candidate)}
+                  onClick={() => handleCandidateView(candidate)}
                 >
                   <CardContent className="p-6">
                     <div className="space-y-4">
@@ -610,15 +697,12 @@ export default function DiscoverPage() {
                           <span className="text-sm text-gray-500">Match</span>
                           <Badge
                             variant={
-                              candidate.matchScore >= 80
-                                ? "default"
-                                : candidate.matchScore >= 60
-                                  ? "secondary"
-                                  : "outline"
+                              getMatchLevel(candidate.matchScore).variant
                             }
-                            className="text-xs"
+                            className={`${getMatchLevel(candidate.matchScore).color} text-xs`}
                           >
-                            {candidate.matchScore.toFixed(0)}%
+                            {getMatchLevel(candidate.matchScore).icon}{" "}
+                            {getMatchLevel(candidate.matchScore).label}
                           </Badge>
                         </div>
                       </div>
@@ -707,20 +791,20 @@ export default function DiscoverPage() {
                 {/* Match Score */}
                 <div className="rounded-lg border p-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Match Score</span>
+                    <span className="text-sm font-medium">Match</span>
                     <Badge
                       variant={
-                        selectedCandidate?.matchScore >= 80
-                          ? "default"
-                          : selectedCandidate?.matchScore >= 60
-                            ? "secondary"
-                            : "outline"
+                        getMatchLevel(selectedCandidate.matchScore).variant
                       }
-                      className="text-sm"
+                      className={`${getMatchLevel(selectedCandidate.matchScore).color} text-sm`}
                     >
-                      {selectedCandidate?.matchScore.toFixed(0)}%
+                      {getMatchLevel(selectedCandidate.matchScore).icon}{" "}
+                      {getMatchLevel(selectedCandidate.matchScore).label}
                     </Badge>
                   </div>
+                  {/* <div className="mt-2 text-xs text-gray-500">
+                    Based on skills, experience, and role alignment
+                  </div> */}
                 </div>
 
                 {/* Basic Info */}
@@ -792,6 +876,12 @@ export default function DiscoverPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                          onClick={() =>
+                            handleExternalLink(
+                              "github",
+                              selectedCandidate.githubUsername ?? undefined,
+                            )
+                          }
                         >
                           <Github className="h-5 w-5" />
                           <span className="text-sm">GitHub</span>
@@ -807,6 +897,12 @@ export default function DiscoverPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                            onClick={() =>
+                              handleExternalLink(
+                                "github",
+                                selectedCandidate.parsedGithubUrl ?? undefined,
+                              )
+                            }
                           >
                             <Github className="h-5 w-5" />
                             <span className="text-sm">GitHub</span>
@@ -821,6 +917,12 @@ export default function DiscoverPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                          onClick={() =>
+                            handleExternalLink(
+                              "linkedin",
+                              selectedCandidate.linkedinUrl ?? undefined,
+                            )
+                          }
                         >
                           <Linkedin className="h-5 w-5 text-blue-600" />
                           <span className="text-sm">LinkedIn</span>
@@ -836,6 +938,13 @@ export default function DiscoverPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                            onClick={() =>
+                              handleExternalLink(
+                                "linkedin",
+                                selectedCandidate.parsedLinkedinUrl ??
+                                  undefined,
+                              )
+                            }
                           >
                             <Linkedin className="h-5 w-5 text-blue-600" />
                             <span className="text-sm">LinkedIn</span>
@@ -926,19 +1035,43 @@ export default function DiscoverPage() {
                 )}
 
                 {/* Contact Actions */}
-                {/* <div className="space-y-3">
+                <div className="space-y-3">
                   <h3 className="text-lg font-semibold">Actions</h3>
-                  <div className="flex gap-2">
-                    <Button className="flex-1">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      className="flex-1"
+                      onClick={() => handleContactView(selectedCandidate.id)}
+                    >
                       <Mail className="mr-2 h-4 w-4" />
                       Contact
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        trackButtonClicked("view_resume", "candidate_detail");
+                        // Open resume in new tab
+                        if (
+                          "resumeUrl" in selectedCandidate &&
+                          selectedCandidate.resumeUrl &&
+                          typeof selectedCandidate.resumeUrl === "string"
+                        ) {
+                          window.open(
+                            selectedCandidate.resumeUrl,
+                            "_blank",
+                            "noopener,noreferrer",
+                          );
+                        } else {
+                          // Fallback - could show a toast or alert
+                          alert("Resume not available for this candidate");
+                        }
+                      }}
+                    >
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      View Profile
+                      View Resume
                     </Button>
                   </div>
-                </div> */}
+                </div>
               </div>
             </>
           )}

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { cn } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
 import { useUser } from "@clerk/nextjs";
@@ -29,11 +30,33 @@ export default function Dashboard({
 }: {
   user: RouterOutputs["user"]["getOrCreateUser"];
 }) {
+  const { trackPageVisited, trackOnboardingStarted, trackTabSwitched } =
+    useTracking();
+
   const { user: clerkUser } = useUser();
 
   const isCandidateOnboarded = !!user?.candidateProfile.onboardingCompletedAt;
   const isRecruiterOnboarded = !!user?.recruiterProfile.onboardingCompletedAt;
   const hasBothProfiles = isCandidateOnboarded && isRecruiterOnboarded;
+
+  // Track page visit
+  useEffect(() => {
+    trackPageVisited(
+      "dashboard",
+      hasBothProfiles
+        ? "both_profiles"
+        : isCandidateOnboarded
+          ? "candidate"
+          : isRecruiterOnboarded
+            ? "recruiter"
+            : "no_profile",
+    );
+  }, [
+    trackPageVisited,
+    hasBothProfiles,
+    isCandidateOnboarded,
+    isRecruiterOnboarded,
+  ]);
 
   const [tabValue, setTabValue] = useState<TabValue>("candidate");
 
