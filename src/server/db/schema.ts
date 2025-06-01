@@ -83,6 +83,7 @@ export const candidateProfiles = createTable(
     lastName: d.varchar({ length: 100 }),
     title: d.varchar({ length: 200 }), // e.g., "Senior Full Stack Engineer"
     bio: d.text(),
+    introVideoUrl: d.text(), // Introduction video URL from Supabase storage
 
     // Location
     location: d.varchar({ length: 200 }),

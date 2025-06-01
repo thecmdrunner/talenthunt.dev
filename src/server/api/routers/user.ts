@@ -119,6 +119,30 @@ export const userRouter = createTRPCRouter({
       return getUser(userId);
     }),
 
+  saveIntroVideo: protectedProcedure
+    .input(
+      z.object({
+        videoUrl: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.userId;
+
+      // Check if user has a candidate profile
+      const existingUser = await getUser(userId);
+
+      if (!existingUser?.candidateProfile) {
+        throw new Error("User does not have a candidate profile");
+      }
+
+      // Update candidate profile with video URL
+      await ctx.db
+        .update(candidateProfiles)
+        .set({ introVideoUrl: input.videoUrl })
+        .where(eq(candidateProfiles.userId, userId));
+
+      return getUser(userId);
+    }),
   nextRecruiterStep: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.userId;
 
