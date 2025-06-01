@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { toast } from "react-hot-toast";
 import CompleteProfile from "../complete-profile";
 import IntroduceYourself from "../introduce-yourself";
@@ -15,16 +15,16 @@ export default function CandidateOnboardingPage() {
   const router = useRouter();
   const { data: user, isLoading } = api.user.getOrCreateUser.useQuery();
 
-  useEffect(() => {
-    // Redirect if user doesn't have a candidate profile or has completed onboarding
-    if (!isLoading && user) {
-      if (!user.candidateProfile) {
-        router.push("/onboarding");
-      } else if (user.candidateProfile.currentStep > 3) {
-        router.push("/dashboard");
-      }
-    }
-  }, [user, isLoading]);
+  // useEffect(() => {
+  //   // Redirect if user doesn't have a candidate profile or has completed onboarding
+  //   if (!isLoading && user) {
+  //     if (!user.candidateProfile) {
+  //       router.push("/onboarding");
+  //     } else if (user.candidateProfile.currentStep > 3) {
+  //       router.push("/dashboard");
+  //     }
+  //   }
+  // }, [user, isLoading]);
 
   const currentStep = (user?.candidateProfile?.currentStep ?? 0) + 1;
   const steps = ["Upload Resume", "Complete Profile", "Introduce Yourself"];

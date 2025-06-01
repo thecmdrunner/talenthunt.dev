@@ -112,11 +112,17 @@ export async function withCache<T>({
   key,
   callback,
   ttlSeconds = 30 * 60,
+  disableCache = false,
 }: {
   key: string;
   callback: () => T | Promise<T>;
   ttlSeconds?: number;
+  disableCache?: boolean;
 }): Promise<{ data: T; servedCache: boolean }> {
+  if (disableCache) {
+    return { data: await callback(), servedCache: false };
+  }
+
   try {
     // Try to get from cache first
     const cached = await getFromCache<T>(key);

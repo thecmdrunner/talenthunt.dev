@@ -17,13 +17,17 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
     return redirect("/");
   }
 
-  // if (!user?.recruiterProfile && user?.candidateProfile.currentStep === 0) {
-  //   return redirect("/onboarding/candidate");
-  // }
+  if (!user?.recruiterProfile && !user?.candidateProfile) {
+    return redirect("/onboarding");
+  }
 
-  // if (!user?.candidateProfile && user?.recruiterProfile.currentStep === 0) {
-  //   return redirect("/onboarding/recruiter");
-  // }
+  if (!user?.recruiterProfile && user?.candidateProfile.currentStep === 0) {
+    return redirect("/onboarding/candidate");
+  }
+
+  if (!user?.candidateProfile && user?.recruiterProfile.currentStep === 0) {
+    return redirect("/onboarding/recruiter");
+  }
 
   return (
     <>

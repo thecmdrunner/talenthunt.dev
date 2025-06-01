@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { auth } from "@clerk/nextjs/server";
 import {
   ArrowRight,
   Briefcase,
@@ -24,7 +25,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const user = await auth();
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
@@ -56,14 +58,28 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
-            <Button>
-              <UserPlus className="mr-2 h-5 w-5" />
-              Start Hiring
-            </Button>
-            <Button variant="outline">
-              <Briefcase className="mr-2 h-5 w-5" />
-              Find Work
-            </Button>
+            {user ? (
+              <>
+                <Link href="/dashboard">
+                  <Button>dashboard</Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/discover">
+                  <Button>
+                    <UserPlus className="mr-2 h-5 w-5" />
+                    Start Hiring
+                  </Button>
+                </Link>
+                <Link href="/discover">
+                  <Button variant="outline">
+                    <Briefcase className="mr-2 h-5 w-5" />
+                    Find Work
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -524,17 +540,25 @@ export default function LandingPage() {
             TalentHunt.dev
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" variant="secondary" className="px-8 py-4 text-lg">
-              Start Hiring Now
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white px-8 py-4 text-lg text-white hover:bg-white hover:text-blue-600"
-            >
-              Join as Candidate
-            </Button>
+            <Link href="/discover">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="px-8 py-4 text-lg"
+              >
+                Start Hiring Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/discover">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white px-8 py-4 text-lg text-white hover:bg-white hover:text-blue-600"
+              >
+                Join as Candidate
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
