@@ -14,6 +14,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
+import type { JobSearchPreferences } from "@/types/jobs";
 import {
   ArrowRight,
   Briefcase,
@@ -72,9 +73,9 @@ export default function DiscoverJobsPage() {
   useEffect(() => {
     if (naturalLanguageQuery.data) {
       // Trigger job search with the extracted job preferences
-      searchJobs.mutate(naturalLanguageQuery.data);
+      searchJobs.mutate(naturalLanguageQuery.data.newJob);
     }
-  }, [naturalLanguageQuery.data]);
+  }, [naturalLanguageQuery.data, searchJobs]);
 
   const clearSearch = () => {
     void setSearchQuery("");
@@ -83,7 +84,8 @@ export default function DiscoverJobsPage() {
   };
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
-  const jobPreferences = naturalLanguageQuery.data;
+  const jobPreferences: JobSearchPreferences | undefined =
+    naturalLanguageQuery.data;
   const jobs = searchJobs.data?.jobs ?? [];
 
   return (
@@ -386,19 +388,21 @@ export default function DiscoverJobsPage() {
               )}
 
               {/* Location & Remote */}
-              {(jobPreferences.locations?.length > 0 ||
+              {((jobPreferences.locations &&
+                jobPreferences.locations?.length > 0) ??
                 jobPreferences.remotePreference) && (
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-slate-500">📍</span>
-                  {jobPreferences.locations?.length > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
-                    >
-                      {jobPreferences.locations.join(", ")}
-                      <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                    </Badge>
-                  )}
+                  {jobPreferences.locations &&
+                    jobPreferences.locations?.length > 0 && (
+                      <Badge
+                        variant="outline"
+                        className="group relative border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 text-orange-700 shadow-sm transition-all hover:scale-105"
+                      >
+                        {jobPreferences.locations.join(", ")}
+                        <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
+                      </Badge>
+                    )}
 
                   {jobPreferences.remotePreference && (
                     <Select value={jobPreferences.remotePreference}>
@@ -436,14 +440,18 @@ export default function DiscoverJobsPage() {
                       {jobPreferences.companyPreferences.size} company
                     </Badge>
                   )}
-                  {jobPreferences.companyPreferences.industries?.length > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="group relative border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-700 shadow-sm transition-all hover:scale-105"
-                    >
-                      {jobPreferences.companyPreferences.industries.join(", ")}
-                    </Badge>
-                  )}
+                  {jobPreferences.companyPreferences.industries &&
+                    jobPreferences.companyPreferences.industries?.length >
+                      0 && (
+                      <Badge
+                        variant="outline"
+                        className="group relative border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-700 shadow-sm transition-all hover:scale-105"
+                      >
+                        {jobPreferences.companyPreferences.industries.join(
+                          ", ",
+                        )}
+                      </Badge>
+                    )}
                 </div>
               )}
 

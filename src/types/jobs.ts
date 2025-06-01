@@ -23,11 +23,9 @@ export const jobAttributesSchema = z.object({
 
       locations: z
         .array(z.string())
-
         .nullish()
         .describe("Countries like India, US, UK, etc."),
     })
-
     .nullish()
     .optional()
     .describe("Past experience"),
@@ -101,7 +99,31 @@ export const jobAttributesSchema = z.object({
     .describe("Education"),
 });
 
+// Schema for job search preferences that matches the UI expectations
+export const jobSearchPreferencesSchema = z.object({
+  desiredRole: z.string().nullish(),
+  similarRoles: z.array(z.string()).nullish(),
+  requiredSkills: z.array(z.string()).nullish(),
+  experienceLevel: z.string().nullish(),
+  salaryRange: z
+    .object({
+      min: z.number().nullish(),
+      max: z.number().nullish(),
+      currency: z.string().nullish(),
+    })
+    .nullish(),
+  locations: z.array(z.string()).nullish(),
+  remotePreference: z.string().nullish(),
+  companyPreferences: z
+    .object({
+      size: z.string().nullish(),
+      industries: z.array(z.string()).nullish(),
+    })
+    .nullish(),
+});
+
 export type JobAttributes = z.infer<typeof jobAttributesSchema>;
+export type JobSearchPreferences = z.infer<typeof jobSearchPreferencesSchema>;
 
 export const sampleJobAttributes: JobAttributes = {
   newJob: {

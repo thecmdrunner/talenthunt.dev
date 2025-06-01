@@ -1,8 +1,8 @@
 import { createStandardCacheKey, withCache } from "@/lib/cache";
 import {
   CACHE_CONFIG,
-  CREDITS_COST,
   CREDIT_ERROR_MESSAGES,
+  CREDITS_COST,
 } from "@/lib/constants";
 import {
   createTRPCRouter,
@@ -10,13 +10,17 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { candidateProfiles, users, workExperience } from "@/server/db/schema";
-import { jobAttributesSchema, sampleJobAttributes } from "@/types/jobs";
+import {
+  jobAttributesSchema,
+  jobSearchPreferencesSchema,
+  sampleJobAttributes,
+} from "@/types/jobs";
 import { parsedResumeDataSchema } from "@/types/resume";
 import { groq } from "@ai-sdk/groq";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { TRPCError } from "@trpc/server";
 import { generateObject } from "ai";
-import { and, desc, eq, gte, ilike, lte, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, lte, or, SQL, sql } from "drizzle-orm";
 import PDFParser from "pdf2json";
 import { z } from "zod";
 
@@ -568,7 +572,7 @@ ${extractedText}`,
       console.log("🔍 Searching candidates with criteria:", input);
 
       // Build the where conditions based on job attributes
-      const whereConditions: any[] = [
+      const whereConditions: SQL[] = [
         eq(candidateProfiles.verificationStatus, "approved"),
         eq(candidateProfiles.isActive, true),
         eq(candidateProfiles.isOpenToWork, true),
@@ -825,9 +829,8 @@ ${extractedText}`,
           let locationMatch = false;
 
           if (
-            candidate.location &&
             candidate.location
-              .toLowerCase()
+              ?.toLowerCase()
               .includes(newJob.location.country.toLowerCase())
           ) {
             locationMatch = true;
@@ -835,9 +838,8 @@ ${extractedText}`,
 
           if (
             !locationMatch &&
-            candidate.parsedResumeData?.location &&
-            candidate.parsedResumeData.location
-              .toLowerCase()
+            candidate.parsedResumeData?.location
+              ?.toLowerCase()
               .includes(newJob.location.country.toLowerCase())
           ) {
             locationMatch = true;
@@ -899,6 +901,158 @@ ${extractedText}`,
       return {
         candidates: candidatesWithScores,
         total: candidatesWithScores.length,
+      };
+    }),
+
+  searchJobs: protectedProcedure
+    .input(jobSearchPreferencesSchema)
+    .output(
+      z.object({
+        jobs: z.array(
+          z.object({
+            id: z.string(),
+            title: z.string(),
+            description: z.string().nullable(),
+            requirements: z.string().nullable(),
+            location: z.string().nullable(),
+            isRemote: z.boolean().nullable(),
+            workType: z.string(),
+            experienceLevel: z.string().nullable(),
+            salaryMin: z.number().nullable(),
+            salaryMax: z.number().nullable(),
+            salaryCurrency: z.string().nullable(),
+            equity: z.string().nullable(),
+            benefits: z.array(z.string()),
+            requiredSkills: z.array(z.string()),
+            niceToHaveSkills: z.array(z.string()),
+            yearsOfExperience: z.number().nullable(),
+            companyName: z.string().nullable(),
+            companyDescription: z.string().nullable(),
+            isUrgent: z.boolean(),
+            isFeatured: z.boolean(),
+            publishedAt: z.date().nullable(),
+            createdAt: z.date(),
+            // Additional computed fields for UI
+            company: z.string(),
+            type: z.string(),
+            remote: z.string().nullable(),
+            salary: z
+              .object({
+                min: z.number().nullable(),
+                max: z.number().nullable(),
+                currency: z.string().nullable(),
+              })
+              .nullable(),
+            postedDate: z.date(),
+            companySize: z.string().nullable(),
+            industry: z.string().nullable(),
+          }),
+        ),
+        total: z.number(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      console.log("🔍 Searching jobs with preferences:", input);
+
+      // Build the where conditions based on job search preferences
+      const whereConditions: SQL[] = [eq(jobs.status, "active")];
+
+      // Filter by desired role if specified
+      if (input.desiredRole) {
+        whereConditions.push(
+          or(
+            ilike(jobs.title, `%${input.desiredRole}%`),
+            ilike(jobs.description, `%${input.desiredRole}%`),
+          ),
+        );
+      }
+
+      // Filter by skills if specified
+      if (input.requiredSkills && input.requiredSkills.length > 0) {
+        const skillFilters = input.requiredSkills.map(
+          (skill) => sql`${jobs.requiredSkills} @> ARRAY[${skill}]::text[]`,
+        );
+        whereConditions.push(or(...skillFilters));
+      }
+
+      // Filter by location if specified
+      if (input.locations && input.locations.length > 0) {
+        const locationFilters = input.locations.map((location) =>
+          ilike(jobs.location, `%${location}%`),
+        );
+        whereConditions.push(or(...locationFilters));
+      }
+
+      // Filter by remote preference if specified
+      if (input.remotePreference) {
+        if (input.remotePreference.toLowerCase() === "remote") {
+          whereConditions.push(eq(jobs.isRemote, true));
+        } else if (input.remotePreference.toLowerCase() === "on-site") {
+          whereConditions.push(eq(jobs.isRemote, false));
+        }
+        // For hybrid, we'll include both remote and on-site jobs
+      }
+
+      // Query jobs with all filters
+      const jobsQuery = await ctx.db.query.jobs.findMany({
+        where: and(...whereConditions),
+        columns: {
+          id: true,
+          title: true,
+          description: true,
+          requirements: true,
+          location: true,
+          isRemote: true,
+          workType: true,
+          experienceLevel: true,
+          salaryMin: true,
+          salaryMax: true,
+          salaryCurrency: true,
+          equity: true,
+          benefits: true,
+          requiredSkills: true,
+          niceToHaveSkills: true,
+          yearsOfExperience: true,
+          companyName: true,
+          companyDescription: true,
+          isUrgent: true,
+          isFeatured: true,
+          publishedAt: true,
+          createdAt: true,
+        },
+        limit: 50, // Limit to 50 jobs for performance
+        orderBy: [desc(jobs.isFeatured), desc(jobs.publishedAt)],
+      });
+
+      // Transform jobs to match the expected UI format
+      const transformedJobs = jobsQuery.map((job) => ({
+        ...job,
+        // Ensure required fields are not null
+        requiredSkills: job.requiredSkills ?? [],
+        niceToHaveSkills: job.niceToHaveSkills ?? [],
+        benefits: job.benefits ?? [],
+        // Add computed fields for UI compatibility
+        company: job.companyName ?? "Company",
+        type: job.workType,
+        remote: job.isRemote ? "Remote" : job.location ? "On-site" : null,
+        salary:
+          job.salaryMin || job.salaryMax
+            ? {
+                min: job.salaryMin,
+                max: job.salaryMax,
+                currency: job.salaryCurrency,
+              }
+            : null,
+        postedDate: job.publishedAt ?? job.createdAt,
+        companySize: null, // Not available in current schema
+        industry: null, // Not available in current schema
+      }));
+
+      console.log(`✅ Found ${transformedJobs.length} matching jobs`);
+
+      return {
+        jobs: transformedJobs,
+        total: transformedJobs.length,
       };
     }),
 });
