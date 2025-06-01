@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import {
   ArrowRight,
   Briefcase,
@@ -53,8 +55,14 @@ export default function LandingPage() {
             </Link>
           </nav>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost">Sign In</Button>
-            <Button>Get Started</Button>
+            <Button>
+              <UserPlus className="mr-2 h-5 w-5" />
+              Start Hiring
+            </Button>
+            <Button variant="outline">
+              <Briefcase className="mr-2 h-5 w-5" />
+              Find Work
+            </Button>
           </div>
         </div>
       </header>
@@ -62,126 +70,247 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="px-4 pt-20 pb-16">
         <div className="container mx-auto max-w-6xl text-center">
-          <div className="mb-8 inline-flex items-center space-x-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2">
-            <Zap className="h-4 w-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-700">
-              AI-Powered Talent Matching
-            </span>
-          </div>
-
-          <h1 className="mb-6 text-5xl leading-tight font-bold md:text-7xl">
-            Find the perfect{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              candidates
-            </span>{" "}
-            with AI
-          </h1>
-
-          <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
-            TalentHunt.dev revolutionizes hiring with natural language search.
-            Simply describe your ideal candidate and find them instantly.
-          </p>
-
-          {/* Search Demo */}
-          <div className="mx-auto mb-12 max-w-2xl">
-            <div className="relative">
-              <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
-              <Input
-                placeholder="Find senior GenAI engineers with LangChain + RAG experience in Europe..."
-                className="rounded-xl border-2 border-gray-200 py-4 pr-4 pl-12 text-lg focus:border-blue-500"
-              />
-              <Button className="absolute top-1/2 right-2 -translate-y-1/2 transform">
-                Search
-              </Button>
-            </div>
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="mb-16 flex flex-col justify-center gap-4 sm:flex-row">
-            <Button size="lg" className="px-8 py-4 text-lg">
-              <UserPlus className="mr-2 h-5 w-5" />
-              I'm Hiring
-            </Button>
-            <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-              <Briefcase className="mr-2 h-5 w-5" />
-              I'm Looking for Work
-            </Button>
-          </div>
-
-          {/* Social Proof */}
-          <div className="mb-8 text-sm text-gray-500">
-            Trusted by 1000+ companies and 50,000+ candidates
-          </div>
-
-          {/* Featured Candidate Cards */}
-          <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-3">
-            {[
-              {
-                name: "Sarah Chen",
-                role: "Senior Full-Stack Engineer",
-                company: "Ex-Google",
-                skills: ["React", "Node.js", "Python"],
-                verified: true,
-              },
-              {
-                name: "Marcus Johnson",
-                role: "DevOps Engineer",
-                company: "Ex-AWS",
-                skills: ["Kubernetes", "Docker", "Terraform"],
-                verified: true,
-              },
-              {
-                name: "Elena Rodriguez",
-                role: "Data Scientist",
-                company: "Ex-Meta",
-                skills: ["ML", "Python", "TensorFlow"],
-                verified: true,
-              },
-            ].map((candidate, i) => (
-              <Card key={i} className="transition-shadow hover:shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage
-                        src={`https://avatar.vercel.sh/${candidate.name}`}
-                      />
-                      <AvatarFallback>
-                        {candidate.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 text-left">
-                      <div className="mb-1 flex items-center space-x-2">
-                        <h3 className="font-semibold">{candidate.name}</h3>
-                        {candidate.verified && (
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                        )}
+          <Tabs defaultValue="hire" className="w-full">
+            <TabsList className="mx-auto mb-8 flex w-fit gap-2 rounded-full bg-blue-50 p-1">
+              <TabsTrigger
+                value="hire"
+                className={cn(
+                  "rounded-full px-6 py-2 font-medium text-blue-700 transition-colors",
+                  "data-[state=active]:bg-blue-600 data-[state=active]:text-white",
+                )}
+              >
+                <Zap className="mr-2 inline-block h-4 w-4" />
+                Hire Talent
+              </TabsTrigger>
+              <TabsTrigger
+                value="work"
+                className={cn(
+                  "rounded-full px-6 py-2 font-medium text-blue-700 transition-colors",
+                  "data-[state=active]:bg-blue-600 data-[state=active]:text-white",
+                )}
+              >
+                <Briefcase className="mr-2 inline-block h-4 w-4" />
+                Find Work
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="hire">
+              <div className="mb-8 inline-flex items-center space-x-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2">
+                <Zap className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-700">
+                  AI-Powered Talent Matching
+                </span>
+              </div>
+              <h1 className="mb-6 text-5xl leading-tight font-bold md:text-7xl">
+                Find the perfect{" "}
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  candidates
+                </span>{" "}
+                with AI
+              </h1>
+              <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
+                TalentHunt.dev revolutionizes hiring with natural language
+                search. Simply describe your ideal candidate and find them
+                instantly.
+              </p>
+              <div className="mx-auto mb-12 max-w-2xl">
+                <div className="relative">
+                  <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+                  <Input
+                    placeholder="Find senior GenAI engineers with LangChain + RAG experience in Europe..."
+                    className="rounded-xl border-2 border-gray-200 py-4 pr-4 pl-12 text-lg focus:border-blue-500"
+                  />
+                  <Button className="absolute top-1/2 right-2 -translate-y-1/2 transform">
+                    Search
+                  </Button>
+                </div>
+              </div>
+              <div className="mb-16 flex flex-col justify-center gap-4 sm:flex-row">
+                <Button size="lg" className="px-8 py-4 text-lg">
+                  <UserPlus className="mr-2 h-5 w-5" />
+                  Find Talent
+                </Button>
+              </div>
+              <div className="mb-8 text-sm text-gray-500">
+                Trusted by 1000+ companies and 50,000+ candidates
+              </div>
+              <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-3">
+                {[
+                  {
+                    name: "Sarah Chen",
+                    role: "Senior Full-Stack Engineer",
+                    company: "Ex-Google",
+                    skills: ["React", "Node.js", "Python"],
+                    verified: true,
+                  },
+                  {
+                    name: "Marcus Johnson",
+                    role: "DevOps Engineer",
+                    company: "Ex-AWS",
+                    skills: ["Kubernetes", "Docker", "Terraform"],
+                    verified: true,
+                  },
+                  {
+                    name: "Elena Rodriguez",
+                    role: "Data Scientist",
+                    company: "Ex-Meta",
+                    skills: ["ML", "Python", "TensorFlow"],
+                    verified: true,
+                  },
+                ].map((candidate, i) => (
+                  <Card key={i} className="transition-shadow hover:shadow-lg">
+                    <CardContent className="p-6">
+                      <div className="flex items-start space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage
+                            src={`https://avatar.vercel.sh/${candidate.name}`}
+                          />
+                          <AvatarFallback>
+                            {candidate.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 text-left">
+                          <div className="mb-1 flex items-center space-x-2">
+                            <h3 className="font-semibold">{candidate.name}</h3>
+                            {candidate.verified && (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            )}
+                          </div>
+                          <p className="mb-2 text-sm text-gray-600">
+                            {candidate.role}
+                          </p>
+                          <p className="mb-3 text-xs text-gray-500">
+                            {candidate.company}
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {candidate.skills.map((skill, j) => (
+                              <Badge
+                                key={j}
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <p className="mb-2 text-sm text-gray-600">
-                        {candidate.role}
-                      </p>
-                      <p className="mb-3 text-xs text-gray-500">
-                        {candidate.company}
-                      </p>
-                      <div className="flex flex-wrap gap-1">
-                        {candidate.skills.map((skill, j) => (
-                          <Badge
-                            key={j}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="work">
+              <div className="mb-8 inline-flex items-center space-x-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2">
+                <Briefcase className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-700">
+                  AI-Powered Job Matching
+                </span>
+              </div>
+              <h1 className="mb-6 text-5xl leading-tight font-bold md:text-7xl">
+                Find your next{" "}
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  opportunity
+                </span>{" "}
+                with AI
+              </h1>
+              <p className="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-gray-600">
+                Let TalentHunt.dev match you to top jobs. Describe your skills
+                and preferences to discover roles tailored for you.
+              </p>
+              <div className="mx-auto mb-12 max-w-2xl">
+                <div className="relative">
+                  <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform text-gray-400" />
+                  <Input
+                    placeholder="Search for remote product manager roles in SaaS startups..."
+                    className="rounded-xl border-2 border-gray-200 py-4 pr-4 pl-12 text-lg focus:border-blue-500"
+                  />
+                  <Button className="absolute top-1/2 right-2 -translate-y-1/2 transform">
+                    Search
+                  </Button>
+                </div>
+              </div>
+              <div className="mb-16 flex flex-col justify-center gap-4 sm:flex-row">
+                <Button size="lg" className="px-8 py-4 text-lg">
+                  <Briefcase className="mr-2 h-5 w-5" />
+                  Find Work
+                </Button>
+              </div>
+              <div className="mb-8 text-sm text-gray-500">
+                Join 50,000+ candidates landing interviews at 1000+ companies
+              </div>
+              <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-3">
+                {[
+                  {
+                    name: "Priya Singh",
+                    role: "Product Manager",
+                    company: "Ex-Stripe",
+                    skills: ["Agile", "Figma", "A/B Testing"],
+                    verified: true,
+                  },
+                  {
+                    name: "David Kim",
+                    role: "QA Tester",
+                    company: "Ex-Atlassian",
+                    skills: ["JIRA", "Automation", "Selenium"],
+                    verified: true,
+                  },
+                  {
+                    name: "Anna Müller",
+                    role: "UX Researcher",
+                    company: "Ex-N26",
+                    skills: ["User Research", "Notion", "Miro"],
+                    verified: true,
+                  },
+                ].map((candidate, i) => (
+                  <Card key={i} className="transition-shadow hover:shadow-lg">
+                    <CardContent className="p-6">
+                      <div className="flex items-start space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage
+                            src={`https://avatar.vercel.sh/${candidate.name}`}
+                          />
+                          <AvatarFallback>
+                            {candidate.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 text-left">
+                          <div className="mb-1 flex items-center space-x-2">
+                            <h3 className="font-semibold">{candidate.name}</h3>
+                            {candidate.verified && (
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                            )}
+                          </div>
+                          <p className="mb-2 text-sm text-gray-600">
+                            {candidate.role}
+                          </p>
+                          <p className="mb-3 text-xs text-gray-500">
+                            {candidate.company}
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {candidate.skills.map((skill, j) => (
+                              <Badge
+                                key={j}
+                                variant="secondary"
+                                className="text-xs"
+                              >
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
