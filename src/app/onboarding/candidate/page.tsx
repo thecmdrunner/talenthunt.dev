@@ -27,7 +27,12 @@ export default function CandidateOnboardingPage() {
   // }, [user, isLoading]);
 
   const currentStep = (user?.candidateProfile?.currentStep ?? 0) + 1;
-  const steps = ["Upload Resume", "Complete Profile", "Introduce Yourself"];
+  const steps = [
+    "Upload Resume",
+    "Complete Profile",
+    "Introduce Yourself",
+    "Completed Profile",
+  ];
 
   const nextCandidateStepMutation = api.user.nextCandidateStep.useMutation({
     onSuccess: () => {
