@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { useVideoRecording } from "@/hooks/useVideoRecording";
-import { Camera, Play, Square, Upload, X } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { Camera, Play, Square, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface IntroduceYourselfProps {
   onComplete: () => void;
@@ -14,7 +14,7 @@ export default function IntroduceYourself({
 }: IntroduceYourselfProps) {
   const [videoUploaded, setVideoUploaded] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const liveVideoRef = useRef<HTMLVideoElement>(null);
 
   const {
     isRecording,
@@ -22,12 +22,19 @@ export default function IntroduceYourself({
     recordingTimeFormatted,
     timeRemainingFormatted,
     isUploading,
+    currentStream,
     startRecording,
     stopRecording,
     uploadRecordedVideo,
-    handleFileUpload,
     resetRecording,
   } = useVideoRecording();
+
+  // Set up live preview when stream becomes available
+  useEffect(() => {
+    if (currentStream && liveVideoRef.current && isRecording) {
+      liveVideoRef.current.srcObject = currentStream;
+    }
+  }, [currentStream, isRecording]);
 
   const handleStartRecording = useCallback(async () => {
     // Reset any previous recording
@@ -38,6 +45,7 @@ export default function IntroduceYourself({
         setPreviewUrl(null);
       }
     }
+
     await startRecording();
   }, [startRecording, recordedBlob, resetRecording, previewUrl]);
 
@@ -52,25 +60,6 @@ export default function IntroduceYourself({
     }
   }, [uploadRecordedVideo]);
 
-  const handleFileSelect = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        const videoUrl = await handleFileUpload(file);
-        if (videoUrl) {
-          setVideoUploaded(true);
-        }
-      }
-      // Reset input
-      event.target.value = "";
-    },
-    [handleFileUpload],
-  );
-
-  const handleUploadClick = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
   // Create preview URL when recording is done
   const createPreview = useCallback(() => {
     if (recordedBlob && !previewUrl) {
@@ -80,9 +69,11 @@ export default function IntroduceYourself({
   }, [recordedBlob, previewUrl]);
 
   // Auto-create preview when blob is available
-  if (recordedBlob && !previewUrl) {
-    createPreview();
-  }
+  useEffect(() => {
+    if (recordedBlob && !previewUrl) {
+      createPreview();
+    }
+  }, [recordedBlob, previewUrl, createPreview]);
 
   const handleDiscardRecording = useCallback(() => {
     if (previewUrl) {
@@ -108,9 +99,9 @@ export default function IntroduceYourself({
       </div>
 
       <div className="space-y-8">
-        {/* Recording Controls */}
+        {/* Start Recording Button */}
         {!recordedBlob && !isRecording && (
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="flex justify-center">
             <Button
               size="lg"
               className="rounded-lg bg-blue-600 hover:bg-blue-700"
@@ -119,55 +110,61 @@ export default function IntroduceYourself({
               <Camera className="mr-2 h-5 w-5" />
               Start Recording
             </Button>
-
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-lg"
-              onClick={handleUploadClick}
-            >
-              <Upload className="mr-2 h-5 w-5" />
-              Upload Video
-            </Button>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="video/*"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
           </div>
         )}
 
-        {/* Recording in progress */}
+        {/* Live Recording View */}
         {isRecording && (
-          <div className="space-y-4 text-center">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-              <div className="h-6 w-6 animate-pulse rounded-full bg-red-500"></div>
-            </div>
-            <div className="space-y-2">
-              <p className="text-lg font-medium text-gray-900">Recording...</p>
+          <div className="space-y-4">
+            <div className="text-center">
+              <h3 className="text-lg font-medium text-gray-900">
+                Recording...
+              </h3>
               <p className="text-sm text-gray-600">
                 Time: {recordingTimeFormatted} / 1:00
               </p>
-              <p className="text-xs text-gray-500">
-                Remaining: {timeRemainingFormatted}
-              </p>
             </div>
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-lg border-red-300 text-red-600 hover:bg-red-50"
-              onClick={handleStopRecording}
-            >
-              <Square className="mr-2 h-5 w-5" />
-              Stop Recording
-            </Button>
+
+            {/* Live Video Preview */}
+            <div className="relative mx-auto max-w-md">
+              <video
+                ref={liveVideoRef}
+                autoPlay
+                muted
+                playsInline
+                className="w-full rounded-lg border border-gray-200 bg-gray-100"
+                style={{ maxHeight: "400px" }}
+              />
+
+              {/* Recording Indicator Overlay */}
+              <div className="absolute top-3 left-3 flex items-center gap-2 rounded-full bg-red-500 px-3 py-1 text-white">
+                <div className="h-2 w-2 animate-pulse rounded-full bg-white"></div>
+                <span className="text-xs font-medium">REC</span>
+              </div>
+
+              {/* Timer Overlay */}
+              <div className="bg-opacity-60 absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black px-3 py-1 text-white">
+                <span className="font-mono text-sm">
+                  {recordingTimeFormatted}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <Button
+                size="lg"
+                variant="outline"
+                className="rounded-lg border-red-300 text-red-600 hover:bg-red-50"
+                onClick={handleStopRecording}
+              >
+                <Square className="mr-2 h-5 w-5" />
+                Stop Recording
+              </Button>
+            </div>
           </div>
         )}
 
-        {/* Recording preview */}
+        {/* Recording Preview */}
         {recordedBlob && previewUrl && (
           <div className="space-y-4">
             <div className="text-center">
@@ -204,7 +201,7 @@ export default function IntroduceYourself({
                   </>
                 ) : (
                   <>
-                    <Upload className="mr-2 h-5 w-5" />
+                    <Camera className="mr-2 h-5 w-5" />
                     Upload Video
                   </>
                 )}
@@ -275,7 +272,7 @@ export default function IntroduceYourself({
           onClick={onComplete}
           disabled={!canComplete}
         >
-          {canComplete ? "Complete Profile" : "Upload a video to continue"}
+          {canComplete ? "Complete Profile" : "Record a video to continue"}
         </Button>
       </div>
     </div>

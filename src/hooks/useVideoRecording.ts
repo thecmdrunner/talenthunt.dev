@@ -18,9 +18,9 @@ export const useVideoRecording = () => {
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [currentStream, setCurrentStream] = useState<MediaStream | null>(null);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const recordingStartTimeRef = useRef<number>(0);
@@ -42,6 +42,27 @@ export const useVideoRecording = () => {
     },
   });
 
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+
+      // Stop timer
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+
+      // Stop stream
+      if (currentStream) {
+        currentStream.getTracks().forEach((track) => track.stop());
+        setCurrentStream(null);
+      }
+
+      toast.success("Recording stopped!");
+    }
+  }, [isRecording, currentStream]);
+
   const startTimer = useCallback(() => {
     recordingStartTimeRef.current = Date.now();
     timerRef.current = setInterval(() => {
@@ -49,10 +70,11 @@ export const useVideoRecording = () => {
       setRecordingTime(elapsed);
 
       if (elapsed >= MAX_RECORDING_TIME) {
+        // Use a ref to avoid stale closure
         stopRecording();
       }
     }, 100);
-  }, []);
+  }, [stopRecording]);
 
   const stopTimer = useCallback(() => {
     if (timerRef.current) {
@@ -81,7 +103,7 @@ export const useVideoRecording = () => {
         audio: true,
       });
 
-      streamRef.current = stream;
+      setCurrentStream(stream);
       chunksRef.current = [];
 
       const mimeType = getSupportedMimeType();
@@ -101,12 +123,6 @@ export const useVideoRecording = () => {
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: mimeType });
         setRecordedBlob(blob);
-
-        // Clean up stream
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach((track) => track.stop());
-          streamRef.current = null;
-        }
       };
 
       mediaRecorder.start();
@@ -122,15 +138,6 @@ export const useVideoRecording = () => {
       );
     }
   }, [getSupportedMimeType, startTimer]);
-
-  const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      stopTimer();
-      toast.success("Recording stopped!");
-    }
-  }, [isRecording, stopTimer]);
 
   const uploadVideo = useCallback(
     async (videoBlob: Blob): Promise<string | null> => {
@@ -221,7 +228,13 @@ export const useVideoRecording = () => {
     setRecordedBlob(null);
     setRecordingTime(0);
     chunksRef.current = [];
-  }, []);
+
+    // Stop any active stream
+    if (currentStream) {
+      currentStream.getTracks().forEach((track) => track.stop());
+      setCurrentStream(null);
+    }
+  }, [currentStream]);
 
   const formatTime = useCallback((timeMs: number) => {
     const seconds = Math.floor(timeMs / 1000);
@@ -244,6 +257,7 @@ export const useVideoRecording = () => {
     timeRemainingFormatted,
     isUploading,
     maxRecordingTime: MAX_RECORDING_TIME,
+    currentStream, // Return the current stream for live preview
 
     // Actions
     startRecording,
