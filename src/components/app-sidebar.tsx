@@ -3,7 +3,6 @@
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { TalentHuntBranding } from "@/components/talent-hunt-branding";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -13,11 +12,16 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { api } from "@/trpc/react";
-import { Award, Home, LucideSparkles, Search } from "lucide-react";
-import Link from "next/link";
+import { Home, LucideSparkles, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 import { RainbowButton } from "./magicui/rainbow-button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   api.user.getOrCreateUser.useQuery();
@@ -27,17 +31,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const data = {
     navMain: [
       {
-        title: "Dashboard",
-        url: "/dashboard",
-        icon: Home,
-        isActive: pathname === "/dashboard",
-      },
-
-      {
         title: "Discover",
         url: "/discover",
         icon: Search,
         isActive: pathname === "/discover",
+      },
+
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: Home,
+        isActive: pathname === "/dashboard",
       },
 
       // {
@@ -105,23 +109,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       //   ],
       // },
     ],
-    projects: [
-      {
-        name: "Frontend Engineers",
-        url: "/discover?category=frontend",
-        icon: Award,
-      },
-      {
-        name: "Backend Engineers",
-        url: "/discover?category=backend",
-        icon: Award,
-      },
-      {
-        name: "Full Stack Engineers",
-        url: "/discover?category=fullstack",
-        icon: Award,
-      },
-    ],
   };
 
   return (
@@ -131,14 +118,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {/* Discover Button - First Item */}
-        <div className="flex gap-2 px-3 py-2">
-          <Link href="/discover" className="w-full">
+        {/* <Link href="/discover" className="w-full">
             <Button className="bg-primary hover:bg-primary/90 h-10 w-full justify-center gap-2 text-center">
               <Search className="h-4 w-4" />
               Discover Talent
             </Button>
-          </Link>
-          {/* <Button
+          </Link> */}
+
+        {/* <Button
             asChild
             variant="outline"
             className="aspect-square h-10 w-10 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
@@ -147,7 +134,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <Gift className="h-4 w-4" />
             </Link>
           </Button> */}
-        </div>
 
         {/* Quick Action Buttons */}
         {/* <div className="flex flex-col gap-2 px-3 py-2">
@@ -167,12 +153,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <RainbowButton asChild>
-          <SidebarMenuButton>
-            <LucideSparkles className="size-4" />
-            <span>Upgrade to Pro</span>
-          </SidebarMenuButton>
-        </RainbowButton>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <RainbowButton asChild>
+                <SidebarMenuButton className="hover:text-white active:text-white">
+                  <LucideSparkles className="size-4" />
+                  <span>Upgrade to Pro</span>
+                </SidebarMenuButton>
+              </RainbowButton>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Coming Soon</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

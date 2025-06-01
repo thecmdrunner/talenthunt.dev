@@ -65,8 +65,7 @@ export default function Shell(props: PropsWithChildren) {
         <div className="absolute right-10 bottom-40 h-28 w-28 rounded-full bg-gradient-to-r from-indigo-400/20 to-cyan-400/20 blur-2xl" />
       </div>
       {/* <div className="flex flex-1 flex-col gap-4 p-4 pt-0"> */}
-      {props.children}
-      {/* </div> */}
+      <div className="z-[2]">{props.children}</div>
     </div>
   );
 }

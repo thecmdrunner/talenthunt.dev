@@ -4,15 +4,18 @@ import { z } from "zod";
 export const jobAttributesSchema = z.object({
   pastExperience: z
     .object({
-      duration: z.object({
-        years: z.number().nullish().describe("Years of experience"),
-        filter: z
-          .enum(["equal", "more than", "less than"])
-          .nullish()
-          .describe(
-            "Filter for n years of experience. for example, if the requirement states more than 3 years of experience, use 'more than' filter.",
-          ),
-      }),
+      duration: z
+        .object({
+          years: z.number().nullish().describe("Years of experience"),
+          filter: z
+            .enum(["equal", "more than", "less than"])
+            .nullish()
+            .describe(
+              "Filter for n years of experience. for example, if the requirement states more than 3 years of experience, use 'more than' filter.",
+            ),
+        })
+        .nullish()
+        .optional(),
 
       companies: z.array(z.string()).nullish().describe("Companies worked at"),
 
