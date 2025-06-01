@@ -11,7 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
-import { type PropsWithChildren } from "react";
+import React, { type PropsWithChildren } from "react";
 
 export default function Shell(props: PropsWithChildren) {
   const pathname = usePathname();
@@ -34,7 +34,7 @@ export default function Shell(props: PropsWithChildren) {
                 const isLast = index === array.length - 1;
 
                 return (
-                  <>
+                  <React.Fragment key={path}>
                     <BreadcrumbItem key={path} className="hidden md:block">
                       {isLast ? (
                         <BreadcrumbPage>
@@ -49,7 +49,7 @@ export default function Shell(props: PropsWithChildren) {
                     {!isLast && (
                       <BreadcrumbSeparator className="hidden md:block" />
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
           </BreadcrumbList>
