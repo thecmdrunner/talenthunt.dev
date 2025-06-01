@@ -54,6 +54,53 @@ const additionalFilters = [
   { type: "location", label: "location", value: "location" },
 ];
 
+// Convert match score to intuitive match level
+function getMatchLevel(score: number) {
+  if (score >= 85) {
+    return {
+      label: "Perfect",
+      variant: "default" as const,
+      color: "bg-green-500 text-white",
+      icon: "🎯",
+    };
+  } else if (score >= 75) {
+    return {
+      label: "Strong",
+      variant: "default" as const,
+      color: "bg-blue-500 text-white",
+      icon: "⭐",
+    };
+  } else if (score >= 65) {
+    return {
+      label: "Good",
+      variant: "secondary" as const,
+      color: "bg-purple-500 text-white",
+      icon: "💪",
+    };
+  } else if (score >= 50) {
+    return {
+      label: "Decent",
+      variant: "secondary" as const,
+      color: "bg-orange-500 text-white",
+      icon: "👍",
+    };
+  } else if (score >= 35) {
+    return {
+      label: "Potential",
+      variant: "outline" as const,
+      color: "bg-yellow-500 text-white",
+      icon: "🤔",
+    };
+  } else {
+    return {
+      label: "Basic",
+      variant: "outline" as const,
+      color: "bg-gray-500 text-white",
+      icon: "📋",
+    };
+  }
+}
+
 export default function DiscoverPage() {
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue:
@@ -599,15 +646,12 @@ export default function DiscoverPage() {
                           <span className="text-sm text-gray-500">Match</span>
                           <Badge
                             variant={
-                              candidate.matchScore >= 80
-                                ? "default"
-                                : candidate.matchScore >= 60
-                                  ? "secondary"
-                                  : "outline"
+                              getMatchLevel(candidate.matchScore).variant
                             }
-                            className="text-xs"
+                            className={`${getMatchLevel(candidate.matchScore).color} text-xs`}
                           >
-                            {candidate.matchScore.toFixed(0)}%
+                            {getMatchLevel(candidate.matchScore).icon}{" "}
+                            {getMatchLevel(candidate.matchScore).label}
                           </Badge>
                         </div>
                       </div>
@@ -696,20 +740,20 @@ export default function DiscoverPage() {
                 {/* Match Score */}
                 <div className="rounded-lg border p-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Match Score</span>
+                    <span className="text-sm font-medium">Match</span>
                     <Badge
                       variant={
-                        selectedCandidate?.matchScore >= 80
-                          ? "default"
-                          : selectedCandidate?.matchScore >= 60
-                            ? "secondary"
-                            : "outline"
+                        getMatchLevel(selectedCandidate.matchScore).variant
                       }
-                      className="text-sm"
+                      className={`${getMatchLevel(selectedCandidate.matchScore).color} text-sm`}
                     >
-                      {selectedCandidate?.matchScore.toFixed(0)}%
+                      {getMatchLevel(selectedCandidate.matchScore).icon}{" "}
+                      {getMatchLevel(selectedCandidate.matchScore).label}
                     </Badge>
                   </div>
+                  {/* <div className="mt-2 text-xs text-gray-500">
+                    Based on skills, experience, and role alignment
+                  </div> */}
                 </div>
 
                 {/* Basic Info */}
