@@ -238,7 +238,7 @@ export default function JobsPage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 pt-2">
+              <div className="flex flex-wrap gap-2 pt-2">
                 <Button variant="outline" size="sm" className="flex-1">
                   <Users className="mr-2 h-4 w-4" />
                   View Applicants
