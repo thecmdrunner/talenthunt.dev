@@ -27,6 +27,8 @@ import { useState } from "react";
 
 export default function LandingPage() {
   const [activeView, setActiveView] = useState<"hire" | "find">("hire");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [demoSearchQuery, setDemoSearchQuery] = useState("");
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-blue-800 to-blue-700">
@@ -181,11 +183,11 @@ export default function LandingPage() {
               Pricing
               <div className="absolute -bottom-1 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 hover:w-full"></div>
             </Link>
-            <Link href="/auth/login">
-              <Button className="group relative overflow-hidden rounded-full border border-blue-400/30 bg-blue-600/20 px-6 py-2 font-medium text-white backdrop-blur-sm hover:bg-blue-600/30">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 transition-opacity group-hover:opacity-100"></div>
-                <span className="relative z-10">Sign In</span>
-              </Button>
+            <Link href="/dashboard">
+              <Button className="bg-blue-600/20 hover:bg-blue-600/30 text-white border border-blue-400/30 font-medium px-6 py-2 rounded-full backdrop-blur-sm relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span className="relative z-10">Get Started</span>
+            </Button>
             </Link>
           </div>
         </div>
@@ -194,8 +196,8 @@ export default function LandingPage() {
       {/* Hero Section with Enhanced Geometry and consistent blues */}
       <div className="relative z-10 mx-auto max-w-6xl px-6 pt-16 pb-24">
         {/* Toggle Buttons with blue consistency */}
-        <div className="mb-12 flex items-center justify-center space-x-4">
-          <Button
+        <div className="flex items-center justify-center space-x-4 mb-12">
+          <Button 
             onClick={() => setActiveView("hire")}
             className={`${
               activeView === "hire"
@@ -207,7 +209,7 @@ export default function LandingPage() {
             <Zap className="relative z-10 mr-2 h-4 w-4" />
             <span className="relative z-10">Hire Talent</span>
           </Button>
-          <Button
+          <Button 
             onClick={() => setActiveView("find")}
             className={`${
               activeView === "find"
@@ -236,7 +238,7 @@ export default function LandingPage() {
             <div className="absolute -inset-2 animate-pulse rounded-full border border-blue-400/20"></div>
           </div>
         </div>
-
+        
         {/* Main Headline with consistent blue underline */}
         <div className="mb-16 text-center">
           <h1 className="mb-6 text-6xl leading-tight font-bold text-white md:text-7xl">
@@ -246,23 +248,22 @@ export default function LandingPage() {
                 {activeView === "hire" ? "talent" : "opportunity"}
               </span>
               <svg
-                className="absolute right-0 -bottom-5 w-full overflow-visible"
-                viewBox="0 0 100 10"
+                className="absolute left-0 -bottom-4 w-full overflow-visible"
+                viewBox="0 0 100 8"
                 preserveAspectRatio="none"
               >
                 <path
-                  d="M0,2 Q50,8 100,2"
-                  transform="scale(1, -1)"
-                  className="fill-none stroke-blue-300 stroke-[3]"
+                  d="M0,6 Q50,2 100,6"
+                  className="fill-none stroke-blue-300 stroke-[2]"
                   strokeLinecap="round"
                 />
               </svg>
               <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
             </span>
-          </h1>
-          <p className="mx-auto mb-12 max-w-3xl text-2xl leading-relaxed text-white/80">
-            TalentHunt is an AI-powered platform. Connect top talent with
-            leading companies through intelligent matching.
+        </h1>
+          <p className="text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
+            TalentHunt is an AI-powered platform. Connect top talent with leading companies through intelligent
+            matching.
           </p>
         </div>
 
@@ -275,14 +276,28 @@ export default function LandingPage() {
             </div>
             <Input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
                 activeView === "hire"
                   ? "Find senior AI engineers with LangChain + RAG experience in San Francisco..."
                   : "Search for remote product manager roles in SaaS startups..."
               }
               className="w-full rounded-2xl border-0 bg-white/95 py-8 pr-32 pl-16 text-xl text-gray-800 shadow-2xl backdrop-blur-sm placeholder:text-gray-500 focus:ring-2 focus:ring-blue-300/50"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && searchQuery.trim()) {
+                  window.location.href = `/discover?q=${encodeURIComponent(searchQuery.trim())}`;
+                }
+              }}
             />
-            <Button className="absolute right-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 font-semibold text-white shadow-lg hover:from-blue-700 hover:to-blue-800">
+            <Button 
+              className="absolute right-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-4 font-semibold text-white shadow-lg hover:from-blue-700 hover:to-blue-800"
+              onClick={() => {
+                if (searchQuery.trim()) {
+                  window.location.href = `/discover?q=${encodeURIComponent(searchQuery.trim())}`;
+                }
+              }}
+            >
               Search
             </Button>
           </div>
@@ -294,24 +309,24 @@ export default function LandingPage() {
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">10,000+ verified developers</span>
           </div>
-          <div className="hidden items-center md:flex">
-            <div className="mx-4 h-0.5 w-8 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent"></div>
-          </div>
+          <div className="hidden md:flex items-center">
+            <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent mx-4"></div>
+            </div>
           <div className="flex items-center space-x-3">
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">500+ companies hiring</span>
-          </div>
-          <div className="hidden items-center md:flex">
-            <div className="mx-4 h-0.5 w-8 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent"></div>
-          </div>
+            </div>
+          <div className="hidden md:flex items-center">
+            <div className="w-8 h-0.5 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent mx-4"></div>
+            </div>
           <div className="flex items-center space-x-3">
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">90% faster hiring</span>
           </div>
         </div>
-      </div>
+            </div>
 
-      {/* Enhanced Search Interface Demo Card with blue consistency */}
+      {/* Enhanced Search Interface Demo Card with browser mockup */}
       <div className="relative z-10 mx-auto mb-24 max-w-5xl px-6">
         <Card className="relative overflow-hidden rounded-3xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-2xl backdrop-blur-xl">
           <div className="absolute inset-0 opacity-5">
@@ -324,56 +339,69 @@ export default function LandingPage() {
             ></div>
           </div>
 
-          <CardContent className="relative z-10 p-8">
-            <div className="mb-8 flex items-center space-x-3">
-              <div className="h-3 w-3 rounded-full bg-red-500 shadow-lg"></div>
-              <div className="h-3 w-3 rounded-full bg-yellow-500 shadow-lg"></div>
-              <div className="h-3 w-3 rounded-full bg-green-500 shadow-lg"></div>
-              <div className="ml-4 flex-1 rounded-lg border border-blue-500/30 bg-blue-800/60 px-4 py-2 backdrop-blur-sm">
-                <span className="text-sm text-blue-200">
-                  talenthunt.dev/search
-                </span>
+          <CardContent className="p-8 relative z-10">
+            {/* Browser Chrome */}
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-3 h-3 bg-red-500 rounded-full shadow-lg"></div>
+              <div className="w-3 h-3 bg-yellow-500 rounded-full shadow-lg"></div>
+              <div className="w-3 h-3 bg-green-500 rounded-full shadow-lg"></div>
+              <div className="flex-1 bg-blue-800/60 backdrop-blur-sm rounded-lg px-4 py-2 ml-4 border border-blue-500/30">
+                <span className="text-blue-200 text-sm">talenthunt.dev/search</span>
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-800/80 to-blue-900/80 p-8 backdrop-blur-sm">
+            {/* Main Search Interface */}
+            <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-800/80 to-blue-900/80 p-12 backdrop-blur-sm">
+              {/* Geometric Background Elements */}
               <div className="absolute top-0 right-0 h-32 w-32 opacity-10">
-                <svg
-                  viewBox="0 0 100 100"
-                  className="h-full w-full text-blue-300"
-                >
-                  <polygon
-                    points="50,10 90,50 50,90 10,50"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeWidth="1"
-                  />
+                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
+                  <polygon points="50,10 90,50 50,90 10,50" stroke="currentColor" fill="none" strokeWidth="1" />
+                </svg>
+              </div>
+              <div className="absolute bottom-0 left-0 h-24 w-24 opacity-10">
+                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
+                  <circle cx="50" cy="50" r="40" stroke="currentColor" fill="none" strokeWidth="1" />
                 </svg>
               </div>
 
-              <div className="relative z-10 mb-8 text-center">
-                <p className="mb-6 text-xl font-medium text-white/90">
+              <div className="relative z-10 text-center">
+                {/* Title */}
+                <h2 className="mb-8 text-3xl font-bold text-white">
                   What kind of talent are you looking for?
-                </p>
+                </h2>
 
-                <div className="relative mb-6 overflow-hidden rounded-xl border border-blue-500/30 bg-blue-700/40 p-6 backdrop-blur-sm">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-blue-500/5"></div>
-                  <p className="relative z-10 mb-4 text-lg text-white">
-                    Senior GenAI engineers with LangChain + RAG experience in
-                    Europe...
-                  </p>
+                {/* Search Input Area */}
+                <div className="relative mb-8 overflow-hidden rounded-2xl border border-blue-500/20 bg-blue-700/30 p-8 backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-blue-500/5"></div>
+                  
+                  {/* Search Text */}
+                  <div className="relative z-10 mb-6">
+                    <p className="text-xl text-white/90 leading-relaxed">
+                      Senior GenAI engineers with LangChain + RAG experience in Europe...
+                    </p>
+                  </div>
 
-                  <div className="relative z-10 mb-4 flex justify-center">
-                    <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
-                      <div className="absolute inset-2 rounded-full border border-white/20"></div>
-                      <div className="relative z-10 h-6 w-6 rounded-full bg-white"></div>
+                  {/* Central Purple Circle Icon */}
+                  <div className="relative z-10 mb-6 flex justify-center">
+                    <div className="relative flex h-20 w-20 items-center justify-center">
+                      <div className="absolute h-20 w-20 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 opacity-80"></div>
+                      <div className="absolute h-16 w-16 rounded-full bg-blue-700/40"></div>
+                      <div className="absolute h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 opacity-90"></div>
+                      <div className="relative h-6 w-6 rounded-full bg-white shadow-lg"></div>
                     </div>
                   </div>
                 </div>
 
-                <Button className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-3 font-semibold text-white shadow-lg hover:from-blue-700 hover:to-blue-800">
+                {/* Search Button */}
+                <Button 
+                  className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-12 py-4 text-lg font-semibold text-white shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300"
+                  onClick={() => {
+                    const query = demoSearchQuery.trim() || "Senior GenAI engineers with LangChain + RAG experience in Europe";
+                    window.location.href = `/discover?q=${encodeURIComponent(query)}`;
+                  }}
+                >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
-                  <Sparkles className="relative z-10 mr-2 h-4 w-4" />
+                  <Sparkles className="relative z-10 mr-3 h-5 w-5" />
                   <span className="relative z-10">Search</span>
                 </Button>
               </div>
@@ -400,7 +428,7 @@ export default function LandingPage() {
           <div className="mt-4 flex justify-center">
             <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
           </div>
-        </div>
+              </div>
 
         <div className="grid gap-8 md:grid-cols-2">
           {/* Enhanced Job Seeker Card with blue consistency */}
@@ -429,11 +457,11 @@ export default function LandingPage() {
               </svg>
             </div>
 
-            <CardContent className="relative z-10 p-8">
-              <div className="mb-8 text-center">
-                <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                  <div className="absolute inset-3 rounded-lg border border-white/20"></div>
-                  <Users className="relative z-10 h-10 w-10 text-white" />
+            <CardContent className="p-8 relative z-10">
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 bg-blue-600/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-blue-400/30">
+                  <div className="absolute inset-3 border border-white/20 rounded-lg"></div>
+                  <Users className="w-10 h-10 text-white relative z-10" />
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-white">
                   I'm Looking for a Job
@@ -457,9 +485,9 @@ export default function LandingPage() {
                 ))}
               </ul>
 
-              <Link href="/welcome" className="block">
-                <Button className="group relative w-full overflow-hidden rounded-xl bg-white py-4 font-semibold text-blue-900 shadow-lg transition-all duration-300 hover:bg-blue-50 hover:shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
+              <Link href="/onboarding/candidate" className="block">
+                <Button className="w-full bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span className="relative z-10 flex items-center justify-center">
                     Join as Candidate <ArrowRight className="ml-2 h-4 w-4" />
                   </span>
@@ -490,11 +518,11 @@ export default function LandingPage() {
               </svg>
             </div>
 
-            <CardContent className="relative z-10 p-8">
-              <div className="mb-8 text-center">
-                <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                  <div className="absolute inset-3 rounded-lg border border-white/20"></div>
-                  <Search className="relative z-10 h-10 w-10 text-white" />
+            <CardContent className="p-8 relative z-10">
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 bg-blue-600/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden border border-blue-400/30">
+                  <div className="absolute inset-3 border border-white/20 rounded-lg"></div>
+                  <Search className="w-10 h-10 text-white relative z-10" />
                 </div>
                 <h3 className="mb-4 text-2xl font-bold text-white">
                   I'm Looking to Hire
@@ -519,9 +547,9 @@ export default function LandingPage() {
                 ))}
               </ul>
 
-              <Link href="/recruiter/signup" className="block">
-                <Button className="group relative w-full overflow-hidden rounded-xl bg-white py-4 font-semibold text-blue-900 shadow-lg transition-all duration-300 hover:bg-blue-50 hover:shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
+              <Link href="/onboarding/recruiter" className="block">
+                <Button className="w-full bg-white text-blue-900 hover:bg-blue-50 font-semibold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span className="relative z-10 flex items-center justify-center">
                     Start Hiring <ArrowRight className="ml-2 h-4 w-4" />
                   </span>
@@ -529,8 +557,8 @@ export default function LandingPage() {
               </Link>
             </CardContent>
           </Card>
-        </div>
-      </div>
+            </div>
+          </div>
 
       {/* Enhanced Features Section with blue consistency */}
       <div
@@ -720,9 +748,9 @@ export default function LandingPage() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
               <span className="relative z-10">Schedule Demo</span>
             </Button>
-          </div>
-        </div>
-      </div>
+                    </div>
+                    </div>
+                  </div>
 
       {/* Enhanced Footer with perfect blue consistency */}
       <footer className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-900/90 to-blue-950/95 backdrop-blur-sm">
@@ -802,11 +830,11 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-              </div>
+                    </div>
             ))}
 
-            <div>
-              <h4 className="relative mb-6 text-lg font-bold text-white">
+                    <div>
+              <h4 className="text-white font-bold text-lg mb-6 relative">
                 Support
                 <div className="absolute -bottom-2 left-0 h-0.5 w-8 bg-gradient-to-r from-blue-400 to-transparent"></div>
               </h4>
@@ -879,7 +907,7 @@ export default function LandingPage() {
                   <div className="relative z-10 mr-2 h-2 w-2 animate-pulse rounded-full bg-green-400"></div>
                   <span className="relative z-10">All Systems Operational</span>
                 </Badge>
-              </div>
+          </div>
             </div>
           </div>
         </div>
