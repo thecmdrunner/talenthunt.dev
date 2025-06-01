@@ -7,6 +7,7 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "react-hot-toast";
+import { PostHogProvider } from "./providers";
 
 export const metadata: Metadata = {
   title: "Talent Hunt",
@@ -26,21 +27,23 @@ export default async function RootLayout({
     <ClerkProvider>
       <html lang="en" className={`${fonts.bricolageGrotesque.className}`}>
         <body>
-          <TRPCReactProvider>
-            <NuqsAdapter>
-              {children}
-              <Toaster
-                position="top-right"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: "#363636",
-                    color: "#fff",
-                  },
-                }}
-              />
-            </NuqsAdapter>
-          </TRPCReactProvider>
+          <PostHogProvider>
+            <TRPCReactProvider>
+              <NuqsAdapter>
+                {children}
+                <Toaster
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                    style: {
+                      background: "#363636",
+                      color: "#fff",
+                    },
+                  }}
+                />
+              </NuqsAdapter>
+            </TRPCReactProvider>
+          </PostHogProvider>
         </body>
       </html>
     </ClerkProvider>

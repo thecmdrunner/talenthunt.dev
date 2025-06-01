@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTracking } from "@/lib/hooks/use-tracking";
 import { type RouterOutputs } from "@/trpc/react";
 import {
   AlertCircle,
@@ -18,15 +19,38 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function Dashboard({
   user,
 }: {
   user: RouterOutputs["user"]["getOrCreateUser"];
 }) {
+  const { trackPageVisited, trackOnboardingStarted, trackTabSwitched } =
+    useTracking();
+
   const isCandidateOnboarded = !!user?.candidateProfile.onboardingCompletedAt;
   const isRecruiterOnboarded = !!user?.recruiterProfile.onboardingCompletedAt;
   const hasBothProfiles = isCandidateOnboarded && isRecruiterOnboarded;
+
+  // Track page visit
+  useEffect(() => {
+    trackPageVisited(
+      "dashboard",
+      hasBothProfiles
+        ? "both_profiles"
+        : isCandidateOnboarded
+          ? "candidate"
+          : isRecruiterOnboarded
+            ? "recruiter"
+            : "no_profile",
+    );
+  }, [
+    trackPageVisited,
+    hasBothProfiles,
+    isCandidateOnboarded,
+    isRecruiterOnboarded,
+  ]);
 
   if (!isCandidateOnboarded && !isRecruiterOnboarded) {
     return (
@@ -57,7 +81,11 @@ export default function Dashboard({
                     <p className="mb-4 text-gray-600">
                       Build your profile and get discovered by top recruiters
                     </p>
-                    <Button asChild className="w-full">
+                    <Button
+                      asChild
+                      className="w-full"
+                      onClick={() => trackOnboardingStarted("candidate")}
+                    >
                       <Link href="/onboarding/candidate">
                         Get Started as Candidate
                       </Link>
@@ -80,6 +108,7 @@ export default function Dashboard({
                       asChild
                       variant="outline"
                       className="w-full border-purple-500 text-purple-600 hover:bg-purple-500"
+                      onClick={() => trackOnboardingStarted("recruiter")}
                     >
                       <Link href="/onboarding/recruiter">
                         Get Started as Recruiter
@@ -126,6 +155,7 @@ export default function Dashboard({
               <TabsTrigger
                 value="candidate"
                 className="flex items-center gap-2"
+                onClick={() => trackTabSwitched("recruiter", "candidate")}
               >
                 <Target className="h-4 w-4" />
                 Candidate View
@@ -133,6 +163,7 @@ export default function Dashboard({
               <TabsTrigger
                 value="recruiter"
                 className="flex items-center gap-2"
+                onClick={() => trackTabSwitched("candidate", "recruiter")}
               >
                 <Search className="h-4 w-4" />
                 Recruiter View
