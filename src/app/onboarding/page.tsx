@@ -4,32 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import { ArrowRight, Search, Users } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 
 export default function OnboardingPage() {
   const router = useRouter();
   const { data: user, isLoading } = api.user.getOrCreateUser.useQuery();
-
-  const createCandidate = api.user.createCandidateProfile.useMutation({
-    onSuccess: () => {
-      toast.success("Welcome! Let's get your profile set up.");
-      router.push("/onboarding/candidate");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const createRecruiter = api.user.createRecruiterProfile.useMutation({
-    onSuccess: () => {
-      toast.success("Welcome! Let's get your recruiter profile set up.");
-      router.push("/onboarding/recruiter");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
 
   if (isLoading) {
     return (
@@ -40,7 +20,10 @@ export default function OnboardingPage() {
   }
 
   // If user already has a profile, redirect them
-  if (user?.candidateProfile || user?.recruiterProfile) {
+  if (
+    user?.candidateProfile.onboardingCompletedAt ||
+    user?.recruiterProfile.onboardingCompletedAt
+  ) {
     router.push("/dashboard");
     return null;
   }
@@ -88,20 +71,14 @@ export default function OnboardingPage() {
                 ))}
               </div>
 
-              <Button
-                size="lg"
-                className="group w-full bg-blue-600 py-4 text-lg font-semibold text-white hover:bg-blue-700"
-                onClick={() => createCandidate.mutate()}
-                disabled={createCandidate.isPending}
-              >
-                {createCandidate.isPending ? (
-                  "Creating profile..."
-                ) : (
-                  <>
-                    Join as Candidate
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </>
-                )}
+              <Button size="lg" asChild>
+                <Link
+                  href="/onboarding/candidate"
+                  className="group flex w-full items-center gap-2 bg-blue-600 py-4 text-lg font-semibold text-white hover:bg-blue-700"
+                >
+                  Join as Candidate
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -135,20 +112,14 @@ export default function OnboardingPage() {
                 ))}
               </div>
 
-              <Button
-                size="lg"
-                className="group w-full bg-blue-600 py-4 text-lg font-semibold text-white hover:bg-blue-700"
-                onClick={() => createRecruiter.mutate()}
-                disabled={createRecruiter.isPending}
-              >
-                {createRecruiter.isPending ? (
-                  "Creating profile..."
-                ) : (
-                  <>
-                    Start Hiring
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </>
-                )}
+              <Button size="lg" asChild>
+                <Link
+                  href="/onboarding/recruiter"
+                  className="group flex w-full items-center gap-2 bg-blue-600 py-4 text-lg font-semibold text-white hover:bg-blue-700"
+                >
+                  Start Hiring
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
               </Button>
             </CardContent>
           </Card>

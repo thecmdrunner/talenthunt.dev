@@ -85,11 +85,11 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
         <div className="space-y-2">
           <Label htmlFor="role" className="flex items-center gap-2">
             Role you&apos;re targeting
-            {parsedData?.role && (
+            {/* {parsedData?.role && (
               <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
                 ✨ Pre-filled from resume
               </span>
-            )}
+            )} */}
           </Label>
           <Input
             id="role"
@@ -103,11 +103,11 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
         <div className="space-y-2">
           <Label htmlFor="skills" className="flex items-center gap-2">
             Top 3 skills
-            {parsedData?.skills && (
+            {/* {parsedData?.skills && (
               <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
                 ✨ Pre-filled from resume
               </span>
-            )}
+            )} */}
           </Label>
           <Input
             id="skills"
@@ -122,11 +122,11 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
           <div className="space-y-2">
             <Label htmlFor="experience" className="flex items-center gap-2">
               Years of experience
-              {parsedData?.experience && (
+              {/* {parsedData?.experience && (
                 <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
                   ✨ Pre-filled from resume
                 </span>
-              )}
+              )} */}
             </Label>
             <Input
               id="experience"
@@ -141,11 +141,11 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
           <div className="space-y-2">
             <Label htmlFor="location" className="flex items-center gap-2">
               Preferred location (optional)
-              {parsedData?.location && (
+              {/* {parsedData?.location && (
                 <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
                   ✨ Pre-filled from resume
                 </span>
-              )}
+              )} */}
             </Label>
             <Input
               id="location"
@@ -160,11 +160,11 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
         <div className="space-y-2">
           <Label htmlFor="github" className="flex items-center gap-2">
             GitHub URL
-            {parsedData?.githubUrl && (
+            {/* {parsedData?.githubUrl && (
               <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
                 ✨ Pre-filled from resume
               </span>
-            )}
+            )} */}
           </Label>
           <Input
             id="github"
@@ -178,11 +178,11 @@ export default function CompleteProfile({ onContinue }: CompleteProfileProps) {
         <div className="space-y-2">
           <Label htmlFor="linkedin" className="flex items-center gap-2">
             LinkedIn URL
-            {parsedData?.linkedinUrl && (
+            {/* {parsedData?.linkedinUrl && (
               <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-600">
                 ✨ Pre-filled from resume
               </span>
-            )}
+            )} */}
           </Label>
           <Input
             id="linkedin"

@@ -4,7 +4,11 @@ import {
   CREDITS_COST,
   CREDIT_ERROR_MESSAGES,
 } from "@/lib/constants";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { users } from "@/server/db/schema";
 import { jobAttributesSchema, sampleJobAttributes } from "@/types/jobs";
 import { parsedResumeDataSchema } from "@/types/resume";
@@ -199,11 +203,13 @@ export const aiRouter = createTRPCRouter({
       return result.data;
     }),
 
-  parseResume: protectedProcedure
+  parseResume: publicProcedure
     .input(z.object({ resumeUrl: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const { resumeUrl } = input;
       const userId = ctx.session.userId;
+
+      console.log({ resumeUrl });
 
       const result = await withCache({
         key: createStandardCacheKey(
@@ -217,7 +223,7 @@ export const aiRouter = createTRPCRouter({
             // model: openrouter("google/gemini-2.0-flash-001"),
             model: openrouter("openai/gpt-4o"),
             system:
-              "You are a helpful assistant that can parse resumes and extract profile information. Extract the most relevant role/title, top skills, years of experience, location preferences, and any social media profiles mentioned.",
+              "You are a helpful assistant that extracts candidate's information from a resume. Extract the most relevant role/title, top skills, years of experience, location preferences, and any social media profiles mentioned. If a field is not mentioned, do not include it in the response. DO not return placeholder values or example values in the response.",
 
             schema: parsedResumeDataSchema,
             messages: [
@@ -242,6 +248,8 @@ export const aiRouter = createTRPCRouter({
           return result.object;
         },
       });
+
+      console.log(result.data);
 
       return result.data;
     }),

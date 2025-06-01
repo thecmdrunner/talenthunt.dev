@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Schema for parsed resume data
 export const parsedResumeDataSchema = z.object({
-  name: z.string().optional(),
+  fullName: z.string(),
   email: z.string().optional(),
   phone: z.string().optional(),
   role: z
