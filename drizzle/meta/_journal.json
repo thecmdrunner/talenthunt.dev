@@ -15,6 +15,13 @@
       "when": 1748775073224,
       "tag": "0001_dry_lila_cheney",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748779498299,
+      "tag": "0002_damp_power_man",
+      "breakpoints": true
     }
   ]
 }
