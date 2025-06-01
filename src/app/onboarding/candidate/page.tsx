@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
-import { Check, Brain, Sparkles } from "lucide-react";
+import { Check, Brain, Sparkles, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "react-hot-toast";
@@ -174,7 +174,21 @@ export default function CandidateOnboardingPage() {
                   </li>
                     ))}
                 </ul>
+                </div>
               </div>
+
+              {/* Start Your Journey Button */}
+              <div className="mt-8 text-center">
+                <Link href="/dashboard">
+                  <Button className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-12 py-6 text-lg font-bold text-white shadow-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl transition-all duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+                    <div className="relative z-10 flex items-center justify-center gap-3">
+                      <Sparkles className="h-5 w-5" />
+                      <span>Start Your Journey</span>
+                      <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </Button>
+                </Link>
               </div>
             </div>
           );
