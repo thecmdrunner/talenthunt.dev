@@ -135,14 +135,14 @@ export default function Dashboard({
                 <User className="h-10 w-10 text-white" />
               </div>
               <h1 className="mb-4 text-3xl font-bold text-white">
-                Welcome to Your Career Hub
-              </h1>
+              Welcome to Your Career Hub
+            </h1>
               <p className="mb-8 text-lg text-white/80">
-                Choose your journey and unlock opportunities in the world of
-                talent.
-              </p>
+              Choose your journey and unlock opportunities in the world of
+              talent.
+            </p>
 
-              <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2">
                 <Card className="group cursor-pointer border border-blue-400/30 bg-blue-700/30 backdrop-blur-sm transition-all hover:border-blue-300/50 hover:shadow-lg">
                   <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
                     <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
@@ -154,18 +154,18 @@ export default function Dashboard({
                       <Target className="h-6 w-6 text-blue-300" />
                     </div>
                     <h3 className="mb-2 text-xl font-semibold text-white">
-                      I&apos;m Looking for Opportunities
-                    </h3>
+                    I&apos;m Looking for Opportunities
+                  </h3>
                     <p className="mb-4 text-white/70">
-                      Build your profile and get discovered by top recruiters
-                    </p>
+                    Build your profile and get discovered by top recruiters
+                  </p>
                     <Button asChild className="w-full bg-white text-blue-900 hover:bg-blue-50 font-medium">
-                      <Link href="/onboarding/candidate">
-                        Get Started as Candidate
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
+                    <Link href="/onboarding/candidate">
+                      Get Started as Candidate
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
 
                 <Card className="group cursor-pointer border border-blue-400/30 bg-blue-700/30 backdrop-blur-sm transition-all hover:border-blue-300/50 hover:shadow-lg">
                   <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
@@ -178,24 +178,24 @@ export default function Dashboard({
                       <Search className="h-6 w-6 text-blue-300" />
                     </div>
                     <h3 className="mb-2 text-xl font-semibold text-white">
-                      I&apos;m Hiring Talent
-                    </h3>
+                    I&apos;m Hiring Talent
+                  </h3>
                     <p className="mb-4 text-white/70">
-                      Find and connect with the perfect candidates
-                    </p>
-                    <Button
-                      asChild
+                    Find and connect with the perfect candidates
+                  </p>
+                  <Button
+                    asChild
                       className="w-full bg-white text-blue-900 hover:bg-blue-50 font-medium"
-                    >
-                      <Link href="/onboarding/recruiter">
-                        Get Started as Recruiter
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </CardContent>
-          </Card>
+                  >
+                    <Link href="/onboarding/recruiter">
+                      Get Started as Recruiter
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
         </div>
       </div>
     );
@@ -259,73 +259,73 @@ export default function Dashboard({
       </nav>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-2">
+      {/* Header */}
+      <div className="mb-8">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-2">
             <h1 className="mb-2 text-3xl font-bold text-white">
-              Welcome back {clerkUser?.fullName ?? ""}! 👋
-            </h1>
+            Welcome back {clerkUser?.fullName ?? ""}! 👋
+          </h1>
 
-            <div className="flex gap-2">
-              <button
-                className={cn(
+          <div className="flex gap-2">
+            <button
+              className={cn(
                   "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors backdrop-blur-sm",
-                  tabValue === "candidate"
+                tabValue === "candidate"
                     ? "bg-white text-blue-900 shadow-sm"
                     : "bg-blue-600/20 text-white hover:bg-blue-600/30 border border-blue-400/30",
-                )}
-                onClick={() => setTabValue("candidate")}
-              >
-                <Target className="h-4 w-4" />
-                Profile Analytics
-              </button>
-              <button
-                className={cn(
+              )}
+              onClick={() => setTabValue("candidate")}
+            >
+              <Target className="h-4 w-4" />
+              Profile Analytics
+            </button>
+            <button
+              className={cn(
                   "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors backdrop-blur-sm",
-                  tabValue === "recruiter"
+                tabValue === "recruiter"
                     ? "bg-white text-blue-900 shadow-sm"
                     : "bg-blue-600/20 text-white hover:bg-blue-600/30 border border-blue-400/30",
-                )}
-                onClick={() => setTabValue("recruiter")}
-              >
-                <Search className="h-4 w-4" />
-                Recruiter Analytics
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {isCandidateOnboarded && (
-              <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm">
-                <Target className="mr-1 h-3 w-3" />
-              </Badge>
-            )}
-            {isRecruiterOnboarded && (
-              <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm">
-                <Search className="mr-1 h-3 w-3" />
-              </Badge>
-            )}
+              )}
+              onClick={() => setTabValue("recruiter")}
+            >
+              <Search className="h-4 w-4" />
+              Recruiter Analytics
+            </button>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          {isCandidateOnboarded && (
+              <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm">
+              <Target className="mr-1 h-3 w-3" />
+            </Badge>
+          )}
+          {isRecruiterOnboarded && (
+              <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm">
+              <Search className="mr-1 h-3 w-3" />
+            </Badge>
+          )}
+        </div>
+      </div>
 
-        {hasBothProfiles ? (
-          <Tabs
-            value={tabValue}
-            className="w-full"
-            onValueChange={(value) => setTabValue(value as TabValue)}
-          >
-            <TabsContent value="candidate">
-              <CandidateDashboard user={user} />
-            </TabsContent>
+      {hasBothProfiles ? (
+        <Tabs
+          value={tabValue}
+          className="w-full"
+          onValueChange={(value) => setTabValue(value as TabValue)}
+        >
+          <TabsContent value="candidate">
+            <CandidateDashboard user={user} />
+          </TabsContent>
 
-            <TabsContent value="recruiter">
-              <RecruiterDashboard user={user} />
-            </TabsContent>
-          </Tabs>
-        ) : isCandidateOnboarded ? (
-          <CandidateDashboard user={user} />
-        ) : (
-          <RecruiterDashboard user={user} />
-        )}
+          <TabsContent value="recruiter">
+            <RecruiterDashboard user={user} />
+          </TabsContent>
+        </Tabs>
+      ) : isCandidateOnboarded ? (
+        <CandidateDashboard user={user} />
+      ) : (
+        <RecruiterDashboard user={user} />
+      )}
       </div>
     </div>
   );

@@ -233,7 +233,7 @@ export default function LandingPage() {
                 {activeView === "hire"
                   ? "AI-Powered Talent Matching"
                   : "AI-Powered Job Matching"}
-              </span>
+          </span>
             </Badge>
             <div className="absolute -inset-2 animate-pulse rounded-full border border-blue-400/20"></div>
           </div>
@@ -259,7 +259,7 @@ export default function LandingPage() {
                 />
               </svg>
               <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
-            </span>
+          </span>
         </h1>
           <p className="text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed">
             TalentHunt is an AI-powered platform. Connect top talent with leading companies through intelligent
@@ -389,8 +389,8 @@ export default function LandingPage() {
                       <div className="absolute h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 opacity-90"></div>
                       <div className="relative h-6 w-6 rounded-full bg-white shadow-lg"></div>
                     </div>
-                  </div>
-                </div>
+          </div>
+        </div>
 
                 {/* Search Button */}
                 <Button 
@@ -408,7 +408,7 @@ export default function LandingPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+            </div>
 
       {/* Enhanced Welcome Cards with perfect blue consistency */}
       <div className="relative z-10 mx-auto mb-24 max-w-6xl px-6">
@@ -630,7 +630,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </div>
+          </div>
 
       {/* Enhanced Verification Section with blue consistency */}
       <div className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-900/80 to-blue-800/60 backdrop-blur-sm">
@@ -679,9 +679,9 @@ export default function LandingPage() {
                   LinkedIn Verified
                 </h3>
                 <p className="text-white/80">
-                  All users verify their professional identity through LinkedIn
-                  authentication
-                </p>
+                All users verify their professional identity through LinkedIn
+                authentication
+              </p>
               </CardContent>
             </Card>
 
@@ -716,9 +716,9 @@ export default function LandingPage() {
                   GitHub Verified
                 </h3>
                 <p className="text-white/80">
-                  Developers showcase verified projects and contributions from
-                  GitHub
-                </p>
+                Developers showcase verified projects and contributions from
+                GitHub
+              </p>
               </CardContent>
             </Card>
           </div>
@@ -826,14 +826,14 @@ export default function LandingPage() {
                       >
                         <span className="relative z-10">{link.name}</span>
                         <div className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 group-hover:w-full"></div>
-                      </Link>
-                    </li>
+                  </Link>
+                </li>
                   ))}
-                </ul>
-                    </div>
+              </ul>
+            </div>
             ))}
 
-                    <div>
+            <div>
               <h4 className="text-white font-bold text-lg mb-6 relative">
                 Support
                 <div className="absolute -bottom-2 left-0 h-0.5 w-8 bg-gradient-to-r from-blue-400 to-transparent"></div>
@@ -854,8 +854,8 @@ export default function LandingPage() {
                     >
                       <span className="relative z-10">{link.name}</span>
                       <div className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 group-hover:w-full"></div>
-                    </Link>
-                  </li>
+                  </Link>
+                </li>
                 ))}
               </ul>
 
@@ -886,7 +886,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
               <div className="flex flex-col items-center space-y-2 text-white/60 md:flex-row md:space-y-0 md:space-x-6">
-                <p>&copy; 2024 TalentHunt.dev. All rights reserved.</p>
+            <p>&copy; 2024 TalentHunt.dev. All rights reserved.</p>
                 <div className="flex items-center space-x-6">
                   {["Privacy", "Terms", "Cookies"].map((item) => (
                     <Link
@@ -896,7 +896,7 @@ export default function LandingPage() {
                     >
                       <span className="relative z-10">{item}</span>
                       <div className="absolute -bottom-0.5 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 group-hover:w-full"></div>
-                    </Link>
+              </Link>
                   ))}
                 </div>
               </div>
@@ -912,6 +912,33 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Start Your Journey CTA - Fixed at Bottom */}
+      <div className="relative z-20 border-t border-blue-400/20 bg-gradient-to-b from-blue-950/95 to-blue-950 backdrop-blur-sm">
+        <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-transparent via-blue-300/30 to-transparent"></div>
+        
+        <div className="mx-auto max-w-4xl px-6 py-12 text-center">
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold text-white">
+              Ready to Begin Your Journey?
+            </h3>
+            <p className="text-lg text-white/70">
+              Join thousands of professionals already using TalentHunt
+            </p>
+            
+            <Link href="/dashboard">
+              <Button className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-16 py-6 text-xl font-bold text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-blue-700 hover:shadow-3xl">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+                <div className="relative z-10 flex items-center gap-3">
+                  <Sparkles className="h-6 w-6" />
+                  <span>Start Your Journey</span>
+                  <ArrowRight className="h-6 w-6 transition-transform group-hover:translate-x-1" />
+                </div>
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

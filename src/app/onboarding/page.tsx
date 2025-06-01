@@ -278,16 +278,16 @@ export default function OnboardingPage() {
                   </div>
                   <h2 className="mb-6 text-3xl font-bold text-white">I'm Looking for a Job</h2>
                   <p className="text-xl leading-relaxed text-white/80">
-                    Showcase your skills and get discovered by top recruiters
-                  </p>
+                Showcase your skills and get discovered by top recruiters
+              </p>
                 </div>
 
                 <ul className="mb-10 space-y-5">
-                  {[
-                    "Connect LinkedIn & GitHub profiles",
-                    "Upload resume and showcase projects", 
-                    "Get verified and featured",
-                    "Receive personalized job opportunities",
+                {[
+                  "Connect LinkedIn & GitHub profiles",
+                  "Upload resume and showcase projects",
+                  "Get verified and featured",
+                  "Receive personalized job opportunities",
                   ].map((feature, index) => (
                     <li key={index} className="flex items-center text-lg text-white/90">
                       <div className="mr-4 h-3 w-3 flex-shrink-0 animate-pulse rounded-full bg-blue-300"></div>
@@ -304,8 +304,8 @@ export default function OnboardingPage() {
                     </span>
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
 
             {/* Enhanced Recruiter Card - perfect landing page match */}
             <Card className="group relative overflow-hidden rounded-3xl border border-blue-400/40 bg-gradient-to-br from-blue-700/60 to-blue-900/80 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60 hover:shadow-3xl">
@@ -342,16 +342,16 @@ export default function OnboardingPage() {
                   </div>
                   <h2 className="mb-6 text-3xl font-bold text-white">I'm Looking to Hire</h2>
                   <p className="text-xl leading-relaxed text-white/80">
-                    Find perfect candidates using AI-powered natural language search
-                  </p>
+                Find perfect candidates using AI-powered natural language search
+              </p>
                 </div>
 
                 <ul className="mb-10 space-y-5">
-                  {[
-                    "Search with natural language queries",
-                    "Access verified candidate profiles",
-                    "Auto-screen and rank candidates", 
-                    "Launch personalized outreach campaigns",
+                {[
+                  "Search with natural language queries",
+                  "Access verified candidate profiles",
+                  "Auto-screen and rank candidates",
+                  "Launch personalized outreach campaigns",
                   ].map((feature, index) => (
                     <li key={index} className="flex items-center text-lg text-white/90">
                       <div className="mr-4 h-3 w-3 flex-shrink-0 animate-pulse rounded-full bg-blue-300"></div>
@@ -368,9 +368,9 @@ export default function OnboardingPage() {
                     </span>
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
-          </div>
+            </CardContent>
+          </Card>
+        </div>
 
           {/* Enhanced Footer Note */}
           <div className="mt-16 text-center">

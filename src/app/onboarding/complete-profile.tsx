@@ -22,6 +22,7 @@ export default function CompleteProfile({ onComplete }: CompleteProfileProps) {
     api.user.getParsedResumeData.useQuery();
 
   const [formData, setFormData] = useState({
+    name: "",
     role: "",
     skills: "",
     experience: "",
@@ -35,6 +36,7 @@ export default function CompleteProfile({ onComplete }: CompleteProfileProps) {
     if (parsedData) {
       setFormData((prev) => ({
         ...prev,
+        name: parsedData.fullName ?? prev.name,
         role: parsedData.role ?? prev.role,
         skills: parsedData.skills ?? prev.skills,
         experience: parsedData.experience ?? prev.experience,
@@ -49,7 +51,7 @@ export default function CompleteProfile({ onComplete }: CompleteProfileProps) {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const isFormValid = formData.role && formData.skills && formData.experience;
+  const isFormValid = formData.name && formData.role && formData.skills && formData.experience;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,12 +144,12 @@ export default function CompleteProfile({ onComplete }: CompleteProfileProps) {
                 
                 <div className="space-y-4">
                   <h2 className="text-3xl font-bold text-white">
-                    Complete Your Profile
-                  </h2>
+            Complete Your Profile
+          </h2>
                   <p className="text-white/80 text-lg">Loading your parsed resume data...</p>
                 </div>
                 
-                <div className="flex justify-center">
+          <div className="flex justify-center">
                   <div className="relative">
                     <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-300/20 border-t-blue-300"></div>
                     <div className="absolute inset-2 animate-pulse rounded-full bg-blue-400/20"></div>
@@ -267,164 +269,184 @@ export default function CompleteProfile({ onComplete }: CompleteProfileProps) {
                 
                 <div className="space-y-4">
                   <h2 className="text-3xl font-bold text-white">
-                    Complete Your Profile
-                  </h2>
+          Complete Your Profile
+        </h2>
                   <p className="text-white/80 text-lg leading-relaxed">
-                    Tell us more about your skills, preferences, and experience so we can
-                    match you better.
-                  </p>
+          Tell us more about your skills, preferences, and experience so we can
+          match you better.
+        </p>
                 </div>
 
-                {parsedData && Object.values(parsedData).some((value) => value) && (
+        {parsedData && Object.values(parsedData).some((value) => value) && (
                   <div className="rounded-xl border border-blue-400/30 bg-blue-600/20 p-4 backdrop-blur-sm">
                     <p className="text-blue-200 flex items-center justify-center gap-2">
                       <Sparkles className="h-4 w-4" />
                       We've pre-filled some fields based on your resume. Feel free to review and edit them.
-                    </p>
-                  </div>
-                )}
+            </p>
+          </div>
+        )}
 
                 <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-600/20 px-4 py-2 text-blue-300 backdrop-blur-sm">
                   <div className="h-2 w-2 animate-pulse rounded-full bg-blue-300"></div>
                   Step 2 of 4
                 </div>
-              </div>
+      </div>
 
               {/* Form Fields */}
-              <div className="space-y-6">
+      <div className="space-y-6">
+                {/* Name Field */}
+                <div className="space-y-3">
+                  <Label htmlFor="name" className="flex items-center gap-2 text-white font-medium">
+                    <User className="h-4 w-4 text-blue-300" />
+                    Name
+          </Label>
+                  <div className="relative">
+          <Input
+            id="name"
+            placeholder="e.g. John Doe"
+                      className="w-full rounded-xl border border-blue-400/30 bg-blue-700/30 px-4 py-4 text-white placeholder:text-white/50 backdrop-blur-sm focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
+            value={formData.name}
+            onChange={(e) => {
+              handleInputChange("name", e.target.value);
+              handleFieldUpdate("name");
+            }}
+          />
+                  </div>
+        </div>
+
                 {/* Role Field */}
                 <div className="space-y-3">
                   <Label htmlFor="role" className="flex items-center gap-2 text-white font-medium">
                     <User className="h-4 w-4 text-blue-300" />
                     Role you're targeting
-                  </Label>
+          </Label>
                   <div className="relative">
-                    <Input
-                      id="role"
-                      placeholder="e.g. Frontend Developer, Product Manager"
+          <Input
+            id="role"
+            placeholder="e.g. Frontend Developer, Product Manager"
                       className="w-full rounded-xl border border-blue-400/30 bg-blue-700/30 px-4 py-4 text-white placeholder:text-white/50 backdrop-blur-sm focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
-                      value={formData.role}
-                      onChange={(e) => {
-                        handleInputChange("role", e.target.value);
-                        handleFieldUpdate("role");
-                      }}
-                    />
+            value={formData.role}
+            onChange={(e) => {
+              handleInputChange("role", e.target.value);
+              handleFieldUpdate("role");
+            }}
+          />
                   </div>
-                </div>
+        </div>
 
                 {/* Skills Field */}
                 <div className="space-y-3">
                   <Label htmlFor="skills" className="flex items-center gap-2 text-white font-medium">
                     <Code className="h-4 w-4 text-blue-300" />
-                    Top 3 skills
-                  </Label>
+            Top 3 skills
+          </Label>
                   <div className="relative">
-                    <Input
-                      id="skills"
-                      placeholder="e.g. React, TypeScript, Node.js"
+          <Input
+            id="skills"
+            placeholder="e.g. React, TypeScript, Node.js"
                       className="w-full rounded-xl border border-blue-400/30 bg-blue-700/30 px-4 py-4 text-white placeholder:text-white/50 backdrop-blur-sm focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
-                      value={formData.skills}
-                      onChange={(e) => {
-                        handleInputChange("skills", e.target.value);
-                        handleFieldUpdate("skills");
-                      }}
-                    />
+            value={formData.skills}
+            onChange={(e) => {
+              handleInputChange("skills", e.target.value);
+              handleFieldUpdate("skills");
+            }}
+          />
                   </div>
-                </div>
+        </div>
 
                 {/* Experience and Location Grid */}
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div className="space-y-3">
                     <Label htmlFor="experience" className="flex items-center gap-2 text-white font-medium">
                       <Sparkles className="h-4 w-4 text-blue-300" />
-                      Years of experience
-                    </Label>
-                    <Input
-                      id="experience"
-                      type="number"
-                      placeholder="e.g. 3"
+              Years of experience
+            </Label>
+            <Input
+              id="experience"
+              type="number"
+              placeholder="e.g. 3"
                       className="w-full rounded-xl border border-blue-400/30 bg-blue-700/30 px-4 py-4 text-white placeholder:text-white/50 backdrop-blur-sm focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
-                      value={formData.experience}
-                      onChange={(e) => {
-                        handleInputChange("experience", e.target.value);
-                        handleFieldUpdate("experience");
-                      }}
-                    />
-                  </div>
+              value={formData.experience}
+              onChange={(e) => {
+                handleInputChange("experience", e.target.value);
+                handleFieldUpdate("experience");
+              }}
+            />
+          </div>
 
                   <div className="space-y-3">
                     <Label htmlFor="location" className="flex items-center gap-2 text-white font-medium">
                       <MapPin className="h-4 w-4 text-blue-300" />
                       Preferred location
                       <span className="text-white/60 text-sm">(optional)</span>
-                    </Label>
-                    <Input
-                      id="location"
-                      placeholder="e.g. San Francisco, Remote"
+            </Label>
+            <Input
+              id="location"
+              placeholder="e.g. San Francisco, Remote"
                       className="w-full rounded-xl border border-blue-400/30 bg-blue-700/30 px-4 py-4 text-white placeholder:text-white/50 backdrop-blur-sm focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
-                      value={formData.location}
-                      onChange={(e) => {
-                        handleInputChange("location", e.target.value);
-                        handleFieldUpdate("location");
-                      }}
-                    />
-                  </div>
-                </div>
+              value={formData.location}
+              onChange={(e) => {
+                handleInputChange("location", e.target.value);
+                handleFieldUpdate("location");
+              }}
+            />
+          </div>
+        </div>
 
                 {/* GitHub URL */}
                 <div className="space-y-3">
                   <Label htmlFor="github" className="flex items-center gap-2 text-white font-medium">
                     <Github className="h-4 w-4 text-blue-300" />
-                    GitHub URL
-                  </Label>
-                  <Input
-                    id="github"
-                    placeholder="https://github.com/yourusername"
+            GitHub URL
+          </Label>
+          <Input
+            id="github"
+            placeholder="https://github.com/yourusername"
                     className="w-full rounded-xl border border-blue-400/30 bg-blue-700/30 px-4 py-4 text-white placeholder:text-white/50 backdrop-blur-sm focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
-                    value={formData.githubUrl}
-                    onChange={(e) => {
-                      handleInputChange("githubUrl", e.target.value);
-                      handleFieldUpdate("githubUrl");
-                    }}
-                  />
-                </div>
+            value={formData.githubUrl}
+            onChange={(e) => {
+              handleInputChange("githubUrl", e.target.value);
+              handleFieldUpdate("githubUrl");
+            }}
+          />
+        </div>
 
                 {/* LinkedIn URL */}
                 <div className="space-y-3">
                   <Label htmlFor="linkedin" className="flex items-center gap-2 text-white font-medium">
                     <Linkedin className="h-4 w-4 text-blue-300" />
-                    LinkedIn URL
-                  </Label>
-                  <Input
-                    id="linkedin"
-                    placeholder="https://linkedin.com/in/yourprofile"
+            LinkedIn URL
+          </Label>
+          <Input
+            id="linkedin"
+            placeholder="https://linkedin.com/in/yourprofile"
                     className="w-full rounded-xl border border-blue-400/30 bg-blue-700/30 px-4 py-4 text-white placeholder:text-white/50 backdrop-blur-sm focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
-                    value={formData.linkedinUrl}
-                    onChange={(e) => {
-                      handleInputChange("linkedinUrl", e.target.value);
-                      handleFieldUpdate("linkedinUrl");
-                    }}
-                  />
-                </div>
+            value={formData.linkedinUrl}
+            onChange={(e) => {
+              handleInputChange("linkedinUrl", e.target.value);
+              handleFieldUpdate("linkedinUrl");
+            }}
+          />
+        </div>
 
                 {/* Submit Button */}
                 <div className="pt-4">
-                  <Button
-                    size="lg"
+        <Button
+          size="lg"
                     className={`group relative w-full overflow-hidden rounded-xl py-6 text-lg font-semibold transition-all duration-300 ${
                       isFormValid
                         ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl"
                         : "bg-blue-700/30 text-white/60 cursor-not-allowed"
                     }`}
-                    onClick={handleSubmit}
-                    disabled={!isFormValid}
-                  >
+          onClick={handleSubmit}
+          disabled={!isFormValid}
+        >
                     <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                     <div className="relative z-10 flex items-center justify-center gap-2">
                       <Sparkles className="h-5 w-5" />
-                      Continue
+          Continue
                     </div>
-                  </Button>
+        </Button>
                 </div>
               </div>
             </div>

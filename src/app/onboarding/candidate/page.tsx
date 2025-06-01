@@ -130,24 +130,24 @@ export default function CandidateOnboardingPage() {
                     <div className="text-3xl">🎉</div>
                   </div>
                   <h2 className="mb-4 text-3xl font-bold text-white">
-                    Welcome to the Platform!
-                  </h2>
+                  Welcome to the Platform!
+                </h2>
                   <p className="mb-6 text-xl text-white/80">
                     Congratulations! Your profile has been approved and you're now visible to recruiters.
-                  </p>
+                </p>
                   <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-blue-700/30 p-6 backdrop-blur-sm">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-blue-500/5"></div>
                     <h4 className="relative z-10 mb-3 font-semibold text-green-300">
-                      ✅ Application Status: Approved
-                    </h4>
+                    ✅ Application Status: Approved
+                  </h4>
                     <p className="relative z-10 text-white/80">
                       Your profile is now live and recruiters can discover and contact you.
-                    </p>
-                    {approvedAt && (
+                  </p>
+                  {approvedAt && (
                       <p className="relative z-10 mt-3 text-sm text-white/60">
-                        Approved on {new Date(approvedAt).toLocaleString()}
-                      </p>
-                    )}
+                      Approved on {new Date(approvedAt).toLocaleString()}
+                    </p>
+                  )}
                   </div>
                 </div>
               </div>
@@ -171,10 +171,10 @@ export default function CandidateOnboardingPage() {
                       <li key={index} className="flex items-center gap-3">
                         <div className="h-2 w-2 animate-pulse rounded-full bg-blue-300"></div>
                         <span>{item}</span>
-                      </li>
+                  </li>
                     ))}
-                  </ul>
-                </div>
+                </ul>
+              </div>
               </div>
             </div>
           );
@@ -199,16 +199,16 @@ export default function CandidateOnboardingPage() {
                   <div className="relative overflow-hidden rounded-2xl border border-red-500/30 bg-red-700/30 p-6 backdrop-blur-sm">
                     <div className="absolute inset-0 bg-gradient-to-r from-red-600/5 to-red-500/5"></div>
                     <h4 className="relative z-10 mb-3 font-semibold text-red-300">
-                      ❌ Application Status: Not Approved
-                    </h4>
+                    ❌ Application Status: Not Approved
+                  </h4>
                     <p className="relative z-10 text-white/80">
                       Please review your profile and consider resubmitting with updated information.
-                    </p>
-                    {rejectedAt && (
+                  </p>
+                  {rejectedAt && (
                       <p className="relative z-10 mt-3 text-sm text-white/60">
-                        Reviewed on {new Date(rejectedAt).toLocaleString()}
-                      </p>
-                    )}
+                      Reviewed on {new Date(rejectedAt).toLocaleString()}
+                    </p>
+                  )}
                   </div>
                 </div>
               </div>
@@ -232,9 +232,9 @@ export default function CandidateOnboardingPage() {
                       <li key={index} className="flex items-center gap-3">
                         <div className="h-2 w-2 animate-pulse rounded-full bg-orange-300"></div>
                         <span>{item}</span>
-                      </li>
+                  </li>
                     ))}
-                  </ul>
+                </ul>
                 </div>
               </div>
 
@@ -270,15 +270,15 @@ export default function CandidateOnboardingPage() {
                   <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-blue-700/30 p-6 backdrop-blur-sm">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-blue-500/5"></div>
                     <h4 className="relative z-10 mb-3 font-semibold text-yellow-300">
-                      ⏳ Application Status: Under Review
-                    </h4>
+                    ⏳ Application Status: Under Review
+                  </h4>
                     <p className="relative z-10 text-white/80">
-                      {verificationStatus === "pending"
-                        ? "Our team is manually reviewing your profile for quality assurance."
-                        : "Your application is being processed by our AI system."}
-                    </p>
-                  </div>
+                    {verificationStatus === "pending"
+                      ? "Our team is manually reviewing your profile for quality assurance."
+                      : "Your application is being processed by our AI system."}
+                  </p>
                 </div>
+              </div>
               </div>
 
               <div className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-700/30 p-8 backdrop-blur-sm">
@@ -397,8 +397,8 @@ export default function CandidateOnboardingPage() {
               </div>
             </div>
             <h1 className="mb-4 text-4xl font-bold text-white">
-              Complete Your Candidate Profile
-            </h1>
+            Complete Your Candidate Profile
+          </h1>
             <div className="flex justify-center">
               <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
             </div>
