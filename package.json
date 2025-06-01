@@ -22,6 +22,7 @@
   "dependencies": {
     "@ai-sdk/groq": "^1.2.9",
     "@clerk/nextjs": "^6.20.2",
+    "@faker-js/faker": "^9.8.0",
     "@openrouter/ai-sdk-provider": "0.7.0-alpha.0",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-collapsible": "^1.1.11",
