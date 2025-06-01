@@ -10,6 +10,7 @@ import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarRail,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { api } from "@/trpc/react";
 import {
@@ -125,8 +126,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="flex items-center justify-between">
         <TalentHuntBranding />
+
+        <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
         {/* Discover Button - First Item */}

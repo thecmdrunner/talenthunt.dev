@@ -22,6 +22,7 @@ import {
   Trash2,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -101,17 +102,21 @@ export default function JobsPage() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Job Postings</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Explore Job Postings
+          </h1>
           <p className="text-muted-foreground mt-1">
             Manage your active and draft job listings
           </p>
         </div>
-        <Button
-          className="bg-slate-900 text-white hover:bg-slate-800"
-          onClick={() => router.push("/jobs/new")}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Post New Job
+        <Button asChild>
+          <Link
+            href="/jobs/new"
+            className="bg-slate-900 text-white hover:bg-slate-800"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Post New Job
+          </Link>
         </Button>
       </div>
 
