@@ -1,0 +1,1210 @@
+{
+  "resumes": [
+    {
+      "pastExperience": [
+        {
+          "company": "Google",
+          "location": "Mountain View, CA",
+          "role": "Product Manager",
+          "projects": [
+            {
+              "name": "AI Search Feature",
+              "description": "Led the development and launch of a new AI-powered search feature, resulting in a 15% increase in user engagement.",
+              "link": "google.com"
+            },
+            {
+              "name": "Google Maps UI Redesign",
+              "description": "Managed a cross-functional team to improve the user interface of Google Maps, leading to a 10% reduction in user complaints.",
+              "link": "google.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Microsoft",
+          "location": "Redmond, WA",
+          "role": "Associate Product Manager",
+          "projects": [
+            {
+              "name": "Microsoft Teams Growth",
+              "description": "Developed and executed the product roadmap for Microsoft Teams, resulting in a 20% increase in active users.",
+              "link": "microsoft.com"
+            },
+            {
+              "name": "Microsoft Office Expansion",
+              "description": "Conducted market research and competitive analysis to identify new product opportunities for Microsoft Office.",
+              "link": "microsoft.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Business Administration (MBA)",
+        "field": "Business Administration",
+        "institution": "Stanford University",
+        "location": "Stanford, CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Amazon",
+          "location": "Seattle, WA",
+          "role": "Program Manager",
+          "projects": [
+            {
+              "name": "Prime Video Feature",
+              "description": "Managed the development and launch of a new feature for Amazon Prime Video, resulting in a 12% increase in subscriber retention.",
+              "link": "amazon.com"
+            },
+            {
+              "name": "AWS Performance Improvement",
+              "description": "Led a team of engineers to improve the performance and scalability of Amazon Web Services (AWS).",
+              "link": "amazon.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Facebook",
+          "location": "Menlo Park, CA",
+          "role": "Project Manager",
+          "projects": [
+            {
+              "name": "Employee Onboarding Program",
+              "description": "Developed and implemented a new program to improve the onboarding experience for new Facebook employees.",
+              "link": "facebook.com"
+            },
+            {
+              "name": "Instagram Feature Launch",
+              "description": "Managed a cross-functional team to launch a new feature for Instagram.",
+              "link": "facebook.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Science",
+        "field": "Computer Science",
+        "institution": "Massachusetts Institute of Technology (MIT)",
+        "location": "Cambridge, MA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Tata Consultancy Services (TCS)",
+          "location": "Mumbai, India",
+          "role": "Quality Assurance Tester",
+          "projects": [
+            {
+              "name": "Banking Application Testing",
+              "description": "Developed and executed test plans for a large-scale banking application, ensuring high quality and reliability.",
+              "link": "tcs.com"
+            },
+            {
+              "name": "Test Automation",
+              "description": "Automated testing processes using Selenium and other tools, resulting in a 20% reduction in testing time.",
+              "link": "tcs.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Infosys",
+          "location": "Bangalore, India",
+          "role": "Software Tester",
+          "projects": [
+            {
+              "name": "Application Testing",
+              "description": "Performed manual and automated testing of web and mobile applications.",
+              "link": "infosys.com"
+            },
+            {
+              "name": "Defect Management",
+              "description": "Identified and reported software defects, working closely with developers to resolve issues.",
+              "link": "infosys.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Engineering",
+        "field": "Electrical Engineering",
+        "institution": "Indian Institute of Technology (IIT) Delhi",
+        "location": "Delhi, India"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Netflix",
+          "location": "Los Gatos, CA",
+          "role": "Business Analyst",
+          "projects": [
+            {
+              "name": "User Data Analysis",
+              "description": "Analyzed user data to identify trends and patterns in viewing behavior, providing insights to improve content recommendations.",
+              "link": "netflix.com"
+            },
+            {
+              "name": "Recommendation Algorithm",
+              "description": "Developed and implemented a new algorithm to personalize movie recommendations, resulting in a 10% increase in user satisfaction.",
+              "link": "netflix.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Spotify",
+          "location": "Stockholm, Sweden",
+          "role": "Data Analyst",
+          "projects": [
+            {
+              "name": "Market Research",
+              "description": "Conducted market research and competitive analysis to identify new opportunities for Spotify's music streaming service.",
+              "link": "spotify.com"
+            },
+            {
+              "name": "Business Case Development",
+              "description": "Developed and presented business cases for new product initiatives.",
+              "link": "spotify.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Science",
+        "field": "Data Science",
+        "institution": "University of California, Berkeley",
+        "location": "Berkeley, CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Apple",
+          "location": "Cupertino, CA",
+          "role": "Technical Program Manager",
+          "projects": [
+            {
+              "name": "iOS Feature Development",
+              "description": "Managed the development and launch of a new feature for iOS, ensuring seamless integration with existing systems.",
+              "link": "apple.com"
+            },
+            {
+              "name": "Cloud Infrastructure Improvement",
+              "description": "Led a team of engineers to improve the performance and security of Apple's cloud infrastructure.",
+              "link": "apple.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Intel",
+          "location": "Santa Clara, CA",
+          "role": "Program Manager",
+          "projects": [
+            {
+              "name": "Processor Development",
+              "description": "Managed the development of a new generation of Intel processors.",
+              "link": "intel.com"
+            },
+            {
+              "name": "Project Coordination",
+              "description": "Coordinated cross-functional teams to ensure timely delivery of projects.",
+              "link": "intel.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Science",
+        "field": "Computer Engineering",
+        "institution": "Carnegie Mellon University",
+        "location": "Pittsburgh, PA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "HSBC",
+          "location": "London, UK",
+          "role": "Scrum Master",
+          "projects": [
+            {
+              "name": "Agile Facilitation",
+              "description": "Facilitated Agile ceremonies, including sprint planning, daily stand-ups, sprint reviews, and sprint retrospectives.",
+              "link": "hsbc.com"
+            },
+            {
+              "name": "Agile Coaching",
+              "description": "Coached teams on Agile principles and practices, helping them to improve their performance and collaboration.",
+              "link": "hsbc.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Barclays",
+          "location": "London, UK",
+          "role": "Project Manager",
+          "projects": [
+            {
+              "name": "Agile Team Management",
+              "description": "Managed a team of developers using Agile methodologies.",
+              "link": "barclays.com"
+            },
+            {
+              "name": "Agile Implementation",
+              "description": "Implemented Agile processes and tools to improve team efficiency.",
+              "link": "barclays.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Arts",
+        "field": "Psychology",
+        "institution": "University of Oxford",
+        "location": "Oxford, UK"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Accenture",
+          "location": "New York, NY",
+          "role": "Agile Coach",
+          "projects": [
+            {
+              "name": "Agile Coaching",
+              "description": "Coached multiple teams on Agile principles and practices, helping them to improve their performance and collaboration.",
+              "link": "accenture.com"
+            },
+            {
+              "name": "Agile Training",
+              "description": "Facilitated Agile workshops and training sessions for clients.",
+              "link": "accenture.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Deloitte",
+          "location": "New York, NY",
+          "role": "Consultant",
+          "projects": [
+            {
+              "name": "Agile Implementation",
+              "description": "Implemented Agile methodologies for a large-scale software development project.",
+              "link": "deloitte.com"
+            },
+            {
+              "name": "Agile Coaching",
+              "description": "Provided Agile coaching to project teams.",
+              "link": "deloitte.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Arts",
+        "field": "Organizational Psychology",
+        "institution": "Columbia University",
+        "location": "New York, NY"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Google",
+          "location": "Mountain View, CA",
+          "role": "UX Researcher",
+          "projects": [
+            {
+              "name": "User Research",
+              "description": "Conducted user research to understand user needs and behaviors for Google's search products.",
+              "link": "google.com"
+            },
+            {
+              "name": "UI Design",
+              "description": "Designed and tested new user interfaces for Google Search.",
+              "link": "google.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Facebook",
+          "location": "Menlo Park, CA",
+          "role": "UX Researcher",
+          "projects": [
+            {
+              "name": "User Research",
+              "description": "Conducted user research to inform the design of new features for Facebook.",
+              "link": "facebook.com"
+            },
+            {
+              "name": "Data Analysis",
+              "description": "Analyzed user data to identify areas for improvement in the user experience.",
+              "link": "facebook.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Doctor of Philosophy (PhD)",
+        "field": "Human-Computer Interaction",
+        "institution": "Stanford University",
+        "location": "Stanford, CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Unilever",
+          "location": "London, UK",
+          "role": "Product Marketing Manager",
+          "projects": [
+            {
+              "name": "Marketing Campaigns",
+              "description": "Developed and executed marketing campaigns for Unilever's personal care products.",
+              "link": "unilever.com"
+            },
+            {
+              "name": "Product Launch",
+              "description": "Managed the launch of a new product line, resulting in a 15% increase in sales.",
+              "link": "unilever.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Procter & Gamble",
+          "location": "Cincinnati, OH",
+          "role": "Marketing Associate",
+          "projects": [
+            {
+              "name": "Marketing Strategies",
+              "description": "Developed and implemented marketing strategies for P&G's household products.",
+              "link": "pg.com"
+            },
+            {
+              "name": "Market Research",
+              "description": "Conducted market research to identify consumer needs and preferences.",
+              "link": "pg.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Science",
+        "field": "Marketing",
+        "institution": "Northwestern University",
+        "location": "Evanston, IL"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Walmart",
+          "location": "Bentonville, AR",
+          "role": "Operations Manager",
+          "projects": [
+            {
+              "name": "Distribution Center Management",
+              "description": "Managed the operations of a large distribution center, ensuring efficient and timely delivery of goods.",
+              "link": "walmart.com"
+            },
+            {
+              "name": "Process Improvement",
+              "description": "Implemented process improvements to reduce costs and improve efficiency.",
+              "link": "walmart.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Target",
+          "location": "Minneapolis, MN",
+          "role": "Operations Analyst",
+          "projects": [
+            {
+              "name": "Supply Chain Management",
+              "description": "Managed the supply chain for a specific product category.",
+              "link": "target.com"
+            },
+            {
+              "name": "Inventory Management",
+              "description": "Improved inventory management processes to reduce waste.",
+              "link": "target.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Science",
+        "field": "Industrial Engineering",
+        "institution": "Georgia Institute of Technology",
+        "location": "Atlanta, GA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Salesforce",
+          "location": "San Francisco, CA",
+          "role": "Product Manager",
+          "projects": [
+            {
+              "name": "Product Strategy",
+              "description": "Led the product strategy for a new Salesforce cloud offering, resulting in significant revenue growth.",
+              "link": "salesforce.com"
+            },
+            {
+              "name": "Product Launch",
+              "description": "Managed a cross-functional team to launch the new product.",
+              "link": "salesforce.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Oracle",
+          "location": "Redwood City, CA",
+          "role": "Associate Product Manager",
+          "projects": [
+            {
+              "name": "Product Roadmap",
+              "description": "Developed and executed the product roadmap for Oracle's cloud infrastructure products.",
+              "link": "oracle.com"
+            },
+            {
+              "name": "Market Research",
+              "description": "Conducted market research and competitive analysis to identify new product opportunities.",
+              "link": "oracle.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Business Administration (MBA)",
+        "field": "Business Administration",
+        "institution": "Harvard Business School",
+        "location": "Boston, MA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Shopify",
+          "location": "Ottawa, ON, Canada",
+          "role": "Program Manager",
+          "projects": [
+            {
+              "name": "E-commerce Platform Feature",
+              "description": "Managed the development and launch of a new feature for Shopify's e-commerce platform.",
+              "link": "shopify.com"
+            },
+            {
+              "name": "Infrastructure Improvement",
+              "description": "Led a team of engineers to improve the performance and scalability of Shopify's infrastructure.",
+              "link": "shopify.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "BlackBerry",
+          "location": "Waterloo, ON, Canada",
+          "role": "Project Manager",
+          "projects": [
+            {
+              "name": "Mobile Application Development",
+              "description": "Managed the development of a new mobile application for BlackBerry.",
+              "link": "blackberry.com"
+            },
+            {
+              "name": "Project Coordination",
+              "description": "Coordinated cross-functional teams to ensure timely delivery of projects.",
+              "link": "blackberry.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Science",
+        "field": "Computer Science",
+        "institution": "University of Waterloo",
+        "location": "Waterloo, ON, Canada"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Wipro",
+          "location": "Bangalore, India",
+          "role": "Quality Assurance Tester",
+          "projects": [
+            {
+              "name": "Telecommunications Application Testing",
+              "description": "Developed and executed test plans for a telecommunications application, ensuring high quality and reliability.",
+              "link": "wipro.com"
+            },
+            {
+              "name": "Test Automation",
+              "description": "Automated testing processes using JUnit and other tools, resulting in a 15% reduction in testing time.",
+              "link": "wipro.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "HCL Technologies",
+          "location": "Noida, India",
+          "role": "Software Tester",
+          "projects": [
+            {
+              "name": "Application Testing",
+              "description": "Performed manual and automated testing of web and mobile applications.",
+              "link": "hcltech.com"
+            },
+            {
+              "name": "Defect Management",
+              "description": "Identified and reported software defects, working closely with developers to resolve issues.",
+              "link": "hcltech.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Engineering",
+        "field": "Electronics and Communication Engineering",
+        "institution": "Anna University",
+        "location": "Chennai, India"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Dell",
+          "location": "Round Rock, TX",
+          "role": "Business Analyst",
+          "projects": [
+            {
+              "name": "Sales Data Analysis",
+              "description": "Analyzed sales data to identify trends and patterns, providing insights to improve sales performance.",
+              "link": "dell.com"
+            },
+            {
+              "name": "Pricing Strategy",
+              "description": "Developed and implemented a new pricing strategy, resulting in a 8% increase in revenue.",
+              "link": "dell.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Accenture",
+          "location": "Dallas, TX",
+          "role": "Data Analyst",
+          "projects": [
+            {
+              "name": "Market Research",
+              "description": "Conducted market research and competitive analysis to identify new opportunities for Accenture's consulting services.",
+              "link": "accenture.com"
+            },
+            {
+              "name": "Business Case Development",
+              "description": "Developed and presented business cases for new consulting projects.",
+              "link": "accenture.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Science",
+        "field": "Business Analytics",
+        "institution": "University of Texas at Austin",
+        "location": "Austin, TX"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "SpaceX",
+          "location": "Hawthorne, CA",
+          "role": "Technical Program Manager",
+          "projects": [
+            {
+              "name": "Satellite Communication System",
+              "description": "Managed the development and launch of a new satellite communication system.",
+              "link": "spacex.com"
+            },
+            {
+              "name": "Rocket Improvement",
+              "description": "Led a team of engineers to improve the performance and reliability of SpaceX's rockets.",
+              "link": "spacex.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Boeing",
+          "location": "Seattle, WA",
+          "role": "Program Manager",
+          "projects": [
+            {
+              "name": "Aircraft Control System",
+              "description": "Managed the development of a new aircraft control system.",
+              "link": "boeing.com"
+            },
+            {
+              "name": "Project Coordination",
+              "description": "Coordinated cross-functional teams to ensure timely delivery of projects.",
+              "link": "boeing.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Science",
+        "field": "Electrical Engineering",
+        "institution": "University of Southern California",
+        "location": "Los Angeles, CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "TD Bank",
+          "location": "Toronto, ON, Canada",
+          "role": "Scrum Master",
+          "projects": [
+            {
+              "name": "Agile Facilitation",
+              "description": "Facilitated Agile ceremonies, including sprint planning, daily stand-ups, sprint reviews, and sprint retrospectives.",
+              "link": "td.com"
+            },
+            {
+              "name": "Agile Coaching",
+              "description": "Coached teams on Agile principles and practices, helping them to improve their performance and collaboration.",
+              "link": "td.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "RBC",
+          "location": "Toronto, ON, Canada",
+          "role": "Project Manager",
+          "projects": [
+            {
+              "name": "Agile Team Management",
+              "description": "Managed a team of developers using Agile methodologies.",
+              "link": "rbc.com"
+            },
+            {
+              "name": "Agile Implementation",
+              "description": "Implemented Agile processes and tools to improve team efficiency.",
+              "link": "rbc.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Arts",
+        "field": "Sociology",
+        "institution": "University of Toronto",
+        "location": "Toronto, ON, Canada"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Kaiser Permanente",
+          "location": "Oakland, CA",
+          "role": "Agile Coach",
+          "projects": [
+            {
+              "name": "Agile Coaching",
+              "description": "Coached multiple teams on Agile principles and practices, helping them to improve their performance and collaboration.",
+              "link": "kp.org"
+            },
+            {
+              "name": "Agile Training",
+              "description": "Facilitated Agile workshops and training sessions for employees.",
+              "link": "kp.org"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Blue Shield of California",
+          "location": "San Francisco, CA",
+          "role": "Consultant",
+          "projects": [
+            {
+              "name": "Agile Implementation",
+              "description": "Implemented Agile methodologies for a large-scale healthcare project.",
+              "link": "blueshieldca.com"
+            },
+            {
+              "name": "Agile Coaching",
+              "description": "Provided Agile coaching to project teams.",
+              "link": "blueshieldca.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Arts",
+        "field": "Education",
+        "institution": "University of Michigan",
+        "location": "Ann Arbor, MI"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Microsoft",
+          "location": "Redmond, WA",
+          "role": "UX Researcher",
+          "projects": [
+            {
+              "name": "User Research",
+              "description": "Conducted user research to understand user needs and behaviors for Microsoft Office products.",
+              "link": "microsoft.com"
+            },
+            {
+              "name": "UI Design",
+              "description": "Designed and tested new user interfaces for Microsoft Word and Excel.",
+              "link": "microsoft.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Amazon",
+          "location": "Seattle, WA",
+          "role": "UX Researcher",
+          "projects": [
+            {
+              "name": "User Research",
+              "description": "Conducted user research to inform the design of new features for Amazon's e-commerce platform.",
+              "link": "amazon.com"
+            },
+            {
+              "name": "Data Analysis",
+              "description": "Analyzed user data to identify areas for improvement in the user experience.",
+              "link": "amazon.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Doctor of Philosophy (PhD)",
+        "field": "Cognitive Science",
+        "institution": "University of California, San Diego",
+        "location": "San Diego, CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "L'Oréal",
+          "location": "Paris, France",
+          "role": "Product Marketing Manager",
+          "projects": [
+            {
+              "name": "Marketing Campaigns",
+              "description": "Developed and executed marketing campaigns for L'Oréal's beauty products.",
+              "link": "loreal.com"
+            },
+            {
+              "name": "Product Launch",
+              "description": "Managed the launch of a new product line, resulting in a 20% increase in sales.",
+              "link": "loreal.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Estée Lauder Companies",
+          "location": "New York, NY",
+          "role": "Marketing Associate",
+          "projects": [
+            {
+              "name": "Marketing Strategies",
+              "description": "Developed and implemented marketing strategies for Estée Lauder's skincare products.",
+              "link": "elcompanies.com"
+            },
+            {
+              "name": "Market Research",
+              "description": "Conducted market research to identify consumer needs and preferences.",
+              "link": "elcompanies.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Science",
+        "field": "Communications",
+        "institution": "New York University",
+        "location": "New York, NY"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Tesla",
+          "location": "Fremont, CA",
+          "role": "Operations Manager",
+          "projects": [
+            {
+              "name": "Manufacturing Plant Management",
+              "description": "Managed the operations of a large manufacturing plant, ensuring efficient and timely production of electric vehicles.",
+              "link": "tesla.com"
+            },
+            {
+              "name": "Process Improvement",
+              "description": "Implemented process improvements to reduce costs and improve efficiency.",
+              "link": "tesla.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Ford",
+          "location": "Dearborn, MI",
+          "role": "Operations Analyst",
+          "projects": [
+            {
+              "name": "Supply Chain Management",
+              "description": "Managed the supply chain for a specific vehicle model.",
+              "link": "ford.com"
+            },
+            {
+              "name": "Inventory Management",
+              "description": "Improved inventory management processes to reduce waste.",
+              "link": "ford.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Science",
+        "field": "Operations Research",
+        "institution": "Stanford University",
+        "location": "Stanford, CA"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "SAP",
+          "location": "Walldorf, Germany",
+          "role": "Product Manager",
+          "projects": [
+            {
+              "name": "Product Strategy",
+              "description": "Led the product strategy for a new SAP cloud solution, resulting in significant revenue growth.",
+              "link": "sap.com"
+            },
+            {
+              "name": "Product Launch",
+              "description": "Managed a cross-functional team to launch the new product.",
+              "link": "sap.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Siemens",
+          "location": "Munich, Germany",
+          "role": "Associate Product Manager",
+          "projects": [
+            {
+              "name": "Product Roadmap",
+              "description": "Developed and executed the product roadmap for Siemens' industrial automation products.",
+              "link": "siemens.com"
+            },
+            {
+              "name": "Market Research",
+              "description": "Conducted market research and competitive analysis to identify new product opportunities.",
+              "link": "siemens.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Business Administration (MBA)",
+        "field": "Business Administration",
+        "institution": "INSEAD",
+        "location": "Fontainebleau, France"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Grab",
+          "location": "Singapore",
+          "role": "Program Manager",
+          "projects": [
+            {
+              "name": "Ride-Hailing Platform Feature",
+              "description": "Managed the development and launch of a new feature for Grab's ride-hailing platform.",
+              "link": "grab.com"
+            },
+            {
+              "name": "Infrastructure Improvement",
+              "description": "Led a team of engineers to improve the performance and scalability of Grab's infrastructure.",
+              "link": "grab.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        },
+        {
+          "company": "Sea Group",
+          "location": "Singapore",
+          "role": "Project Manager",
+          "projects": [
+            {
+              "name": "E-commerce Application Development",
+              "description": "Managed the development of a new e-commerce application for Shopee.",
+              "link": "seagroup.com"
+            },
+            {
+              "name": "Project Coordination",
+              "description": "Coordinated cross-functional teams to ensure timely delivery of projects.",
+              "link": "seagroup.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2019-07-01",
+            "endDate": "2021-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Science",
+        "field": "Software Engineering",
+        "institution": "National University of Singapore",
+        "location": "Singapore"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "Infosys",
+          "location": "Bangalore, India",
+          "role": "Quality Assurance Tester",
+          "projects": [
+            {
+              "name": "Healthcare Application Testing",
+              "description": "Developed and executed test plans for a healthcare application, ensuring high quality and reliability.",
+              "link": "infosys.com"
+            },
+            {
+              "name": "Test Automation",
+              "description": "Automated testing processes using Selenium and other tools, resulting in a 25% reduction in testing time.",
+              "link": "infosys.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Bachelor of Engineering",
+        "field": "Computer Science",
+        "institution": "University of Mumbai",
+        "location": "Mumbai, India"
+      }
+    },
+    {
+      "pastExperience": [
+        {
+          "company": "American Express",
+          "location": "Phoenix, AZ",
+          "role": "Business Analyst",
+          "projects": [
+            {
+              "name": "Customer Data Analysis",
+              "description": "Analyzed customer data to identify trends and patterns, providing insights to improve customer satisfaction.",
+              "link": "americanexpress.com"
+            },
+            {
+              "name": "Fraud Detection System",
+              "description": "Developed and implemented a new fraud detection system, resulting in a 12% reduction in fraud losses.",
+              "link": "americanexpress.com"
+            }
+          ],
+          "duration": {
+            "startDate": "2021-06-01",
+            "endDate": "2023-05-01"
+          }
+        }
+      ],
+      "education": {
+        "degree": "Master of Science",
+        "field": "Information Systems",
+        "institution": "Arizona State University",
+        "location": "Tempe, AZ"
+      }
+    }
+  ]
+}
