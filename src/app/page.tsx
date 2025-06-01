@@ -60,9 +60,9 @@ export default async function LandingPage() {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <Link href="/dashboard">
-                  <Button>dashboard</Button>
-                </Link>
+                <Button asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </Button>
               </>
             ) : (
               <>
@@ -177,7 +177,8 @@ export default async function LandingPage() {
                       <div className="flex items-start space-x-4">
                         <Avatar className="h-12 w-12">
                           <AvatarImage
-                            src={`https://avatar.vercel.sh/${candidate.name}`}
+                            // src={`https://avatar.vercel.sh/${candidate.name}`}
+                            src="https://thispersondoesnotexist.com/"
                           />
                           <AvatarFallback>
                             {candidate.name
@@ -284,7 +285,8 @@ export default async function LandingPage() {
                       <div className="flex items-start space-x-4">
                         <Avatar className="h-12 w-12">
                           <AvatarImage
-                            src={`https://avatar.vercel.sh/${candidate.name}`}
+                            // src={`https://avatar.vercel.sh/${candidate.name}`}
+                            src="https://thispersondoesnotexist.com/"
                           />
                           <AvatarFallback>
                             {candidate.name
@@ -334,7 +336,7 @@ export default async function LandingPage() {
           <div className="mb-16 text-center">
             <h2 className="mb-4 text-4xl font-bold">Why TalentHunt.dev?</h2>
             <p className="mx-auto max-w-2xl text-xl text-gray-600">
-              We're revolutionizing hiring with AI-powered matching and
+              We&apos;re revolutionizing hiring with AI-powered matching and
               verification
             </p>
           </div>

@@ -3,9 +3,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useTracking } from "@/lib/hooks/use-tracking";
+import { cn } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
+import { useUser } from "@clerk/nextjs";
 import {
   AlertCircle,
   Briefcase,
@@ -19,7 +21,9 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+type TabValue = "candidate" | "recruiter";
 
 export default function Dashboard({
   user,
@@ -28,6 +32,8 @@ export default function Dashboard({
 }) {
   const { trackPageVisited, trackOnboardingStarted, trackTabSwitched } =
     useTracking();
+
+  const { user: clerkUser } = useUser();
 
   const isCandidateOnboarded = !!user?.candidateProfile.onboardingCompletedAt;
   const isRecruiterOnboarded = !!user?.recruiterProfile.onboardingCompletedAt;
@@ -52,138 +58,149 @@ export default function Dashboard({
     isRecruiterOnboarded,
   ]);
 
+  const [tabValue, setTabValue] = useState<TabValue>("candidate");
+
   if (!isCandidateOnboarded && !isRecruiterOnboarded) {
     return (
-      <div className="z-[2] min-h-screen">
-        <div className="mx-auto max-w-4xl px-4 py-16">
-          <Card className="border-0 shadow-xl">
-            <CardContent className="py-16 text-center">
-              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600">
-                <User className="h-10 w-10 text-white" />
-              </div>
-              <h1 className="mb-4 text-3xl font-bold text-gray-900">
-                Welcome to Your Career Hub
-              </h1>
-              <p className="mb-8 text-lg text-gray-600">
-                Choose your journey and unlock opportunities in the world of
-                talent.
-              </p>
+      <div className="mx-auto max-w-4xl px-4 py-16">
+        <Card className="border-0 shadow-xl">
+          <CardContent className="py-16 text-center">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600">
+              <User className="h-10 w-10 text-white" />
+            </div>
+            <h1 className="mb-4 text-3xl font-bold text-gray-900">
+              Welcome to Your Career Hub
+            </h1>
+            <p className="mb-8 text-lg text-gray-600">
+              Choose your journey and unlock opportunities in the world of
+              talent.
+            </p>
 
-              <div className="grid gap-6 md:grid-cols-2">
-                <Card className="group cursor-pointer border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-lg">
-                  <CardContent className="p-8 text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 group-hover:bg-blue-200">
-                      <Target className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <h3 className="mb-2 text-xl font-semibold">
-                      I&apos;m Looking for Opportunities
-                    </h3>
-                    <p className="mb-4 text-gray-600">
-                      Build your profile and get discovered by top recruiters
-                    </p>
-                    <Button
-                      asChild
-                      className="w-full"
-                      onClick={() => trackOnboardingStarted("candidate")}
-                    >
-                      <Link href="/onboarding/candidate">
-                        Get Started as Candidate
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card className="group cursor-pointer border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-lg">
+                <CardContent className="p-8 text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 group-hover:bg-blue-200">
+                    <Target className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h3 className="mb-2 text-xl font-semibold">
+                    I&apos;m Looking for Opportunities
+                  </h3>
+                  <p className="mb-4 text-gray-600">
+                    Build your profile and get discovered by top recruiters
+                  </p>
+                  <Button asChild className="w-full">
+                    <Link href="/onboarding/candidate">
+                      Get Started as Candidate
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
 
-                <Card className="group cursor-pointer border-2 border-transparent transition-all hover:border-purple-500 hover:shadow-lg">
-                  <CardContent className="p-8 text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 group-hover:bg-purple-200">
-                      <Search className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <h3 className="mb-2 text-xl font-semibold">
-                      I&apos;m Hiring Talent
-                    </h3>
-                    <p className="mb-4 text-gray-600">
-                      Find and connect with the perfect candidates
-                    </p>
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="w-full border-purple-500 text-purple-600 hover:bg-purple-500"
-                      onClick={() => trackOnboardingStarted("recruiter")}
-                    >
-                      <Link href="/onboarding/recruiter">
-                        Get Started as Recruiter
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              <Card className="group cursor-pointer border-2 border-transparent transition-all hover:border-purple-500 hover:shadow-lg">
+                <CardContent className="p-8 text-center">
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 group-hover:bg-purple-200">
+                    <Search className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <h3 className="mb-2 text-xl font-semibold">
+                    I&apos;m Hiring Talent
+                  </h3>
+                  <p className="mb-4 text-gray-600">
+                    Find and connect with the perfect candidates
+                  </p>
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full border-purple-500 text-purple-600 hover:bg-purple-500"
+                  >
+                    <Link href="/onboarding/recruiter">
+                      Get Started as Recruiter
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="z-[2] min-h-screen">
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">Dashboard</h1>
-          <div className="flex items-center gap-2">
-            {isCandidateOnboarded && (
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                <Target className="mr-1 h-3 w-3" />
-                Candidate
-              </Badge>
-            )}
-            {isRecruiterOnboarded && (
-              <Badge
-                variant="secondary"
-                className="bg-purple-100 text-purple-700"
-              >
-                <Search className="mr-1 h-3 w-3" />
-                Recruiter
-              </Badge>
-            )}
+    <div className="mx-auto max-w-7xl px-4">
+      {/* Header */}
+      <div className="mb-8">
+        {/* <p className="mb-1 text-lg text-gray-600">
+          Welcome back {clerkUser?.fullName ?? ""}! 👋
+        </p> */}
+
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-2">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+            Welcome back {clerkUser?.fullName ?? ""}! 👋
+          </h1>
+
+          <div className="flex gap-2">
+            <button
+              className={cn(
+                "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                tabValue === "candidate"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+              )}
+              onClick={() => setTabValue("candidate")}
+            >
+              <Target className="h-4 w-4" />
+              Profile Analytics
+            </button>
+            <button
+              className={cn(
+                "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                tabValue === "recruiter"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+              )}
+              onClick={() => setTabValue("recruiter")}
+            >
+              <Search className="h-4 w-4" />
+              Recruiter Analytics
+            </button>
           </div>
         </div>
-
-        {hasBothProfiles ? (
-          <Tabs defaultValue="candidate" className="w-full">
-            <TabsList className="mb-8 grid w-full max-w-md grid-cols-2">
-              <TabsTrigger
-                value="candidate"
-                className="flex items-center gap-2"
-                onClick={() => trackTabSwitched("recruiter", "candidate")}
-              >
-                <Target className="h-4 w-4" />
-                Candidate View
-              </TabsTrigger>
-              <TabsTrigger
-                value="recruiter"
-                className="flex items-center gap-2"
-                onClick={() => trackTabSwitched("candidate", "recruiter")}
-              >
-                <Search className="h-4 w-4" />
-                Recruiter View
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="candidate">
-              <CandidateDashboard user={user} />
-            </TabsContent>
-
-            <TabsContent value="recruiter">
-              <RecruiterDashboard user={user} />
-            </TabsContent>
-          </Tabs>
-        ) : isCandidateOnboarded ? (
-          <CandidateDashboard user={user} />
-        ) : (
-          <RecruiterDashboard user={user} />
-        )}
+        <div className="flex items-center gap-2">
+          {isCandidateOnboarded && (
+            <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+              <Target className="mr-1 h-3 w-3" />
+            </Badge>
+          )}
+          {isRecruiterOnboarded && (
+            <Badge
+              variant="secondary"
+              className="bg-purple-100 text-purple-700"
+            >
+              <Search className="mr-1 h-3 w-3" />
+            </Badge>
+          )}
+        </div>
       </div>
+
+      {hasBothProfiles ? (
+        <Tabs
+          value={tabValue}
+          className="w-full"
+          onValueChange={(value) => setTabValue(value as TabValue)}
+        >
+          <TabsContent value="candidate">
+            <CandidateDashboard user={user} />
+          </TabsContent>
+
+          <TabsContent value="recruiter">
+            <RecruiterDashboard user={user} />
+          </TabsContent>
+        </Tabs>
+      ) : isCandidateOnboarded ? (
+        <CandidateDashboard user={user} />
+      ) : (
+        <RecruiterDashboard user={user} />
+      )}
     </div>
   );
 }

@@ -85,14 +85,17 @@ export function NavUser() {
                   )}
                 </span>
                 <span className="truncate text-xs">
-                  {userEmail ?? (
-                    <span className="inline-block h-3 w-32 animate-pulse rounded bg-neutral-300" />
+                  {creditsStatus && (
+                    <span className="text-muted-foreground">
+                      {creditsStatus.credits} credits
+                    </span>
                   )}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
@@ -157,6 +160,7 @@ export function NavUser() {
             )}
 
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link

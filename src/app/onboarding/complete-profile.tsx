@@ -13,11 +13,7 @@ interface CompleteProfileProps {
   totalSteps: number;
 }
 
-export default function CompleteProfile({
-  onComplete,
-  currentStep,
-  totalSteps,
-}: CompleteProfileProps) {
+export default function CompleteProfile({ onComplete }: CompleteProfileProps) {
   const { trackProfileUpdated, trackButtonClicked, trackOnboardingCompleted } =
     useTracking();
 

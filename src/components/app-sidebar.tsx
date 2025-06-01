@@ -1,7 +1,6 @@
 "use client";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TalentHuntBranding } from "@/components/talent-hunt-branding";
 import {
@@ -9,13 +8,29 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenuButton,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useTracking } from "@/lib/hooks/use-tracking";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { Award, Home, Search } from "lucide-react";
+import {
+  BriefcaseBusinessIcon,
+  Home,
+  LucideSparkles,
+  Search,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import * as React from "react";
+import { RainbowButton } from "./magicui/rainbow-button";
+import { Button } from "./ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   api.user.getOrCreateUser.useQuery();
@@ -26,6 +41,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const data = {
     navMain: [
       {
+        title: "Discover",
+        url: "/discover",
+        icon: Search,
+        isActive: pathname === "/discover",
+      },
+
+      {
         title: "Dashboard",
         url: "/dashboard",
         icon: Home,
@@ -33,10 +55,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
 
       {
-        title: "Discover",
-        url: "/discover",
-        icon: Search,
-        isActive: pathname === "/discover",
+        title: "Jobs",
+        url: "/jobs",
+        icon: BriefcaseBusinessIcon,
+        isActive: pathname === "/jobs",
       },
 
       // {
@@ -104,24 +126,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       //   ],
       // },
     ],
-    projects: [
-      {
-        name: "Frontend Engineers",
-        url: "/discover?category=frontend",
-        icon: Award,
-      },
-      {
-        name: "Backend Engineers",
-        url: "/discover?category=backend",
-        icon: Award,
-      },
-      {
-        name: "Full Stack Engineers",
-        url: "/discover?category=fullstack",
-        icon: Award,
-      },
-    ],
   };
+
+  const { state } = useSidebar();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -129,10 +136,71 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TalentHuntBranding />
       </SidebarHeader>
       <SidebarContent>
+        {/* Discover Button - First Item */}
+        {/* <Link href="/discover" className="w-full">
+            <Button className="bg-primary hover:bg-primary/90 h-10 w-full justify-center gap-2 text-center">
+              <Search className="h-4 w-4" />
+              Discover Talent
+            </Button>
+          </Link> */}
+
+        {/* <Button
+            asChild
+            variant="outline"
+            className="aspect-square h-10 w-10 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
+          >
+            <Link href="/rewards">
+              <Gift className="h-4 w-4" />
+            </Link>
+          </Button> */}
+
+        {/* Quick Action Buttons */}
+        {/* <div className="flex flex-col gap-2 px-3 py-2">
+          <Button
+            variant="outline"
+            className="h-10 w-full justify-start gap-2 text-purple-700 [box-shadow:0_0_4px_rgba(168,85,247,0.3)] hover:text-purple-600"
+            asChild
+          >
+            <Link href="/upgrade">
+              <Crown className="h-4 w-4 fill-purple-600 stroke-none" />
+              Upgrade to Pro
+            </Link>
+          </Button>
+        </div> */}
+
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
+        <TooltipProvider>
+          <Tooltip>
+            <SidebarMenuButton
+              className={cn(
+                state === "expanded" && "hover:text-white active:text-white",
+              )}
+              asChild
+            >
+              <TooltipTrigger asChild>
+                {state === "expanded" ? (
+                  <RainbowButton>
+                    <LucideSparkles className="size-4" />
+                    <span>Upgrade to Pro</span>
+                  </RainbowButton>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    // className="hover:text-white active:text-white"
+                  >
+                    <LucideSparkles className="size-4" />
+                  </Button>
+                )}
+              </TooltipTrigger>
+            </SidebarMenuButton>
+            <TooltipContent>
+              <p>Coming Soon</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

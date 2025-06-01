@@ -5,7 +5,7 @@ import { Eye, Lightbulb, Mail, MousePointer, Star, Video } from "lucide-react";
 
 export default function ProfilePage() {
   return (
-    <div className="container mx-auto space-y-6 p-6">
+    <div className="container mx-auto flex flex-col gap-6">
       {/* Welcome Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">Welcome back, John!</h1>

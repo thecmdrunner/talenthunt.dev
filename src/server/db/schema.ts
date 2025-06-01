@@ -37,6 +37,20 @@ export const SKILL_PROFICIENCY = [
   "advanced",
   "expert",
 ] as const;
+export const JOB_STATUS = [
+  "draft",
+  "active",
+  "paused",
+  "closed",
+  "expired",
+] as const;
+export const APPLICATION_STATUS = [
+  "pending",
+  "reviewed",
+  "interviewed",
+  "rejected",
+  "hired",
+] as const;
 
 const commonId = (name: string) => uuid(name).defaultRandom();
 
@@ -423,6 +437,145 @@ export const featuredCandidates = createTable(
   ],
 );
 
+export const jobs = createTable(
+  "job",
+  (d) => ({
+    id: commonId("id").primaryKey(),
+    recruiterId: commonId("recruiterId").references(() => recruiterProfiles.id),
+
+    // Basic info
+    title: d.varchar({ length: 200 }).notNull(),
+    description: d.text().notNull(),
+    requirements: d.text(),
+    responsibilities: d.text(),
+
+    // Location & Work Type
+    location: d.varchar({ length: 200 }),
+    isRemote: d.boolean().default(false),
+    workType: d
+      .varchar({ length: 20 })
+      .notNull()
+      .$type<(typeof WORK_TYPE)[number]>(),
+    experienceLevel: d
+      .varchar({ length: 20 })
+      .$type<(typeof EXPERIENCE_LEVEL)[number]>(),
+
+    // Compensation
+    salaryMin: d.integer(),
+    salaryMax: d.integer(),
+    salaryCurrency: d.varchar({ length: 3 }).default("USD"),
+    equity: d.varchar({ length: 100 }), // e.g., "0.1% - 0.5%"
+    benefits: d.text().array().default([]),
+
+    // Skills & Requirements
+    requiredSkills: d.text().array().default([]),
+    niceToHaveSkills: d.text().array().default([]),
+    yearsOfExperience: d.integer(),
+
+    // Application settings
+    applicationDeadline: d.timestamp({ withTimezone: true }),
+    maxApplications: d.integer(),
+    autoReject: d.boolean().default(false),
+
+    // Status & Metrics
+    status: d
+      .varchar({ length: 20 })
+      .default("draft")
+      .$type<(typeof JOB_STATUS)[number]>(),
+    applicationCount: d.integer().default(0),
+    viewCount: d.integer().default(0),
+
+    // Company info (for job posting)
+    companyName: d.varchar({ length: 200 }),
+    companyLogo: d.varchar({ length: 500 }),
+    companyDescription: d.text(),
+
+    // SEO & Discovery
+    slug: d.varchar({ length: 300 }),
+    isUrgent: d.boolean().default(false),
+    isFeatured: d.boolean().default(false),
+
+    publishedAt: d.timestamp({ withTimezone: true }),
+    expiresAt: d.timestamp({ withTimezone: true }),
+
+    createdAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updatedAt: d
+      .timestamp({ withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("job_recruiter_id_idx").on(t.recruiterId),
+    index("job_status_idx").on(t.status),
+    index("job_location_idx").on(t.location),
+    index("job_work_type_idx").on(t.workType),
+    index("job_experience_level_idx").on(t.experienceLevel),
+    index("job_published_at_idx").on(t.publishedAt),
+    index("job_expires_at_idx").on(t.expiresAt),
+    index("job_featured_idx").on(t.isFeatured),
+    index("job_slug_idx").on(t.slug),
+  ],
+);
+
+export type JobSelect = typeof jobs.$inferSelect;
+export type JobInsert = typeof jobs.$inferInsert;
+
+export const jobApplications = createTable(
+  "job_application",
+  (d) => ({
+    id: commonId("id").primaryKey(),
+    jobId: commonId("jobId").references(() => jobs.id),
+    candidateId: commonId("candidateId").references(() => candidateProfiles.id),
+
+    // Application details
+    coverLetter: d.text(),
+    customResumeUrl: d.varchar({ length: 500 }), // Optional custom resume for this application
+
+    // Status & Timeline
+    status: d
+      .varchar({ length: 20 })
+      .default("pending")
+      .$type<(typeof APPLICATION_STATUS)[number]>(),
+
+    // Recruiter actions
+    recruiterNotes: d.text(),
+    rating: d.integer(), // 1-5 rating by recruiter
+
+    // Interview scheduling
+    interviewScheduledAt: d.timestamp({ withTimezone: true }),
+    interviewNotes: d.text(),
+
+    // Communication
+    lastContactAt: d.timestamp({ withTimezone: true }),
+    nextFollowUpAt: d.timestamp({ withTimezone: true }),
+
+    // Timestamps
+    appliedAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    reviewedAt: d.timestamp({ withTimezone: true }),
+    rejectedAt: d.timestamp({ withTimezone: true }),
+    hiredAt: d.timestamp({ withTimezone: true }),
+
+    createdAt: d.timestamp({ withTimezone: true }).defaultNow().notNull(),
+    updatedAt: d
+      .timestamp({ withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("job_application_job_id_idx").on(t.jobId),
+    index("job_application_candidate_id_idx").on(t.candidateId),
+    index("job_application_status_idx").on(t.status),
+    index("job_application_applied_at_idx").on(t.appliedAt),
+    // Unique constraint to prevent duplicate applications
+    index("job_application_unique_idx").on(t.jobId, t.candidateId),
+  ],
+);
+
+export type JobApplicationSelect = typeof jobApplications.$inferSelect;
+export type JobApplicationInsert = typeof jobApplications.$inferInsert;
+
 // Relations
 export const userProfilesRelations = relations(users, ({ one }) => ({
   candidateProfile: one(candidateProfiles, {
@@ -449,6 +602,7 @@ export const candidateProfilesRelations = relations(
     verificationQuestions: many(verificationQuestions),
     outreach: many(candidateOutreach),
     featured: many(featuredCandidates),
+    jobApplications: many(jobApplications),
   }),
 );
 
@@ -461,6 +615,7 @@ export const recruiterProfilesRelations = relations(
     }),
     searchQueries: many(searchQueries),
     outreach: many(candidateOutreach),
+    jobs: many(jobs),
   }),
 );
 
@@ -536,6 +691,28 @@ export const featuredCandidatesRelations = relations(
   ({ one }) => ({
     candidate: one(candidateProfiles, {
       fields: [featuredCandidates.candidateId],
+      references: [candidateProfiles.id],
+    }),
+  }),
+);
+
+export const jobsRelations = relations(jobs, ({ one, many }) => ({
+  recruiter: one(recruiterProfiles, {
+    fields: [jobs.recruiterId],
+    references: [recruiterProfiles.id],
+  }),
+  applications: many(jobApplications),
+}));
+
+export const jobApplicationsRelations = relations(
+  jobApplications,
+  ({ one }) => ({
+    job: one(jobs, {
+      fields: [jobApplications.jobId],
+      references: [jobs.id],
+    }),
+    candidate: one(candidateProfiles, {
+      fields: [jobApplications.candidateId],
       references: [candidateProfiles.id],
     }),
   }),

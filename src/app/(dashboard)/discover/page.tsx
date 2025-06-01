@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -632,10 +633,20 @@ export default function DiscoverPage() {
                   <CardContent className="p-6">
                     <div className="space-y-4">
                       {/* Avatar */}
-                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-xl font-semibold text-white">
-                        {candidate.firstName?.[0] ?? "?"}
-                        {candidate.lastName?.[0] ?? ""}
-                      </div>
+                      <Avatar className="mx-auto h-16 w-16">
+                        {/* <AvatarImage
+                          src={`https://thispersondoesnotexist.com/?w=${candidate.firstName}-${candidate.lastName}-${Math.random()}`}
+                          alt={`${candidate.firstName} ${candidate.lastName}`}
+                        /> */}
+                        <AvatarFallback className="flex items-center justify-center rounded-full bg-gray-100">
+                          <div className="flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-50">
+                            <span className="text-xl font-semibold text-blue-600">
+                              {candidate.firstName?.[0] ?? "?"}
+                              {candidate.lastName?.[0] ?? ""}
+                            </span>
+                          </div>
+                        </AvatarFallback>
+                      </Avatar>
 
                       {/* Name and title */}
                       <div className="space-y-2 text-center">

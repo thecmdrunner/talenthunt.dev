@@ -1,6 +1,5 @@
 "use client";
 
-import { useTracking } from "@/lib/hooks/use-tracking";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
@@ -17,6 +16,10 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export function NavMain({
   items,
@@ -32,15 +35,13 @@ export function NavMain({
     }[];
   }[];
 }) {
-  const { trackButtonClicked, trackPageVisited } = useTracking();
+  const router = useRouter();
 
-  const handleItemClick = (title: string, url: string) => {
-    trackButtonClicked(
-      `nav_${title.toLowerCase().replace(/\s+/g, "_")}`,
-      "sidebar",
-    );
-    trackPageVisited(title.toLowerCase().replace(/\s+/g, "_"), "navigation");
-  };
+  useEffect(() => {
+    items.forEach((item) => {
+      router.prefetch(item.url);
+    });
+  }, [router, items]);
 
   return (
     <SidebarGroup>
@@ -57,13 +58,26 @@ export function NavMain({
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   tooltip={item.title}
-                  onClick={() => handleItemClick(item.title, item.url)}
-                >
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  {item.items && (
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  asChild
+                  data-active={item.isActive}
+                  className={cn(
+                    item.isActive &&
+                      "text-foreground border border-slate-300 bg-white",
                   )}
+                >
+                  <Link prefetch href={item.url}>
+                    {item.icon && (
+                      <item.icon
+                        className={
+                          item.isActive ? "text-accent-foreground" : ""
+                        }
+                      />
+                    )}
+                    <span>{item.title}</span>
+                    {item.items && (
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    )}
+                  </Link>
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>

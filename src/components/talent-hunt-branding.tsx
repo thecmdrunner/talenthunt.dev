@@ -7,21 +7,19 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 export function TalentHuntBranding() {
-  const { isMobile } = useSidebar();
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <Link href="/">
+        <Link href="/dashboard" prefetch>
           <SidebarMenuButton
             size="lg"
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
+            className="flex flex-row items-center gap-2 bg-transparent"
           >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-lg">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-white">
               <Target className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -33,6 +31,8 @@ export function TalentHuntBranding() {
                 Find. Connect. Hire.
               </span>
             </div>
+
+            <SidebarTrigger />
           </SidebarMenuButton>
         </Link>
       </SidebarMenuItem>

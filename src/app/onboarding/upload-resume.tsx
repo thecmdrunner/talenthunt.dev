@@ -9,7 +9,7 @@ import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
 interface UploadResumeProps {
-  onComplete: () => void;
+  onComplete: (resumeUrl: string) => void;
   currentStep: number;
   totalSteps: number;
 }
@@ -30,8 +30,6 @@ export default function UploadResume({
   const [uploadedFileName, setUploadedFileName] = useState<string>("");
   const [resumeUrl, setResumeUrl] = useState<string>("");
   const [isContinuing, setIsContinuing] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [parsedData, setParsedData] = useState<any>(null);
 
   const supabase = supabaseBrowserClient();
 
@@ -104,6 +102,7 @@ export default function UploadResume({
         // Track resume upload
         trackResumeUploaded(file.size, file.type);
         trackFeatureUsed("resume_upload", "onboarding");
+        onComplete(returnedResumeUrl);
       } catch (error) {
         console.error(error);
         toast.dismiss(toastId);
@@ -140,14 +139,9 @@ export default function UploadResume({
 
   const isLoading = isGettingUrl;
 
-  const handleSkip = () => {
-    trackButtonClicked("skip_resume_upload", "onboarding");
-    onComplete();
-  };
-
   const handleContinue = () => {
     trackButtonClicked("continue_after_resume_upload", "onboarding");
-    onComplete();
+    onComplete(resumeUrl);
   };
 
   return (
@@ -236,7 +230,7 @@ export default function UploadResume({
             onClick={async () => {
               setIsContinuing(true);
               try {
-                await handleContinue();
+                void handleContinue();
               } finally {
                 setIsContinuing(false);
               }
