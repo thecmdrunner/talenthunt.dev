@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export function NavMain({
   items,
@@ -33,6 +35,14 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    items.forEach((item) => {
+      router.prefetch(item.url);
+    });
+  }, [router, items]);
+
   return (
     <SidebarGroup>
       {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
@@ -55,7 +65,7 @@ export function NavMain({
                       "text-foreground border border-slate-300 bg-white",
                   )}
                 >
-                  <Link href={item.url}>
+                  <Link prefetch href={item.url}>
                     {item.icon && (
                       <item.icon
                         className={

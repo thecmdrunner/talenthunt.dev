@@ -3,8 +3,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
+import { useUser } from "@clerk/nextjs";
 import {
   AlertCircle,
   Briefcase,
@@ -18,15 +20,22 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+
+type TabValue = "candidate" | "recruiter";
 
 export default function Dashboard({
   user,
 }: {
   user: RouterOutputs["user"]["getOrCreateUser"];
 }) {
+  const { user: clerkUser } = useUser();
+
   const isCandidateOnboarded = !!user?.candidateProfile.onboardingCompletedAt;
   const isRecruiterOnboarded = !!user?.recruiterProfile.onboardingCompletedAt;
   const hasBothProfiles = isCandidateOnboarded && isRecruiterOnboarded;
+
+  const [tabValue, setTabValue] = useState<TabValue>("candidate");
 
   if (!isCandidateOnboarded && !isRecruiterOnboarded) {
     return (
@@ -97,12 +106,46 @@ export default function Dashboard({
     <div className="mx-auto max-w-7xl px-4">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold text-gray-900">Dashboard</h1>
+        {/* <p className="mb-1 text-lg text-gray-600">
+          Welcome back {clerkUser?.fullName ?? ""}! 👋
+        </p> */}
+
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-2">
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+            Welcome back {clerkUser?.fullName ?? ""}! 👋
+          </h1>
+
+          <div className="flex gap-2">
+            <button
+              className={cn(
+                "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                tabValue === "candidate"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+              )}
+              onClick={() => setTabValue("candidate")}
+            >
+              <Target className="h-4 w-4" />
+              Profile Analytics
+            </button>
+            <button
+              className={cn(
+                "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                tabValue === "recruiter"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+              )}
+              onClick={() => setTabValue("recruiter")}
+            >
+              <Search className="h-4 w-4" />
+              Recruiter Analytics
+            </button>
+          </div>
+        </div>
         <div className="flex items-center gap-2">
           {isCandidateOnboarded && (
             <Badge variant="secondary" className="bg-blue-100 text-blue-700">
               <Target className="mr-1 h-3 w-3" />
-              Candidate
             </Badge>
           )}
           {isRecruiterOnboarded && (
@@ -111,25 +154,13 @@ export default function Dashboard({
               className="bg-purple-100 text-purple-700"
             >
               <Search className="mr-1 h-3 w-3" />
-              Recruiter
             </Badge>
           )}
         </div>
       </div>
 
       {hasBothProfiles ? (
-        <Tabs defaultValue="candidate" className="w-full">
-          <TabsList className="mb-8 grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="candidate" className="flex items-center gap-2">
-              <Target className="h-4 w-4" />
-              Candidate View
-            </TabsTrigger>
-            <TabsTrigger value="recruiter" className="flex items-center gap-2">
-              <Search className="h-4 w-4" />
-              Recruiter View
-            </TabsTrigger>
-          </TabsList>
-
+        <Tabs value={tabValue} className="w-full" onValueChange={setTabValue}>
           <TabsContent value="candidate">
             <CandidateDashboard user={user} />
           </TabsContent>

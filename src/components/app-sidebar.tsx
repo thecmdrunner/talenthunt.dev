@@ -10,8 +10,9 @@ import {
   SidebarHeader,
   SidebarMenuButton,
   SidebarRail,
-  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import {
   BriefcaseBusinessIcon,
@@ -22,6 +23,7 @@ import {
 import { usePathname } from "next/navigation";
 import * as React from "react";
 import { RainbowButton } from "./magicui/rainbow-button";
+import { Button } from "./ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -124,12 +126,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
   };
 
+  const { state } = useSidebar();
+
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="flex items-center justify-between">
+      <SidebarHeader>
         <TalentHuntBranding />
-
-        <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
         {/* Discover Button - First Item */}
@@ -170,14 +172,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <RainbowButton asChild>
-                <SidebarMenuButton className="hover:text-white active:text-white">
-                  <LucideSparkles className="size-4" />
-                  <span>Upgrade to Pro</span>
-                </SidebarMenuButton>
-              </RainbowButton>
-            </TooltipTrigger>
+            <SidebarMenuButton
+              className={cn(
+                state === "expanded" && "hover:text-white active:text-white",
+              )}
+              asChild
+            >
+              <TooltipTrigger asChild>
+                {state === "expanded" ? (
+                  <RainbowButton>
+                    <LucideSparkles className="size-4" />
+                    <span>Upgrade to Pro</span>
+                  </RainbowButton>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    // className="hover:text-white active:text-white"
+                  >
+                    <LucideSparkles className="size-4" />
+                  </Button>
+                )}
+              </TooltipTrigger>
+            </SidebarMenuButton>
             <TooltipContent>
               <p>Coming Soon</p>
             </TooltipContent>

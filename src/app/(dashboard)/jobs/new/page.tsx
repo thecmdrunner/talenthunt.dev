@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -24,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Search, Sparkles, X } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
@@ -213,7 +212,7 @@ export default function NewJobPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="relative container mx-auto flex flex-col-reverse gap-x-3 gap-y-6 lg:flex-row">
+      <div className="relative container mx-auto flex flex-col-reverse gap-x-3 gap-y-6 pb-40 lg:flex-row">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -761,23 +760,67 @@ export default function NewJobPage() {
         </Form>
 
         {/* AI Tip */}
-
         <div className="sticky top-0 z-10">
-          <Card className="h-max border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 py-0">
-            <CardContent className="p-4">
-              <div className="flex flex-col items-start">
-                <h4 className="mb-1 flex items-center gap-3 font-medium text-blue-900">
-                  <Sparkles className="h-4 w-4 text-blue-600" />
-                  AI Tip
-                </h4>
-                <p className="text-sm text-blue-800">
-                  Be specific about your requirements.
-                  <br /> Include both technical skills and soft skills you
-                  value.
-                </p>
+          <div className="rounded-xl bg-gradient-to-br from-gray-50 to-slate-50 p-6">
+            <div className="mb-6 flex items-center gap-3">
+              {/* <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-white">
+                <Sparkles className="h-5 w-5" />
+              </div> */}
+              <h3 className="text-lg font-semibold text-gray-900">
+                Tips for Better Job Posts
+              </h3>
+            </div>
+
+            <div className="relative">
+              {/* Vertical line connector */}
+              <div className="absolute top-0 bottom-0 left-4 w-0.5 bg-gray-200" />
+
+              {/* Roadmap items */}
+              <div className="space-y-6">
+                {[
+                  {
+                    number: "01",
+                    title: "Technical Requirements",
+                    description: "State the technical experience required",
+                  },
+                  {
+                    number: "02",
+                    title: "Soft Skills",
+                    description: "Include soft skills",
+                  },
+                  {
+                    number: "03",
+                    title: "Experience Level",
+                    description:
+                      "Prefer experience level over years of experience",
+                  },
+                  {
+                    number: "04",
+                    title: "Daily Responsibilities",
+                    description:
+                      "List key responsibilities and day-to-day tasks",
+                  },
+                ].map((item, index) => (
+                  <div key={index} className="relative flex items-start gap-4">
+                    {/* Number circle */}
+                    <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-700 text-xs font-bold text-white">
+                      {item.number}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 pb-2">
+                      <h4 className="mb-1 font-medium text-gray-900">
+                        {item.title}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
