@@ -57,13 +57,13 @@ export default function Shell(props: PropsWithChildren) {
       </header>
 
       {/* Decorative background elements */}
-      <div className="absolute inset-0 z-[1] overflow-hidden">
-        <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-r from-purple-400/20 to-pink-400/20 blur-3xl" />
-        <div className="absolute top-20 right-20 h-32 w-32 rounded-full bg-gradient-to-r from-cyan-400/20 to-blue-400/20 blur-2xl" />
-        <div className="absolute bottom-20 left-1/4 h-24 w-24 rounded-full bg-gradient-to-r from-violet-400/20 to-purple-400/20 blur-2xl" />
-        <div className="absolute top-1/3 right-1/3 h-16 w-16 rounded-full bg-gradient-to-r from-pink-400/20 to-rose-400/20 blur-xl" />
-        <div className="absolute right-10 bottom-40 h-28 w-28 rounded-full bg-gradient-to-r from-indigo-400/20 to-cyan-400/20 blur-2xl" />
-      </div>
+      {/* <div className="absolute inset-0 z-[1] overflow-hidden"> */}
+      <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-r from-purple-400/20 to-pink-400/20 blur-3xl" />
+      <div className="absolute top-20 right-20 h-32 w-32 rounded-full bg-gradient-to-r from-cyan-400/20 to-blue-400/20 blur-2xl" />
+      <div className="absolute bottom-20 left-1/4 h-24 w-24 rounded-full bg-gradient-to-r from-violet-400/20 to-purple-400/20 blur-2xl" />
+      <div className="absolute top-1/3 right-1/3 h-16 w-16 rounded-full bg-gradient-to-r from-pink-400/20 to-rose-400/20 blur-xl" />
+      <div className="absolute right-10 bottom-40 h-28 w-28 rounded-full bg-gradient-to-r from-indigo-400/20 to-cyan-400/20 blur-2xl" />
+      {/* </div> */}
       {/* <div className="flex flex-1 flex-col gap-4 p-4 pt-0"> */}
       {props.children}
       {/* </div> */}

@@ -552,6 +552,7 @@ ${extractedText}`,
             // Social links from user table
             githubUsername: z.string().nullable(),
             linkedinEmail: z.string().nullable(),
+            resumeUrl: z.string().nullable(),
             linkedinUrl: z.string().nullable(),
             // Social links from parsed resume data
             parsedGithubUrl: z.string().nullable(),
@@ -633,6 +634,7 @@ ${extractedText}`,
           expectedSalaryMax: true,
           salaryCurrency: true,
           isRemoteOpen: true,
+          resumeUrl: true,
           workTypes: true,
           parsedResumeData: true, // Include parsed resume data for skills and social links
         },
@@ -760,9 +762,9 @@ ${extractedText}`,
 
           // Check similar roles if no direct match found
           if (!roleMatchFound && newJob.similarRoles) {
-            const titleWords = candidate.title?.toLowerCase().split(" ") || [];
+            const titleWords = candidate.title?.toLowerCase().split(" ") ?? [];
             const parsedRoleWords =
-              candidate.parsedResumeData?.role?.toLowerCase().split(" ") || [];
+              candidate.parsedResumeData?.role?.toLowerCase().split(" ") ?? [];
             const allRoleWords = [...titleWords, ...parsedRoleWords];
 
             const similarRoleMatch = newJob.similarRoles.some((similarRole) =>
@@ -872,6 +874,7 @@ ${extractedText}`,
           isOpenToWork: candidate.isOpenToWork,
           expectedSalaryMin: candidate.expectedSalaryMin,
           expectedSalaryMax: candidate.expectedSalaryMax,
+          resumeUrl: candidate.resumeUrl,
           salaryCurrency: candidate.salaryCurrency,
           isRemoteOpen: candidate.isRemoteOpen,
           workTypes: candidate.workTypes,

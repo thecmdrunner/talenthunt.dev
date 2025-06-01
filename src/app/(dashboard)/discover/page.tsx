@@ -161,6 +161,7 @@ export default function DiscoverPage() {
 
   const handleCandidateView = (candidate: (typeof candidates)[0]) => {
     setSelectedCandidate(candidate);
+
     trackCandidateViewed(candidate.id, candidate.matchScore);
   };
 
@@ -1023,19 +1024,43 @@ export default function DiscoverPage() {
                 )}
 
                 {/* Contact Actions */}
-                {/* <div className="space-y-3">
+                <div className="space-y-3">
                   <h3 className="text-lg font-semibold">Actions</h3>
-                  <div className="flex gap-2">
-                    <Button className="flex-1">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      className="flex-1"
+                      onClick={() => handleContactView(selectedCandidate.id)}
+                    >
                       <Mail className="mr-2 h-4 w-4" />
                       Contact
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => {
+                        trackButtonClicked("view_resume", "candidate_detail");
+                        // Open resume in new tab
+                        if (
+                          "resumeUrl" in selectedCandidate &&
+                          selectedCandidate.resumeUrl &&
+                          typeof selectedCandidate.resumeUrl === "string"
+                        ) {
+                          window.open(
+                            selectedCandidate.resumeUrl,
+                            "_blank",
+                            "noopener,noreferrer",
+                          );
+                        } else {
+                          // Fallback - could show a toast or alert
+                          alert("Resume not available for this candidate");
+                        }
+                      }}
+                    >
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      View Profile
+                      View Resume
                     </Button>
                   </div>
-                </div> */}
+                </div>
               </div>
             </>
           )}
