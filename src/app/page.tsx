@@ -248,14 +248,13 @@ export default function LandingPage() {
                 {activeView === "hire" ? "talent" : "opportunity"}
               </span>
               <svg
-                className="absolute right-0 -bottom-5 w-full overflow-visible"
-                viewBox="0 0 100 10"
+                className="absolute left-0 -bottom-4 w-full overflow-visible"
+                viewBox="0 0 100 8"
                 preserveAspectRatio="none"
               >
                 <path
-                  d="M0,2 Q50,8 100,2"
-                  transform="scale(1, -1)"
-                  className="fill-none stroke-blue-300 stroke-[3]"
+                  d="M0,6 Q50,2 100,6"
+                  className="fill-none stroke-blue-300 stroke-[2]"
                   strokeLinecap="round"
                 />
               </svg>
