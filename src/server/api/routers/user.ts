@@ -137,8 +137,8 @@ export const userRouter = createTRPCRouter({
       currentStep: nextStep,
     };
 
-    // If completing the final step, mark onboarding as complete
-    if (nextStep >= 3) {
+    // If completing the final step (step 2), mark onboarding as complete
+    if (nextStep >= 2) {
       updateData.onboardingCompletedAt = new Date();
     }
 
@@ -153,14 +153,14 @@ export const userRouter = createTRPCRouter({
   updateRecruiterProfile: protectedProcedure
     .input(
       z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        title: z.string().optional(),
-        phoneNumber: z.string().optional(),
-        companyName: z.string().optional(),
-        companyUrl: z.string().optional(),
-        companySize: z.string().optional(),
-        industry: z.string().optional(),
+        firstName: z.string().trim().optional(),
+        lastName: z.string().trim().optional(),
+        title: z.string().trim().optional(),
+        phoneNumber: z.string().trim().optional(),
+        companyName: z.string().trim().optional(),
+        companyUrl: z.string().trim().optional(),
+        companySize: z.string().trim().optional(),
+        industry: z.string().trim().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -202,7 +202,7 @@ export const userRouter = createTRPCRouter({
       await ctx.db
         .update(recruiterProfiles)
         .set({
-          currentStep: 3,
+          currentStep: 2,
           onboardingCompletedAt: new Date(),
         })
         .where(eq(recruiterProfiles.userId, userId));

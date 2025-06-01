@@ -59,10 +59,10 @@ export default function HiringPreferences({
           Hiring Preferences
         </h2>
         <p className="text-gray-600">
-          Help us understand what type of candidates you're looking for to
+          Help us understand what type of candidates you&apos;re looking for to
           improve your search experience.
         </p>
-        <div className="text-sm text-gray-500">Step 3 of 3</div>
+        <div className="text-sm text-gray-500">Step 2 of 2</div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -98,7 +98,7 @@ export default function HiringPreferences({
 
         <div className="space-y-2">
           <Label htmlFor="additionalNotes">
-            Anything else you'd like us to know? (optional)
+            Anything else you&apos;d like us to know? (optional)
           </Label>
           <Textarea
             id="additionalNotes"

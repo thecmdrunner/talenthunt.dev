@@ -13,129 +13,116 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { api } from "@/trpc/react";
-import {
-  Award,
-  LucideSparkles,
-  MessageSquare,
-  Search,
-  Settings2,
-  Users,
-} from "lucide-react";
+import { Award, Home, LucideSparkles, Search } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 import { RainbowButton } from "./magicui/rainbow-button";
 
-// Updated data for TalentHunt platform
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Candidates",
-      url: "#",
-      icon: Users,
-      isActive: false,
-      items: [
-        {
-          title: "All Candidates",
-          url: "/discover",
-        },
-        {
-          title: "Featured",
-          url: "/discover/featured",
-        },
-        {
-          title: "Saved",
-          url: "/discover/saved",
-        },
-      ],
-    },
-    {
-      title: "My Searches",
-      url: "#",
-      icon: Search,
-      items: [
-        {
-          title: "Recent Searches",
-          url: "/searches",
-        },
-        {
-          title: "Saved Searches",
-          url: "/searches/saved",
-        },
-        {
-          title: "Search Analytics",
-          url: "/searches/analytics",
-        },
-      ],
-    },
-    {
-      title: "Outreach",
-      url: "#",
-      icon: MessageSquare,
-      items: [
-        {
-          title: "Sent Messages",
-          url: "/outreach",
-        },
-        {
-          title: "Templates",
-          url: "/outreach/templates",
-        },
-        {
-          title: "Analytics",
-          url: "/outreach/analytics",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Profile",
-          url: "/settings/profile",
-        },
-        {
-          title: "Company",
-          url: "/settings/company",
-        },
-        {
-          title: "Billing",
-          url: "/settings/billing",
-        },
-        {
-          title: "Preferences",
-          url: "/settings/preferences",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Frontend Engineers",
-      url: "/discover?category=frontend",
-      icon: Award,
-    },
-    {
-      name: "Backend Engineers",
-      url: "/discover?category=backend",
-      icon: Award,
-    },
-    {
-      name: "Full Stack Engineers",
-      url: "/discover?category=fullstack",
-      icon: Award,
-    },
-  ],
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   api.user.getOrCreateUser.useQuery();
+
+  const pathname = usePathname();
+
+  const data = {
+    navMain: [
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: Home,
+        isActive: pathname === "/dashboard",
+      },
+
+      {
+        title: "Discover",
+        url: "/discover",
+        icon: Search,
+        isActive: pathname === "/discover",
+      },
+
+      // {
+      //   title: "My Searches",
+      //   url: "#",
+      //   icon: Search,
+      //   isActive: pathname === "/searches",
+      //   items: [
+      //     {
+      //       title: "Recent Searches",
+      //       url: "/searches",
+      //     },
+      //     {
+      //       title: "Saved Searches",
+      //       url: "/searches/saved",
+      //     },
+      //     {
+      //       title: "Search Analytics",
+      //       url: "/searches/analytics",
+      //     },
+      //   ],
+      // },
+
+      // {
+      //   title: "Outreach",
+      //   url: "#",
+      //   icon: MessageSquare,
+      //   isActive: pathname === "/outreach",
+      //   items: [
+      //     {
+      //       title: "Sent Messages",
+      //       url: "/outreach",
+      //     },
+      //     {
+      //       title: "Templates",
+      //       url: "/outreach/templates",
+      //     },
+      //     {
+      //       title: "Analytics",
+      //       url: "/outreach/analytics",
+      //     },
+      //   ],
+      // },
+      // {
+      //   title: "Settings",
+      //   url: "#",
+      //   icon: Settings2,
+      //   items: [
+      //     {
+      //       title: "Profile",
+      //       url: "/settings/profile",
+      //     },
+      //     {
+      //       title: "Company",
+      //       url: "/settings/company",
+      //     },
+      //     {
+      //       title: "Billing",
+      //       url: "/settings/billing",
+      //     },
+      //     {
+      //       title: "Preferences",
+      //       url: "/settings/preferences",
+      //     },
+      //   ],
+      // },
+    ],
+    projects: [
+      {
+        name: "Frontend Engineers",
+        url: "/discover?category=frontend",
+        icon: Award,
+      },
+      {
+        name: "Backend Engineers",
+        url: "/discover?category=backend",
+        icon: Award,
+      },
+      {
+        name: "Full Stack Engineers",
+        url: "/discover?category=fullstack",
+        icon: Award,
+      },
+    ],
+  };
 
   return (
     <Sidebar collapsible="icon" {...props}>

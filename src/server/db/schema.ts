@@ -182,6 +182,9 @@ export const recruiterProfiles = createTable(
   ],
 );
 
+export type RecruiterProfileSelect = typeof recruiterProfiles.$inferSelect;
+export type RecruiterProfileInsert = typeof recruiterProfiles.$inferInsert;
+
 export const projects = createTable(
   "project",
   (d) => ({

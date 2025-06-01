@@ -7,8 +7,7 @@ import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
-import BasicInfo from "./basic-info";
-import CompanyDetails from "./company-details";
+import BasicCompanyInfo from "./basic-company-info";
 import HiringPreferences from "./hiring-preferences";
 
 export default function RecruiterOnboardingPage() {
@@ -20,14 +19,14 @@ export default function RecruiterOnboardingPage() {
     if (!isLoading && user) {
       if (!user.recruiterProfile) {
         router.push("/onboarding");
-      } else if (user.recruiterProfile.currentStep >= 3) {
+      } else if (user.recruiterProfile.currentStep >= 2) {
         router.push("/dashboard");
       }
     }
   }, [user, isLoading, router]);
 
   const currentStep = (user?.recruiterProfile?.currentStep ?? 0) + 1;
-  const steps = ["Basic Information", "Company Details", "Hiring Preferences"];
+  const steps = ["Basic & Company Information", "Hiring Preferences"];
 
   const nextRecruiterStepMutation = api.user.nextRecruiterStep.useMutation({
     onSuccess: () => {
@@ -40,25 +39,19 @@ export default function RecruiterOnboardingPage() {
   });
 
   const handleContinueToStep2 = useCallback(() => {
-    nextRecruiterStepMutation.mutate({});
-  }, [nextRecruiterStepMutation]);
-
-  const handleContinueToStep3 = useCallback(() => {
-    nextRecruiterStepMutation.mutate({});
-  }, [nextRecruiterStepMutation]);
+    nextRecruiterStepMutation.mutate();
+  }, []);
 
   const handleComplete = useCallback(() => {
-    nextRecruiterStepMutation.mutate({});
+    nextRecruiterStepMutation.mutate();
     router.push("/dashboard");
   }, [nextRecruiterStepMutation, router]);
 
   const renderStepContent = useCallback(() => {
     switch (currentStep) {
       case 1:
-        return <BasicInfo onContinue={handleContinueToStep2} />;
+        return <BasicCompanyInfo onContinue={handleContinueToStep2} />;
       case 2:
-        return <CompanyDetails onContinue={handleContinueToStep3} />;
-      case 3:
         return <HiringPreferences onComplete={handleComplete} />;
       default:
         return (
@@ -80,13 +73,13 @@ export default function RecruiterOnboardingPage() {
           </div>
         );
     }
-  }, [
-    currentStep,
-    handleContinueToStep2,
-    handleContinueToStep3,
-    handleComplete,
-    router,
-  ]);
+  }, [currentStep, router]);
+
+  useEffect(() => {
+    if (user?.recruiterProfile.onboardingCompletedAt) {
+      router.push("/dashboard");
+    }
+  }, [user?.recruiterProfile.onboardingCompletedAt]);
 
   if (isLoading) {
     return (
