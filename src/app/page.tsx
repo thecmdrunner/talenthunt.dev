@@ -177,7 +177,8 @@ export default async function LandingPage() {
                       <div className="flex items-start space-x-4">
                         <Avatar className="h-12 w-12">
                           <AvatarImage
-                            src={`https://avatar.vercel.sh/${candidate.name}`}
+                            // src={`https://avatar.vercel.sh/${candidate.name}`}
+                            src="https://thispersondoesnotexist.com/"
                           />
                           <AvatarFallback>
                             {candidate.name
@@ -284,7 +285,8 @@ export default async function LandingPage() {
                       <div className="flex items-start space-x-4">
                         <Avatar className="h-12 w-12">
                           <AvatarImage
-                            src={`https://avatar.vercel.sh/${candidate.name}`}
+                            // src={`https://avatar.vercel.sh/${candidate.name}`}
+                            src="https://thispersondoesnotexist.com/"
                           />
                           <AvatarFallback>
                             {candidate.name

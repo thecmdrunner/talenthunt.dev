@@ -134,6 +134,7 @@ const commonBenefits = [
 export default function NewJobPage() {
   const router = useRouter();
   const [skillInput, setSkillInput] = useState("");
+  const [niceToHaveInput, setNiceToHaveInput] = useState("");
   const [benefitInput, setBenefitInput] = useState("");
 
   const form = useForm<JobFormValues>({
@@ -177,7 +178,11 @@ export default function NewJobPage() {
         skill,
       ]);
     }
-    setSkillInput("");
+    if (type === "required") {
+      setSkillInput("");
+    } else {
+      setNiceToHaveInput("");
+    }
   };
 
   const removeSkill = (skill: string, type: "required" | "niceToHave") => {
@@ -212,135 +217,37 @@ export default function NewJobPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="relative container mx-auto flex flex-col-reverse gap-x-3 gap-y-6 pb-40 lg:flex-row">
+      <div className="relative flex w-full max-w-7xl flex-col-reverse justify-between gap-x-3 gap-y-6 pb-40 lg:flex-row">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="max-w-2xl space-y-6"
+            className="max-w-3xl space-y-8"
           >
-            {/* Basic Information */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">Job Title</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Senior Frontend Developer"
-                        {...field}
-                        className="border-slate-200 bg-white"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Section 1: Basic Job Information */}
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Basic Job Information
+                </h2>
+                <p className="text-sm text-slate-600">
+                  Define the core details of the position
+                </p>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">Location</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., San Francisco, CA or Remote"
-                        {...field}
-                        className="border-slate-200 bg-white"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="experienceLevel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">
-                      Experience Level
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="border-slate-200 bg-white">
-                          <SelectValue placeholder="Select experience level" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {experienceLevels.map((level) => (
-                          <SelectItem key={level.value} value={level.value}>
-                            {level.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="workType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">
-                      Employment Type
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="border-slate-200 bg-white">
-                          <SelectValue placeholder="Select employment type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {workTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            {type.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Salary and Urgency */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label className="text-slate-700">Salary Range</Label>
-                <div className="flex items-center gap-2">
+              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <FormField
                     control={form.control}
-                    name="salaryMin"
+                    name="title"
                     render={({ field }) => (
-                      <FormItem className="flex-1">
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Job Title
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            type="number"
-                            placeholder="120000"
+                            placeholder="e.g., Senior Frontend Developer"
                             {...field}
-                            onChange={(e) =>
-                              field.onChange(
-                                e.target.value
-                                  ? Number(e.target.value)
-                                  : undefined,
-                              )
-                            }
                             className="border-slate-200 bg-white"
                           />
                         </FormControl>
@@ -348,24 +255,19 @@ export default function NewJobPage() {
                       </FormItem>
                     )}
                   />
-                  <span className="text-slate-500">-</span>
+
                   <FormField
                     control={form.control}
-                    name="salaryMax"
+                    name="location"
                     render={({ field }) => (
-                      <FormItem className="flex-1">
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Location
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            type="number"
-                            placeholder="160000"
+                            placeholder="e.g., San Francisco, CA or Remote"
                             {...field}
-                            onChange={(e) =>
-                              field.onChange(
-                                e.target.value
-                                  ? Number(e.target.value)
-                                  : undefined,
-                              )
-                            }
                             className="border-slate-200 bg-white"
                           />
                         </FormControl>
@@ -374,244 +276,514 @@ export default function NewJobPage() {
                     )}
                   />
                 </div>
-              </div>
 
-              <FormField
-                control={form.control}
-                name="urgency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">Urgency</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="How urgent is this hire?"
-                        {...field}
-                        className="border-slate-200 bg-white"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="experienceLevel"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Experience Level
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="border-slate-200 bg-white">
+                              <SelectValue placeholder="Select experience level" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {experienceLevels.map((level) => (
+                              <SelectItem key={level.value} value={level.value}>
+                                {level.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="workType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Employment Type
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="border-slate-200 bg-white">
+                              <SelectValue placeholder="Select employment type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {workTypes.map((type) => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="yearsOfExperience"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Years of Experience Required
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="3"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value
+                                  ? Number(e.target.value)
+                                  : undefined,
+                              )
+                            }
+                            className="border-slate-200 bg-white"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="isRemote"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-y-0 space-x-3 pt-8">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-slate-700">
+                            Remote Position
+                          </FormLabel>
+                          <FormDescription>
+                            Candidates can work from anywhere
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Job Description */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-slate-700">
-                    Job Description
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Describe the role, responsibilities, and what you're looking for in a candidate..."
-                      className="min-h-[120px] border-slate-200 bg-white"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Section 2: Job Details */}
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Job Details
+                </h2>
+                <p className="text-sm text-slate-600">
+                  Describe the role and what you&apos;re looking for
+                </p>
+              </div>
 
-            {/* Required Skills */}
-            <div className="space-y-4">
-              <Label className="text-slate-700">
-                Required Skills & Technologies
-              </Label>
-
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add a skill or technology"
-                  value={skillInput}
-                  onChange={(e) => setSkillInput(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" && skillInput.trim()) {
-                      e.preventDefault();
-                      addSkill(skillInput.trim(), "required");
-                    }
-                  }}
-                  className="border-slate-200 bg-white"
+              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700">
+                        Job Description
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe the role, company culture, and what makes this opportunity unique..."
+                          className="min-h-[150px] border-slate-200 bg-white"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Minimum 50 characters required
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() =>
-                    skillInput.trim() && addSkill(skillInput.trim(), "required")
-                  }
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
 
-              {requiredSkills.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {requiredSkills.map((skill) => (
-                    <Badge
-                      key={skill}
-                      variant="default"
-                      className="bg-blue-100 text-blue-800 hover:bg-blue-100"
-                    >
-                      {skill}
-                      <button
-                        type="button"
-                        onClick={() => removeSkill(skill, "required")}
-                        className="ml-2 hover:text-blue-600"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
+                <FormField
+                  control={form.control}
+                  name="responsibilities"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700">
+                        Key Responsibilities
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="List the main responsibilities and day-to-day tasks..."
+                          className="min-h-[120px] border-slate-200 bg-white"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div>
-                <p className="mb-2 text-sm text-slate-600">Suggested skills:</p>
-                <div className="flex flex-wrap gap-2">
-                  {suggestedSkills
-                    .filter((skill) => !requiredSkills.includes(skill))
-                    .slice(0, 12)
-                    .map((skill) => (
-                      <Badge
-                        key={skill}
-                        variant="outline"
-                        className="cursor-pointer hover:bg-slate-100"
-                        onClick={() => addSkill(skill, "required")}
-                      >
-                        + {skill}
-                      </Badge>
-                    ))}
-                </div>
+                <FormField
+                  control={form.control}
+                  name="requirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700">
+                        Requirements & Qualifications
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="List the must-have qualifications, certifications, or experience..."
+                          className="min-h-[120px] border-slate-200 bg-white"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
 
-            {/* Additional Details */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="yearsOfExperience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">
-                      Years of Experience
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="3"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
-                          )
+            {/* Section 3: Technical Requirements */}
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Technical Requirements
+                </h2>
+                <p className="text-sm text-slate-600">
+                  Specify the technical skills and technologies needed
+                </p>
+              </div>
+
+              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+                {/* Required Skills */}
+                <div className="space-y-4">
+                  <Label className="text-slate-700">
+                    Required Skills & Technologies
+                  </Label>
+
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add a required skill or technology"
+                      value={skillInput}
+                      onChange={(e) => setSkillInput(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && skillInput.trim()) {
+                          e.preventDefault();
+                          addSkill(skillInput.trim(), "required");
                         }
-                        className="border-slate-200 bg-white"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="equity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">
-                      Equity Range (Optional)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., 0.1% - 0.5%"
-                        {...field}
-                        className="border-slate-200 bg-white"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Benefits */}
-            <div className="space-y-4">
-              <Label className="text-slate-700">Benefits & Perks</Label>
-
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Add a benefit or perk"
-                  value={benefitInput}
-                  onChange={(e) => setBenefitInput(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter" && benefitInput.trim()) {
-                      e.preventDefault();
-                      addBenefit(benefitInput.trim());
-                    }
-                  }}
-                  className="border-slate-200 bg-white"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() =>
-                    benefitInput.trim() && addBenefit(benefitInput.trim())
-                  }
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {benefits.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {benefits.map((benefit) => (
-                    <Badge
-                      key={benefit}
-                      variant="secondary"
-                      className="bg-green-100 text-green-800 hover:bg-green-100"
+                      }}
+                      className="border-slate-200 bg-white"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        skillInput.trim() &&
+                        addSkill(skillInput.trim(), "required")
+                      }
                     >
-                      {benefit}
-                      <button
-                        type="button"
-                        onClick={() => removeBenefit(benefit)}
-                        className="ml-2 hover:text-green-600"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
 
-              <div>
-                <p className="mb-2 text-sm text-slate-600">Common benefits:</p>
-                <div className="flex flex-wrap gap-2">
-                  {commonBenefits
-                    .filter((benefit) => !benefits.includes(benefit))
-                    .slice(0, 8)
-                    .map((benefit) => (
-                      <Badge
-                        key={benefit}
-                        variant="outline"
-                        className="cursor-pointer hover:bg-slate-100"
-                        onClick={() => addBenefit(benefit)}
-                      >
-                        + {benefit}
-                      </Badge>
-                    ))}
+                  {requiredSkills.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {requiredSkills.map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="default"
+                          className="bg-blue-100 text-blue-800 hover:bg-blue-100"
+                        >
+                          {skill}
+                          <button
+                            type="button"
+                            onClick={() => removeSkill(skill, "required")}
+                            className="ml-2 hover:text-blue-600"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="mb-2 text-sm text-slate-600">
+                      Suggested skills:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {suggestedSkills
+                        .filter((skill) => !requiredSkills.includes(skill))
+                        .slice(0, 12)
+                        .map((skill) => (
+                          <Badge
+                            key={skill}
+                            variant="outline"
+                            className="cursor-pointer hover:bg-slate-100"
+                            onClick={() => addSkill(skill, "required")}
+                          >
+                            + {skill}
+                          </Badge>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Nice-to-Have Skills */}
+                <div className="space-y-4">
+                  <Label className="text-slate-700">Nice-to-Have Skills</Label>
+
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add a nice-to-have skill"
+                      value={niceToHaveInput}
+                      onChange={(e) => setNiceToHaveInput(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && niceToHaveInput.trim()) {
+                          e.preventDefault();
+                          addSkill(niceToHaveInput.trim(), "niceToHave");
+                        }
+                      }}
+                      className="border-slate-200 bg-white"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        niceToHaveInput.trim() &&
+                        addSkill(niceToHaveInput.trim(), "niceToHave")
+                      }
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {niceToHaveSkills.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {niceToHaveSkills.map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="secondary"
+                          className="bg-purple-100 text-purple-800 hover:bg-purple-100"
+                        >
+                          {skill}
+                          <button
+                            type="button"
+                            onClick={() => removeSkill(skill, "niceToHave")}
+                            className="ml-2 hover:text-purple-600"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Company Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-slate-800">
-                Company Information
-              </h3>
+            {/* Section 4: Compensation & Benefits */}
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Compensation & Benefits
+                </h2>
+                <p className="text-sm text-slate-600">
+                  Define the compensation package and perks
+                </p>
+              </div>
 
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-slate-700">Salary Range</Label>
+                    <div className="flex items-center gap-2">
+                      <FormField
+                        control={form.control}
+                        name="salaryMin"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="120000"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    e.target.value
+                                      ? Number(e.target.value)
+                                      : undefined,
+                                  )
+                                }
+                                className="border-slate-200 bg-white"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <span className="text-slate-500">-</span>
+                      <FormField
+                        control={form.control}
+                        name="salaryMax"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="160000"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(
+                                    e.target.value
+                                      ? Number(e.target.value)
+                                      : undefined,
+                                  )
+                                }
+                                className="border-slate-200 bg-white"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="equity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Equity Range (Optional)
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., 0.1% - 0.5%"
+                            {...field}
+                            className="border-slate-200 bg-white"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Benefits */}
+                <div className="space-y-4">
+                  <Label className="text-slate-700">Benefits & Perks</Label>
+
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add a benefit or perk"
+                      value={benefitInput}
+                      onChange={(e) => setBenefitInput(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter" && benefitInput.trim()) {
+                          e.preventDefault();
+                          addBenefit(benefitInput.trim());
+                        }
+                      }}
+                      className="border-slate-200 bg-white"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        benefitInput.trim() && addBenefit(benefitInput.trim())
+                      }
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {benefits.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {benefits.map((benefit) => (
+                        <Badge
+                          key={benefit}
+                          variant="secondary"
+                          className="bg-green-100 text-green-800 hover:bg-green-100"
+                        >
+                          {benefit}
+                          <button
+                            type="button"
+                            onClick={() => removeBenefit(benefit)}
+                            className="ml-2 hover:text-green-600"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+
+                  <div>
+                    <p className="mb-2 text-sm text-slate-600">
+                      Common benefits:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {commonBenefits
+                        .filter((benefit) => !benefits.includes(benefit))
+                        .slice(0, 8)
+                        .map((benefit) => (
+                          <Badge
+                            key={benefit}
+                            variant="outline"
+                            className="cursor-pointer hover:bg-slate-100"
+                            onClick={() => addBenefit(benefit)}
+                          >
+                            + {benefit}
+                          </Badge>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 5: Company Information */}
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Company Information
+                </h2>
+                <p className="text-sm text-slate-600">
+                  Tell candidates about your company
+                </p>
+              </div>
+
+              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
                 <FormField
                   control={form.control}
                   name="companyName"
@@ -634,103 +806,117 @@ export default function NewJobPage() {
 
                 <FormField
                   control={form.control}
-                  name="applicationDeadline"
+                  name="companyDescription"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-slate-700">
-                        Application Deadline
+                        Company Description
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          type="date"
+                        <Textarea
+                          placeholder="Brief description of your company, mission, and culture..."
+                          className="min-h-[100px] border-slate-200 bg-white"
                           {...field}
-                          className="border-slate-200 bg-white"
                         />
                       </FormControl>
+                      <FormDescription>
+                        Help candidates understand your company better
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name="companyDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">
-                      Company Description (Optional)
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Brief description of your company..."
-                        className="border-slate-200 bg-white"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
-            {/* Remote Work & Preferences */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-slate-800">
-                Work Preferences
-              </h3>
+            {/* Section 6: Application Settings */}
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Application Settings
+                </h2>
+                <p className="text-sm text-slate-600">
+                  Control how candidates apply to this position
+                </p>
+              </div>
 
-              <FormField
-                control={form.control}
-                name="isRemote"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-y-0 space-x-3">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
+              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="applicationDeadline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Application Deadline
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            {...field}
+                            className="border-slate-200 bg-white"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="maxApplications"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700">
+                          Maximum Applications
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="e.g., 100"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value
+                                  ? Number(e.target.value)
+                                  : undefined,
+                              )
+                            }
+                            className="border-slate-200 bg-white"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Limit the number of applications you receive
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="urgency"
+                  render={({ field }) => (
+                    <FormItem>
                       <FormLabel className="text-slate-700">
-                        This is a remote position
+                        Hiring Urgency
                       </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., Immediate need, flexible timeline, etc."
+                          {...field}
+                          className="border-slate-200 bg-white"
+                        />
+                      </FormControl>
                       <FormDescription>
-                        Candidates can work from anywhere
+                        Let candidates know how urgent this hire is
                       </FormDescription>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="maxApplications"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700">
-                      Maximum Applications (Optional)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="e.g., 100"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
-                          )
-                        }
-                        className="border-slate-200 bg-white"
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Limit the number of applications you receive
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             {/* Action Buttons */}
@@ -752,21 +938,20 @@ export default function NewJobPage() {
                   console.log("Saving as draft...");
                 }}
               >
-                Explore First
-                <Search className="ml-2 h-4 w-4" />
+                Save as Draft
               </Button>
             </div>
           </form>
         </Form>
 
         {/* AI Tip */}
-        <div className="sticky top-0 z-10">
-          <div className="rounded-xl bg-gradient-to-br from-gray-50 to-slate-50 p-6">
+        <div className="sticky top-0 right-0 z-10">
+          <div className="border-border rounded-xl border bg-slate-50 p-6">
             <div className="mb-6 flex items-center gap-3">
               {/* <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-white">
                 <Sparkles className="h-5 w-5" />
               </div> */}
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-base font-semibold text-gray-900">
                 Tips for Better Job Posts
               </h3>
             </div>
@@ -809,7 +994,7 @@ export default function NewJobPage() {
 
                     {/* Content */}
                     <div className="flex-1 pb-2">
-                      <h4 className="mb-1 font-medium text-gray-900">
+                      <h4 className="mb-1 text-sm font-medium text-gray-900">
                         {item.title}
                       </h4>
                       <p className="text-sm text-gray-600">
