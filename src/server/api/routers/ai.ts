@@ -549,6 +549,13 @@ ${extractedText}`,
             isRemoteOpen: z.boolean().nullable(),
             workTypes: z.array(z.string()).nullable(),
             matchScore: z.number(), // Calculated match score based on criteria
+            // Social links from user table
+            githubUsername: z.string().nullable(),
+            linkedinEmail: z.string().nullable(),
+            linkedinUrl: z.string().nullable(),
+            // Social links from parsed resume data
+            parsedGithubUrl: z.string().nullable(),
+            parsedLinkedinUrl: z.string().nullable(),
           }),
         ),
         total: z.number(),
@@ -627,9 +634,16 @@ ${extractedText}`,
           salaryCurrency: true,
           isRemoteOpen: true,
           workTypes: true,
-          parsedResumeData: true, // Include parsed resume data for skills
+          parsedResumeData: true, // Include parsed resume data for skills and social links
         },
         with: {
+          user: {
+            columns: {
+              githubUsername: true,
+              linkedinEmail: true,
+              linkedinUrl: true,
+            },
+          },
           skills: {
             columns: {
               name: true,
@@ -862,6 +876,13 @@ ${extractedText}`,
           isRemoteOpen: candidate.isRemoteOpen,
           workTypes: candidate.workTypes,
           matchScore: Math.min(matchScore, maxScore), // Cap at 100
+          // Social links from user table
+          githubUsername: candidate.user.githubUsername,
+          linkedinEmail: candidate.user.linkedinEmail,
+          linkedinUrl: candidate.user.linkedinUrl,
+          // Social links from parsed resume data
+          parsedGithubUrl: candidate.parsedResumeData?.githubUrl ?? null,
+          parsedLinkedinUrl: candidate.parsedResumeData?.linkedinUrl ?? null,
         };
       });
 
