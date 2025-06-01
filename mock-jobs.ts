@@ -1,7 +1,7 @@
 import { db } from "@/server/db";
 import { jobs } from "@/server/db/schema";
 import { openrouter } from "@openrouter/ai-sdk-provider";
-import { streamObject } from "ai";
+import { generateObject } from "ai";
 import { z } from "zod";
 
 const data = {
@@ -98,10 +98,12 @@ const data = {
   },
 };
 
-const result = streamObject({
-  model: openrouter("google/gemini-2.0-flash-001"),
+const generatedJobs = await Promise.all(
+  Array.from({ length: 100 }, async () => {
+    const result = await generateObject({
+      model: openrouter("google/gemini-2.0-flash-001"),
 
-  system: `
+      system: `
 You are a helpful assistant that generates realistic job postings for tech companies.
 
 Guidelines:
@@ -115,74 +117,67 @@ Guidelines:
 - Developer roles should include specific technologies and engineering practices
 `.trim(),
 
-  schema: z.object({
-    jobPostings: z
-      .array(
-        z.object({
-          title: z.string(),
-          description: z
-            .string()
-            .describe("2-3 paragraph overview of the role and team"),
-          requirements: z
-            .string()
-            .describe("Bullet points of must-have qualifications"),
-          responsibilities: z
-            .string()
-            .describe("Bullet points of key responsibilities"),
+      schema: z.object({
+        title: z.string(),
+        description: z
+          .string()
+          .describe("2-3 paragraph overview of the role and team"),
+        requirements: z
+          .string()
+          .describe("Bullet points of must-have qualifications"),
+        responsibilities: z
+          .string()
+          .describe("Bullet points of key responsibilities"),
 
-          location: z.string(),
-          isRemote: z.boolean(),
-          workType: z.enum([
-            "full-time",
-            "part-time",
-            "contract",
-            "freelance",
-            "internship",
-          ]),
-          experienceLevel: z.enum([
-            "entry",
-            "junior",
-            "mid",
-            "senior",
-            "lead",
-            "principal",
-          ]),
+        location: z.string(),
+        isRemote: z.boolean(),
+        workType: z.enum([
+          "full-time",
+          "part-time",
+          "contract",
+          "freelance",
+          "internship",
+        ]),
+        experienceLevel: z.enum([
+          "entry",
+          "junior",
+          "mid",
+          "senior",
+          "lead",
+          "principal",
+        ]),
 
-          salaryMin: z.number().describe("Minimum salary in USD"),
-          salaryMax: z.number().describe("Maximum salary in USD"),
-          salaryCurrency: z.literal("USD"),
-          equity: z
-            .string()
-            .optional()
-            .describe("Equity compensation if applicable"),
-          benefits: z.array(z.string()).describe("List of benefits"),
+        salaryMin: z.number().describe("Minimum salary in USD"),
+        salaryMax: z.number().describe("Maximum salary in USD"),
+        salaryCurrency: z.literal("USD"),
+        equity: z
+          .string()
+          .optional()
+          .describe("Equity compensation if applicable"),
+        benefits: z.array(z.string()).describe("List of benefits"),
 
-          requiredSkills: z
-            .array(z.string())
-            .describe("Technical/professional skills required"),
-          niceToHaveSkills: z
-            .array(z.string())
-            .describe("Optional but preferred skills"),
-          yearsOfExperience: z
-            .number()
-            .describe("Minimum years of experience required"),
+        requiredSkills: z
+          .array(z.string())
+          .describe("Technical/professional skills required"),
+        niceToHaveSkills: z
+          .array(z.string())
+          .describe("Optional but preferred skills"),
+        yearsOfExperience: z
+          .number()
+          .describe("Minimum years of experience required"),
 
-          companyName: z.string(),
-          companyDescription: z.string().describe("Brief company overview"),
+        companyName: z.string(),
+        companyDescription: z.string().describe("Brief company overview"),
 
-          status: z.literal("active"),
-          isUrgent: z.boolean(),
-          isFeatured: z.boolean(),
-        }),
-      )
-      .min(30)
-      .describe("Array of 30 job postings"),
-  }),
+        status: z.literal("active"),
+        isUrgent: z.boolean(),
+        isFeatured: z.boolean(),
+      }),
 
-  messages: [
-    {
-      role: "user",
-      content: `
+      messages: [
+        {
+          role: "user",
+          content: `
 Generate 30 diverse job postings with this distribution:
 - 20 developer roles, 10 product manager roles
 - Mix of B2B companies: ${data.b2bCompanies.join(", ")}
@@ -193,26 +188,24 @@ Generate 30 diverse job postings with this distribution:
 - All should be full-time positions
 - Make 5 of them urgent, 5 featured
 `.trim(),
-    },
-  ],
-});
+        },
+      ],
+    });
 
-console.log("Generating job postings...\n");
-
-for await (const chunk of result.textStream) {
-  process.stdout.write(chunk);
-}
-
-const generatedJobs = await result.object;
+    return result.object;
+  }),
+);
 
 console.log("\n\n=== Generated Jobs Summary ===");
-console.log(`Total jobs: ${generatedJobs.jobPostings.length}`);
+console.log(`Total jobs: ${generatedJobs.length}`);
 
 // Insert jobs into database
-const jobsToInsert = generatedJobs.jobPostings.map((job) => ({
+const jobsToInsert = generatedJobs.map((job) => ({
   ...job,
   publishedAt: new Date(),
-  expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+  expiresAt: new Date(
+    Date.now() + (30 + Math.floor(Math.random() * 60)) * 24 * 60 * 60 * 1000,
+  ), // Random expiry between 1-3 months
 }));
 
 await db.insert(jobs).values(jobsToInsert);
