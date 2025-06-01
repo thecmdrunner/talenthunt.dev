@@ -11,13 +11,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { ArrowRight, LucideChevronDown, Plus, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Building,
+  Calendar,
+  ExternalLink,
+  LucideChevronDown,
+  Mail,
+  MapPin,
+  Plus,
+  Sparkles,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useQueryState } from "nuqs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Mock data for demonstration
 const suggestedFilters = [
@@ -41,14 +58,16 @@ export default function DiscoverPage() {
       "i want a designer that has 19+yr exp, product design, figma, who has designed ai apps with product thinking and great ux, should have worked with fortune 500, on contract",
   });
 
+  // State for selected candidate sheet
+  const [selectedCandidate, setSelectedCandidate] = useState<
+    (typeof candidates)[0] | null
+  >(null);
+
   // Use tRPC mutation for AI-powered query processing
   const naturalLanguageQuery = api.ai.naturalLanguageQuery.useMutation();
 
   // Use tRPC mutation for candidate search
   const searchCandidates = api.ai.searchCandidates.useMutation();
-
-  console.log("answer", naturalLanguageQuery.data);
-  console.log("candidates", searchCandidates.data);
 
   // Process search query on page load or when searchQuery changes
   useEffect(() => {
@@ -74,19 +93,9 @@ export default function DiscoverPage() {
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
   const jobAttributes = naturalLanguageQuery.data;
-  const candidates = searchCandidates.data?.candidates || [];
+  const candidates = searchCandidates.data?.candidates ?? [];
 
   return (
-    // <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-cyan-100 via-purple-50 to-pink-100">
-    //   {/* Decorative background elements */}
-    //   <div className="absolute inset-0 overflow-hidden">
-    //     <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-r from-purple-400/20 to-pink-400/20 blur-3xl" />
-    //     <div className="absolute top-20 right-20 h-32 w-32 rounded-full bg-gradient-to-r from-cyan-400/20 to-blue-400/20 blur-2xl" />
-    //     <div className="absolute bottom-20 left-1/4 h-24 w-24 rounded-full bg-gradient-to-r from-violet-400/20 to-purple-400/20 blur-2xl" />
-    //     <div className="absolute top-1/3 right-1/3 h-16 w-16 rounded-full bg-gradient-to-r from-pink-400/20 to-rose-400/20 blur-xl" />
-    //     <div className="absolute right-10 bottom-40 h-28 w-28 rounded-full bg-gradient-to-r from-indigo-400/20 to-cyan-400/20 blur-2xl" />
-    //   </div>
-
     <div className="relative flex items-center gap-2 px-4 py-8">
       <div className="mx-auto w-full max-w-7xl space-y-8">
         {/* Search Section */}
@@ -121,7 +130,7 @@ export default function DiscoverPage() {
                       fill="url(#_3085173834__b)"
                     />
                     <path
-                      d="M13.666 8.964c-.857-.236-1.356-.615-1.527-1.4 0-.095-.084-.172-.187-.172s-.187.077-.187.171c-.257.786-.67 1.244-1.528 1.401-.103 0-.187.077-.187.171 0 .095.084.172.187.172.857.235 1.357.614 1.528 1.4 0 .095.084.171.187.171s.187-.076.187-.171c.257-.786.67-1.243 1.527-1.4.104 0 .187-.077.187-.172 0-.094-.083-.171-.187-.171Z"
+                      d="M13.666 8.964c-.857-.236-1.356-.615-1.527-1.4 0-.095-.084-.172-.187-.172s-.187.077-.187.171c-.257.786-.67 1.244-1.528 1.401-.103 0-.187.077-.187.171 0 .095.084.172.187.172.857.235 1.357.614 1.528 1.4 0 .095.084.171.187.171s.187-.076.187-.171c.257-.786.67-1.243 1.527-1.4.104 0 .187-.077.187-.172 0-.094-.083-.171-.187-.171-.187Z"
                       fill="url(#_3085173834__c)"
                     />
                     <defs>
@@ -368,28 +377,6 @@ export default function DiscoverPage() {
                 </div>
               )}
 
-              {/* Salary */}
-              {/* {jobAttributes.newJob.expectedSalary && (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-500">salary range</span>
-                <Badge
-                  variant="outline"
-                  className="group relative border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 shadow-sm transition-all hover:scale-105"
-                >
-                  {jobAttributes.newJob.expectedSalary.min &&
-                  jobAttributes.newJob.expectedSalary.max
-                    ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} ${jobAttributes.newJob.expectedSalary.min}-${jobAttributes.newJob.expectedSalary.max}`
-                    : jobAttributes.newJob.expectedSalary.min
-                      ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} ${jobAttributes.newJob.expectedSalary.min}+`
-                      : jobAttributes.newJob.expectedSalary.max
-                        ? `${jobAttributes.newJob.expectedSalary.currency ?? ""} up to ${jobAttributes.newJob.expectedSalary.max}`
-                        : "Salary specified"}
-
-                  <LucideChevronDown className="ml-1 h-4 w-4 opacity-60 transition-transform group-hover:rotate-180" />
-                </Badge>
-              </div>
-            )} */}
-
               {/* Location */}
               {(jobAttributes.newJob.location?.city ??
                 jobAttributes.newJob.location?.country) && (
@@ -551,13 +538,14 @@ export default function DiscoverPage() {
                 <Card
                   key={candidate.id}
                   className="group cursor-pointer transition-shadow hover:shadow-lg"
+                  onClick={() => setSelectedCandidate(candidate)}
                 >
                   <CardContent className="p-6">
                     <div className="space-y-4">
                       {/* Avatar */}
                       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-xl font-semibold text-white">
-                        {candidate.firstName?.[0] || "?"}
-                        {candidate.lastName?.[0] || ""}
+                        {candidate.firstName?.[0] ?? "?"}
+                        {candidate.lastName?.[0] ?? ""}
                       </div>
 
                       {/* Name and title */}
@@ -568,7 +556,7 @@ export default function DiscoverPage() {
                             : "Anonymous Candidate"}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          {candidate.title || "Professional"}
+                          {candidate.title ?? "Professional"}
                         </p>
                       </div>
 
@@ -617,7 +605,7 @@ export default function DiscoverPage() {
                             }
                             className="text-xs"
                           >
-                            {candidate.matchScore.toFixed(2)}%
+                            {candidate.matchScore.toFixed(0)}%
                           </Badge>
                         </div>
                       </div>
@@ -673,7 +661,195 @@ export default function DiscoverPage() {
           )}
         </div>
       </div>
+
+      {/* Candidate Detail Sheet */}
+      <Sheet
+        open={!!selectedCandidate}
+        onOpenChange={(open) => !open && setSelectedCandidate(null)}
+      >
+        <SheetContent className="w-[400px] overflow-y-auto px-4 py-4 sm:w-[540px]">
+          {selectedCandidate && (
+            <>
+              <SheetHeader>
+                <div className="flex items-center space-x-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-2xl font-semibold text-white">
+                    {selectedCandidate?.firstName?.[0] ?? "?"}
+                    {selectedCandidate?.lastName?.[0] ?? ""}
+                  </div>
+                  <div>
+                    <SheetTitle className="text-left">
+                      {selectedCandidate?.firstName &&
+                      selectedCandidate?.lastName
+                        ? `${selectedCandidate?.firstName} ${selectedCandidate?.lastName}`
+                        : "Anonymous Candidate"}
+                    </SheetTitle>
+                    <SheetDescription className="text-left">
+                      {selectedCandidate?.title ?? "Professional"}
+                    </SheetDescription>
+                  </div>
+                </div>
+              </SheetHeader>
+
+              <div className="mt-6 space-y-6">
+                {/* Match Score */}
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Match Score</span>
+                    <Badge
+                      variant={
+                        selectedCandidate?.matchScore >= 80
+                          ? "default"
+                          : selectedCandidate?.matchScore >= 60
+                            ? "secondary"
+                            : "outline"
+                      }
+                      className="text-sm"
+                    >
+                      {selectedCandidate?.matchScore.toFixed(0)}%
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Basic Info */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold">About</h3>
+                  {selectedCandidate?.bio && (
+                    <p className="text-sm text-gray-600">
+                      {selectedCandidate?.bio}
+                    </p>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    {selectedCandidate?.yearsOfExperience && (
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="h-4 w-4 text-gray-500" />
+                        <span>
+                          {selectedCandidate?.yearsOfExperience} years exp
+                        </span>
+                      </div>
+                    )}
+                    {selectedCandidate?.location && (
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="h-4 w-4 text-gray-500" />
+                        <span>{selectedCandidate?.location}</span>
+                      </div>
+                    )}
+                    {selectedCandidate?.isRemoteOpen && (
+                      <div className="flex items-center space-x-2">
+                        <ExternalLink className="h-4 w-4 text-gray-500" />
+                        <span>Open to remote</span>
+                      </div>
+                    )}
+                    {selectedCandidate?.workTypes &&
+                      selectedCandidate?.workTypes.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          <Building className="h-4 w-4 text-gray-500" />
+                          <span>{selectedCandidate?.workTypes.join(", ")}</span>
+                        </div>
+                      )}
+                  </div>
+                </div>
+
+                {/* Skills */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold">Skills</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCandidate?.skills.map(
+                      (skill: string, index: number) => (
+                        <Badge key={index} variant="secondary">
+                          {skill}
+                        </Badge>
+                      ),
+                    )}
+                  </div>
+                </div>
+
+                {/* Work Experience */}
+                {selectedCandidate?.workExperience.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold">Work Experience</h3>
+                    <div className="space-y-4">
+                      {selectedCandidate?.workExperience.map(
+                        (
+                          work: (typeof selectedCandidate.workExperience)[0],
+                          index: number,
+                        ) => (
+                          <div key={index} className="rounded-lg border p-4">
+                            <div className="flex items-start justify-between">
+                              <div className="space-y-1">
+                                <h4 className="font-medium">{work.position}</h4>
+                                <p className="text-sm text-gray-600">
+                                  {work.company}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {work.startDate
+                                    ? new Date(work.startDate).getFullYear()
+                                    : "Unknown"}{" "}
+                                  -{" "}
+                                  {work.isCurrent
+                                    ? "Present"
+                                    : work.endDate
+                                      ? new Date(work.endDate).getFullYear()
+                                      : "Unknown"}
+                                </p>
+                              </div>
+                              {work.isCurrent && (
+                                <Badge variant="outline" className="text-xs">
+                                  Current
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Salary Expectations */}
+                {(selectedCandidate?.expectedSalaryMin ??
+                  selectedCandidate?.expectedSalaryMax) && (
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold">
+                      Salary Expectations
+                    </h3>
+                    <div className="rounded-lg border p-4">
+                      <p className="text-sm">
+                        {selectedCandidate?.salaryCurrency ?? "USD"}{" "}
+                        {selectedCandidate?.expectedSalaryMin
+                          ? `${selectedCandidate?.expectedSalaryMin.toLocaleString()}`
+                          : "Flexible"}
+                        {selectedCandidate?.expectedSalaryMax &&
+                        selectedCandidate?.expectedSalaryMin
+                          ? ` - ${selectedCandidate?.expectedSalaryMax.toLocaleString()}`
+                          : selectedCandidate?.expectedSalaryMax
+                            ? ` up to ${selectedCandidate?.expectedSalaryMax.toLocaleString()}`
+                            : "+"}{" "}
+                        per year
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Contact Actions */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold">Actions</h3>
+                  <div className="flex gap-2">
+                    <Button className="flex-1">
+                      <Mail className="mr-2 h-4 w-4" />
+                      Contact
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      View Profile
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
-    // </div>
   );
 }
