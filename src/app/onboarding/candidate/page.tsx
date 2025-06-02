@@ -108,7 +108,7 @@ export default function CandidateOnboardingPage() {
       default:
         return <ProfileReview user={user ?? { candidateProfile: undefined }} />;
     }
-  }, [currentStep, user]);
+  }, [currentStep, steps.length, user]);
 
   if (isLoading) {
     return (

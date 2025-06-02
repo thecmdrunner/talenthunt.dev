@@ -544,7 +544,8 @@ import { eq } from "drizzle-orm";
 //   },
 // ]);
 
-const userId = "user_2xwI2BhQ2sJu58esPjXM4CVcmjL";
+// const userId = "user_2xwI2BhQ2sJu58esPjXM4CVcmjL"; //  pranav
+const userId = "user_2xwI2BhQ2sJu58esPjXM4CVcmjL"; // not pranav
 
 await db.delete(recruiterProfiles).where(eq(recruiterProfiles.userId, userId));
 
