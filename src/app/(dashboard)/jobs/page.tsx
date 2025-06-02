@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { api } from "@/trpc/react";
 import {
   Briefcase,
   Clock,
@@ -79,6 +80,7 @@ export default function JobsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const router = useRouter();
+  const { data: user } = api.user.getOrCreateUser.useQuery();
 
   // Filter jobs based on search query, status, and type
   const filteredJobs = mockJobs.filter((job) => {
@@ -188,13 +190,15 @@ export default function JobsPage() {
             asChild
             className="group relative overflow-hidden rounded-xl bg-white px-6 py-3 font-semibold text-blue-900 shadow-lg transition-all duration-300 hover:bg-blue-50 hover:shadow-xl"
           >
-            <Link href="/jobs/new">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
-              <span className="relative z-10 flex items-center">
-                <Plus className="mr-2 h-4 w-4" />
-                Post New Job
-              </span>
-            </Link>
+            {user?.recruiterProfile.onboardingCompletedAt && (
+              <Link href="/jobs/new">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
+                <span className="relative z-10 flex items-center">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Post New Job
+                </span>
+              </Link>
+            )}
           </Button>
         </motion.div>
 
@@ -450,14 +454,16 @@ export default function JobsPage() {
                       <Button
                         variant="outline"
                         className="flex-1 rounded-xl border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30 hover:text-white"
-                        onClick={() => router.push(`/jobs/${job.id}/applicants`)}
+                        onClick={() =>
+                          router.push(`/jobs/${job.id}/applicants`)
+                        }
                       >
                         <Users className="mr-2 h-4 w-4" />
                         View Applicants
                       </Button>
-                      <Button 
+                      <Button
                         className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-blue-800"
-                        onClick={() => router.push('/discover')}
+                        onClick={() => router.push("/discover")}
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                         <span className="relative z-10 flex items-center justify-center">
