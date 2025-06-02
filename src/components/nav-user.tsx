@@ -28,6 +28,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -100,6 +101,17 @@ export function NavUser() {
             align="end"
             sideOffset={4}
           >
+            {process.env.NODE_ENV !== "production" && (
+              <DropdownMenuItem
+                onClick={() => {
+                  void navigator.clipboard.writeText(user?.id ?? "");
+                  toast.success("Copied to clipboard");
+                }}
+              >
+                userid: {user?.id}
+              </DropdownMenuItem>
+            )}
+
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
