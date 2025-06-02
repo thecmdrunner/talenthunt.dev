@@ -43,6 +43,13 @@
       "when": 1748815274518,
       "tag": "0005_strange_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1748832943867,
+      "tag": "0006_tiresome_newton_destine",
+      "breakpoints": true
     }
   ]
 }

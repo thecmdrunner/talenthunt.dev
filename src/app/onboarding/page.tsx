@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useTracking } from "@/lib/hooks/use-tracking";
 import { api } from "@/trpc/react";
 import { useUser } from "@clerk/nextjs";
-import { Search, Target, User, Brain, Sparkles, ArrowRight, Users } from "lucide-react";
+import { ArrowRight, Brain, Search, Sparkles, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -26,9 +26,9 @@ export default function OnboardingPage() {
   useEffect(() => {
     if (userData) {
       const isCandidateOnboarded =
-        !!userData.candidateProfile.onboardingCompletedAt;
+        !!userData.candidateProfile?.onboardingCompletedAt;
       const isRecruiterOnboarded =
-        !!userData.recruiterProfile.onboardingCompletedAt;
+        !!userData.recruiterProfile?.onboardingCompletedAt;
 
       if (isCandidateOnboarded || isRecruiterOnboarded) {
         router.push("/dashboard");
@@ -179,7 +179,7 @@ export default function OnboardingPage() {
         <div className="absolute top-1/3 right-1/4 h-3 w-3 rotate-45 animate-pulse bg-blue-400/30"></div>
         <div className="absolute bottom-1/3 left-1/2 h-2 w-2 animate-ping rounded-full bg-blue-300/50"></div>
         <div className="absolute top-2/3 right-1/3 h-3 w-3 animate-bounce bg-blue-200/30"></div>
-        <div className="absolute bottom-1/4 right-1/5 h-2 w-8 bg-gradient-to-r from-blue-300/20 to-transparent rotate-12"></div>
+        <div className="absolute right-1/5 bottom-1/4 h-2 w-8 rotate-12 bg-gradient-to-r from-blue-300/20 to-transparent"></div>
       </div>
 
       {/* Navigation Header - matching landing page */}
@@ -207,8 +207,8 @@ export default function OnboardingPage() {
                 <div className="absolute -inset-2 animate-pulse rounded-3xl border border-blue-400/20"></div>
               </div>
             </div>
-            
-            <h1 className="mb-8 text-6xl font-bold leading-tight text-white md:text-7xl">
+
+            <h1 className="mb-8 text-6xl leading-tight font-bold text-white md:text-7xl">
               Choose Your{" "}
               <span className="relative overflow-visible">
                 <span className="bg-gradient-to-tr from-blue-300 to-cyan-100 bg-clip-text text-transparent">
@@ -229,12 +229,12 @@ export default function OnboardingPage() {
                 <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
               </span>
             </h1>
-            
+
             <p className="mx-auto mb-12 max-w-4xl text-2xl leading-relaxed text-white/80">
-              Whether you're looking for your next opportunity or seeking top talent, 
-              we'll help you get there with AI-powered matching.
+              Whether you're looking for your next opportunity or seeking top
+              talent, we'll help you get there with AI-powered matching.
             </p>
-            
+
             {/* Enhanced geometric underline */}
             <div className="flex justify-center">
               <div className="h-0.5 w-32 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
@@ -244,17 +244,65 @@ export default function OnboardingPage() {
           {/* Enhanced Cards Grid */}
           <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2">
             {/* Enhanced Candidate Card - perfect landing page match */}
-            <Card className="group relative overflow-hidden rounded-3xl border border-blue-400/40 bg-gradient-to-br from-blue-800/60 to-blue-900/80 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60 hover:shadow-3xl">
+            <Card className="group hover:shadow-3xl relative overflow-hidden rounded-3xl border border-blue-400/40 bg-gradient-to-br from-blue-800/60 to-blue-900/80 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60">
               {/* Enhanced geometric pattern overlay */}
               <div className="absolute top-0 right-0 h-32 w-32 opacity-10">
-                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                  <circle cx="50" cy="50" r="35" stroke="currentColor" fill="none" strokeWidth="2"/>
-                  <circle cx="50" cy="50" r="25" stroke="currentColor" fill="none" strokeWidth="1.5"/>
-                  <circle cx="50" cy="50" r="15" stroke="currentColor" fill="currentColor" opacity="0.3"/>
-                  <circle cx="30" cy="30" r="3" fill="currentColor" opacity="0.6"/>
-                  <circle cx="70" cy="30" r="3" fill="currentColor" opacity="0.6"/>
-                  <circle cx="30" cy="70" r="3" fill="currentColor" opacity="0.6"/>
-                  <circle cx="70" cy="70" r="3" fill="currentColor" opacity="0.6"/>
+                <svg
+                  viewBox="0 0 100 100"
+                  className="h-full w-full text-blue-300"
+                >
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="35"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="25"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="1.5"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="15"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <circle
+                    cx="30"
+                    cy="30"
+                    r="3"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                  <circle
+                    cx="70"
+                    cy="30"
+                    r="3"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                  <circle
+                    cx="30"
+                    cy="70"
+                    r="3"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                  <circle
+                    cx="70"
+                    cy="70"
+                    r="3"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
                 </svg>
               </div>
 
@@ -276,27 +324,36 @@ export default function OnboardingPage() {
                     <Users className="relative z-10 h-12 w-12 text-white" />
                     <div className="absolute -inset-1 animate-pulse rounded-3xl border border-blue-400/20"></div>
                   </div>
-                  <h2 className="mb-6 text-3xl font-bold text-white">I'm Looking for a Job</h2>
+                  <h2 className="mb-6 text-3xl font-bold text-white">
+                    I'm Looking for a Job
+                  </h2>
                   <p className="text-xl leading-relaxed text-white/80">
-                Showcase your skills and get discovered by top recruiters
-              </p>
+                    Showcase your skills and get discovered by top recruiters
+                  </p>
                 </div>
 
                 <ul className="mb-10 space-y-5">
-                {[
-                  "Connect LinkedIn & GitHub profiles",
-                  "Upload resume and showcase projects",
-                  "Get verified and featured",
-                  "Receive personalized job opportunities",
+                  {[
+                    "Connect LinkedIn & GitHub profiles",
+                    "Upload resume and showcase projects",
+                    "Get verified and featured",
+                    "Receive personalized job opportunities",
                   ].map((feature, index) => (
-                    <li key={index} className="flex items-center text-lg text-white/90">
+                    <li
+                      key={index}
+                      className="flex items-center text-lg text-white/90"
+                    >
                       <div className="mr-4 h-3 w-3 flex-shrink-0 animate-pulse rounded-full bg-blue-300"></div>
                       <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                <Link href="/onboarding/candidate" onClick={handleCandidateStart} className="block">
+                <Link
+                  href="/onboarding/candidate"
+                  onClick={handleCandidateStart}
+                  className="block"
+                >
                   <Button className="group relative w-full overflow-hidden rounded-2xl bg-white py-6 text-xl font-bold text-blue-900 shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-blue-50">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
                     <span className="relative z-10 flex items-center justify-center">
@@ -304,21 +361,63 @@ export default function OnboardingPage() {
                     </span>
                   </Button>
                 </Link>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
             {/* Enhanced Recruiter Card - perfect landing page match */}
-            <Card className="group relative overflow-hidden rounded-3xl border border-blue-400/40 bg-gradient-to-br from-blue-700/60 to-blue-900/80 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60 hover:shadow-3xl">
+            <Card className="group hover:shadow-3xl relative overflow-hidden rounded-3xl border border-blue-400/40 bg-gradient-to-br from-blue-700/60 to-blue-900/80 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60">
               {/* Enhanced different geometric pattern */}
               <div className="absolute top-0 right-0 h-32 w-32 opacity-10">
-                <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                  <polygon points="50,15 85,50 50,85 15,50" stroke="currentColor" fill="none" strokeWidth="2"/>
-                  <polygon points="50,25 75,50 50,75 25,50" stroke="currentColor" fill="none" strokeWidth="1.5"/>
-                  <polygon points="50,35 65,50 50,65 35,50" stroke="currentColor" fill="currentColor" opacity="0.3"/>
-                  <circle cx="30" cy="20" r="2" fill="currentColor" opacity="0.6"/>
-                  <circle cx="70" cy="20" r="2" fill="currentColor" opacity="0.6"/>
-                  <circle cx="80" cy="70" r="2" fill="currentColor" opacity="0.6"/>
-                  <circle cx="20" cy="70" r="2" fill="currentColor" opacity="0.6"/>
+                <svg
+                  viewBox="0 0 100 100"
+                  className="h-full w-full text-blue-300"
+                >
+                  <polygon
+                    points="50,15 85,50 50,85 15,50"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="2"
+                  />
+                  <polygon
+                    points="50,25 75,50 50,75 25,50"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="1.5"
+                  />
+                  <polygon
+                    points="50,35 65,50 50,65 35,50"
+                    stroke="currentColor"
+                    fill="currentColor"
+                    opacity="0.3"
+                  />
+                  <circle
+                    cx="30"
+                    cy="20"
+                    r="2"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                  <circle
+                    cx="70"
+                    cy="20"
+                    r="2"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                  <circle
+                    cx="80"
+                    cy="70"
+                    r="2"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
+                  <circle
+                    cx="20"
+                    cy="70"
+                    r="2"
+                    fill="currentColor"
+                    opacity="0.6"
+                  />
                 </svg>
               </div>
 
@@ -340,27 +439,37 @@ export default function OnboardingPage() {
                     <Search className="relative z-10 h-12 w-12 text-white" />
                     <div className="absolute -inset-1 animate-pulse rounded-3xl border border-blue-400/20"></div>
                   </div>
-                  <h2 className="mb-6 text-3xl font-bold text-white">I'm Looking to Hire</h2>
+                  <h2 className="mb-6 text-3xl font-bold text-white">
+                    I'm Looking to Hire
+                  </h2>
                   <p className="text-xl leading-relaxed text-white/80">
-                Find perfect candidates using AI-powered natural language search
-              </p>
+                    Find perfect candidates using AI-powered natural language
+                    search
+                  </p>
                 </div>
 
                 <ul className="mb-10 space-y-5">
-                {[
-                  "Search with natural language queries",
-                  "Access verified candidate profiles",
-                  "Auto-screen and rank candidates",
-                  "Launch personalized outreach campaigns",
+                  {[
+                    "Search with natural language queries",
+                    "Access verified candidate profiles",
+                    "Auto-screen and rank candidates",
+                    "Launch personalized outreach campaigns",
                   ].map((feature, index) => (
-                    <li key={index} className="flex items-center text-lg text-white/90">
+                    <li
+                      key={index}
+                      className="flex items-center text-lg text-white/90"
+                    >
                       <div className="mr-4 h-3 w-3 flex-shrink-0 animate-pulse rounded-full bg-blue-300"></div>
                       <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
 
-                <Link href="/onboarding/recruiter" onClick={handleRecruiterStart} className="block">
+                <Link
+                  href="/onboarding/recruiter"
+                  onClick={handleRecruiterStart}
+                  className="block"
+                >
                   <Button className="group relative w-full overflow-hidden rounded-2xl bg-white py-6 text-xl font-bold text-blue-900 shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-blue-50">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
                     <span className="relative z-10 flex items-center justify-center">
@@ -368,16 +477,17 @@ export default function OnboardingPage() {
                     </span>
                   </Button>
                 </Link>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Enhanced Footer Note */}
           <div className="mt-16 text-center">
             <div className="relative mx-auto max-w-lg">
               <div className="absolute -inset-4 rounded-2xl border border-blue-400/10"></div>
               <p className="relative z-10 text-lg text-white/60">
-                Already have an account? You can change your role anytime in settings.
+                Already have an account? You can change your role anytime in
+                settings.
               </p>
             </div>
           </div>

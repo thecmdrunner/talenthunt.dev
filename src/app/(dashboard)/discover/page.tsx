@@ -49,6 +49,51 @@ import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { CandidateSheetContent } from "./candidate-sheet";
 
+// Define proper types for candidates
+type CandidateFromSearch = NonNullable<
+  ReturnType<typeof api.ai.searchCandidates.useMutation>["data"]
+>["candidates"][0];
+type CandidateFromRAG = NonNullable<
+  ReturnType<typeof api.ai.discoverCandidates.useMutation>["data"]
+>["candidates"][0];
+
+// Unified candidate type that includes all possible fields
+type Candidate = {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  title: string | null;
+  bio: string | null;
+  location: string | null;
+  yearsOfExperience: number | null;
+  skills: string[];
+  workExperience: Array<{
+    company: string;
+    position: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    isCurrent: boolean | null;
+  }>;
+  totalScore: number | null;
+  isOpenToWork: boolean | null;
+  expectedSalaryMin: number | null;
+  expectedSalaryMax: number | null;
+  salaryCurrency: string | null;
+  isRemoteOpen: boolean | null;
+  workTypes: string[] | null;
+  resumeUrl: string | null;
+  githubUsername: string | null;
+  linkedinEmail: string | null;
+  linkedinUrl: string | null;
+  parsedGithubUrl: string | null;
+  parsedLinkedinUrl: string | null;
+
+  // Fields that may or may not exist depending on source
+  matchScore?: number; // From traditional search
+  vectorSimilarity?: number; // From RAG search
+  source: "search" | "rag";
+};
+
 const locationTypes = [
   {
     label: "Remote",
@@ -181,9 +226,9 @@ export default function DiscoverPage() {
   });
 
   // State for selected candidate sheet
-  const [selectedCandidate, setSelectedCandidate] = useState<
-    (typeof candidates)[0] | null
-  >(null);
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(
+    null,
+  );
 
   // Filter states
   const [selectedRole, setSelectedRole] = useState<string>("");
@@ -202,15 +247,41 @@ export default function DiscoverPage() {
   // Use tRPC mutation for AI-powered query processing
   const naturalLanguageQuery = api.ai.naturalLanguageQuery.useMutation();
 
-  // Use tRPC mutation for candidate search
-  const searchCandidates = api.ai.searchCandidates.useMutation({
-    onSuccess: () => {
-      const candidatesHeader = document.getElementById("candidates-header");
-      if (candidatesHeader) {
-        candidatesHeader.scrollIntoView({ behavior: "smooth" });
+  // Use tRPC mutation for traditional candidate search
+  const searchCandidates = api.ai.searchCandidates.useMutation();
+
+  // Use tRPC mutation for RAG-based candidate discovery
+  const discoverCandidates = api.ai.discoverCandidates.useMutation();
+
+  // Merge candidates from both sources
+  const mergedCandidates: Candidate[] = [
+    ...(searchCandidates.data?.candidates.map((c) => ({
+      ...c,
+      source: "search" as const,
+      matchScore: c.matchScore,
+      vectorSimilarity: undefined,
+    })) ?? []),
+    ...(discoverCandidates.data?.candidates.map((c) => ({
+      ...c,
+      source: "rag" as const,
+      matchScore: undefined,
+      vectorSimilarity: c.vectorSimilarity,
+    })) ?? []),
+  ];
+
+  // Remove duplicates by ID and prioritize search results over RAG results
+  const uniqueCandidates = mergedCandidates.reduce((acc, candidate) => {
+    const existingIndex = acc.findIndex((c) => c.id === candidate.id);
+    if (existingIndex === -1) {
+      acc.push(candidate);
+    } else {
+      // If search result exists, keep it; otherwise replace with RAG result
+      if (candidate.source === "search") {
+        acc[existingIndex] = candidate;
       }
-    },
-  });
+    }
+    return acc;
+  }, [] as Candidate[]);
 
   // Track page visit
   useEffect(() => {
@@ -230,8 +301,12 @@ export default function DiscoverPage() {
   // Search for candidates when natural language query completes
   useEffect(() => {
     if (naturalLanguageQuery.data) {
-      // Trigger candidate search with the extracted job attributes
+      // Trigger both traditional search and RAG-based discovery simultaneously
       searchCandidates.mutate(naturalLanguageQuery.data);
+      discoverCandidates.mutate({
+        query: searchQuery,
+        limit: 20,
+      });
 
       // Initialize filters from AI-extracted data if not already set
       if (!selectedRole && naturalLanguageQuery.data.newJob.role) {
@@ -269,12 +344,14 @@ export default function DiscoverPage() {
     selectedSkills.length,
     selectedLocation,
     selectedExperience,
+    searchQuery,
   ]);
 
   const clearSearch = () => {
     void setSearchQuery("");
     naturalLanguageQuery.reset();
     searchCandidates.reset();
+    discoverCandidates.reset();
     setSelectedRole("");
     setSelectedSkills([]);
     setSelectedLocation("");
@@ -295,13 +372,25 @@ export default function DiscoverPage() {
   };
 
   // Sorting function
-  const sortCandidates = (candidates: any[], sortBy: string) => {
+  const sortCandidates = (
+    candidates: Candidate[],
+    sortBy: string,
+  ): Candidate[] => {
     if (!candidates || candidates.length === 0) return [];
 
     return [...candidates].sort((a, b) => {
       switch (sortBy) {
         case "match-score":
-          return b.matchScore - a.matchScore; // Highest first
+          // For RAG candidates, use vectorSimilarity; for search candidates, use matchScore
+          const scoreA =
+            a.source === "rag"
+              ? (a.vectorSimilarity ?? 0)
+              : (a.matchScore ?? 0);
+          const scoreB =
+            b.source === "rag"
+              ? (b.vectorSimilarity ?? 0)
+              : (b.matchScore ?? 0);
+          return scoreB - scoreA; // Highest first
         case "experience":
           return (b.yearsOfExperience ?? 0) - (a.yearsOfExperience ?? 0); // Most experienced first
         case "location":
@@ -318,15 +407,36 @@ export default function DiscoverPage() {
     });
   };
 
-  const handleCandidateView = (candidate: (typeof candidates)[0]) => {
+  const handleCandidateView = (candidate: Candidate) => {
     setSelectedCandidate(candidate);
-    trackCandidateViewed(candidate.id, candidate.matchScore);
+    const score =
+      candidate.source === "rag"
+        ? (candidate.vectorSimilarity ?? 0)
+        : (candidate.matchScore ?? 0);
+    trackCandidateViewed(candidate.id, score);
   };
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
   const jobAttributes = naturalLanguageQuery.data;
-  const rawCandidates = searchCandidates.data?.candidates ?? [];
-  const candidates = sortCandidates(rawCandidates, sortBy);
+  const candidates = sortCandidates(uniqueCandidates, sortBy);
+
+  const isLoading =
+    naturalLanguageQuery.isPending ||
+    searchCandidates.isPending ||
+    discoverCandidates.isPending;
+
+  const getDisplayScore = (candidate: Candidate): number => {
+    return candidate.source === "rag"
+      ? Math.round((candidate.vectorSimilarity ?? 0) * 100)
+      : (candidate.matchScore ?? 0);
+  };
+
+  const prepareCandidateForSheet = (candidate: Candidate) => {
+    return {
+      ...candidate,
+      matchScore: getDisplayScore(candidate),
+    };
+  };
 
   return (
     <div className="relative flex items-center gap-2 px-4 py-8">
@@ -591,16 +701,16 @@ export default function DiscoverPage() {
                         <p className="text-sm text-gray-500">
                           {
                             [
-                              selectedRole || jobAttributes.newJob.role,
+                              selectedRole || jobAttributes?.newJob?.role,
                               selectedSkills.length > 0
                                 ? selectedSkills.length
-                                : jobAttributes.newJob.skills?.length,
+                                : jobAttributes?.newJob?.skills?.length,
                               selectedExperience ||
-                                jobAttributes.pastExperience?.duration?.years,
+                                jobAttributes?.pastExperience?.duration?.years,
                               (selectedLocation ||
-                                jobAttributes.newJob.location?.city) ??
-                                jobAttributes.newJob.location?.country,
-                              jobAttributes.newJob.location?.type,
+                                jobAttributes?.newJob?.location?.city) ??
+                                jobAttributes?.newJob?.location?.country,
+                              jobAttributes?.newJob?.location?.type,
                             ].filter(Boolean).length
                           }{" "}
                           filters applied
@@ -641,21 +751,21 @@ export default function DiscoverPage() {
                                 <CommandEmpty>No role found.</CommandEmpty>
                                 <CommandGroup>
                                   {/* Current role from AI if available */}
-                                  {jobAttributes.newJob.role &&
+                                  {jobAttributes?.newJob?.role &&
                                     !selectedRole && (
                                       <CommandItem
-                                        value={jobAttributes.newJob.role}
+                                        value={jobAttributes?.newJob?.role}
                                         onSelect={(currentValue) => {
                                           setSelectedRole(currentValue);
                                           setRoleComboOpen(false);
                                         }}
                                       >
-                                        {jobAttributes.newJob.role}
+                                        {jobAttributes?.newJob?.role}
                                         <CheckIcon
                                           className={cn(
                                             "ml-auto",
                                             selectedRole ===
-                                              jobAttributes.newJob.role
+                                              jobAttributes?.newJob?.role
                                               ? "opacity-100"
                                               : "opacity-0",
                                           )}
@@ -663,7 +773,7 @@ export default function DiscoverPage() {
                                       </CommandItem>
                                     )}
                                   {/* Similar roles from AI */}
-                                  {jobAttributes.newJob.similarRoles?.map(
+                                  {jobAttributes?.newJob?.similarRoles?.map(
                                     (role) => (
                                       <CommandItem
                                         key={role}
@@ -728,7 +838,7 @@ export default function DiscoverPage() {
                         </h4>
                         <div className="mb-3 flex flex-wrap gap-2">
                           {/* AI-extracted skills */}
-                          {jobAttributes.newJob.skills?.map((skill) => (
+                          {jobAttributes?.newJob?.skills?.map((skill) => (
                             <Badge
                               key={skill}
                               variant="secondary"
@@ -748,7 +858,7 @@ export default function DiscoverPage() {
                           {selectedSkills
                             .filter(
                               (skill) =>
-                                !jobAttributes.newJob.skills?.includes(skill),
+                                !jobAttributes?.newJob?.skills?.includes(skill),
                             )
                             .map((skill) => (
                               <Badge
@@ -797,7 +907,7 @@ export default function DiscoverPage() {
                                     .filter(
                                       (skill) =>
                                         !selectedSkills.includes(skill.value) &&
-                                        !jobAttributes.newJob.skills?.includes(
+                                        !jobAttributes?.newJob?.skills?.includes(
                                           skill.label,
                                         ),
                                     )
@@ -1090,9 +1200,11 @@ export default function DiscoverPage() {
                             ...candidates.map((candidate) => [
                               `${candidate.firstName} ${candidate.lastName}`,
                               candidate.linkedinEmail ?? "",
-                              `"${candidate.location}"` ?? "",
+                              candidate.location
+                                ? `"${candidate.location}"`
+                                : "",
                               candidate.yearsOfExperience ?? "",
-                              `"${candidate.skills.join(", ") ?? ""}"`,
+                              `"${candidate.skills.join(", ")}"`,
                               candidate.resumeUrl ?? "",
                               `${candidate.expectedSalaryMin} - ${candidate.expectedSalaryMax} ${candidate.salaryCurrency}`,
                             ]),
@@ -1117,8 +1229,7 @@ export default function DiscoverPage() {
                   </div>
                 </div>
 
-                {naturalLanguageQuery.isPending ||
-                searchCandidates.isPending ? (
+                {isLoading ? (
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {[1, 2, 3, 4, 5, 6].map((i) => (
                       <Card
@@ -1161,9 +1272,7 @@ export default function DiscoverPage() {
                 ) : candidates.length > 0 ? (
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {candidates.map((candidate, index) => {
-                      const matchPercentage = Math.round(
-                        candidate.matchScore * 100,
-                      );
+                      const matchPercentage = getDisplayScore(candidate);
                       const matchType =
                         matchPercentage >= 70
                           ? "Great"
@@ -1410,7 +1519,9 @@ export default function DiscoverPage() {
       >
         <SheetContent className="w-[400px] overflow-y-auto px-4 py-4 sm:w-[540px]">
           {selectedCandidate && (
-            <CandidateSheetContent selectedCandidate={selectedCandidate} />
+            <CandidateSheetContent
+              selectedCandidate={prepareCandidateForSheet(selectedCandidate)}
+            />
           )}
         </SheetContent>
       </Sheet>
