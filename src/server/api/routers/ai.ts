@@ -13,7 +13,12 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { candidateProfiles, users, workExperience } from "@/server/db/schema";
+import {
+  candidateProfiles,
+  jobs,
+  users,
+  workExperience,
+} from "@/server/db/schema";
 import {
   jobAttributesSchema,
   jobSearchPreferencesSchema,
@@ -897,7 +902,7 @@ ${extractedText}`,
           );
         }
         if (locationFilters.length > 0) {
-          whereConditions.push(or(...locationFilters));
+          whereConditions.push(or(...locationFilters)!);
         }
       }
 
@@ -1250,12 +1255,11 @@ ${extractedText}`,
 
       // Filter by desired role if specified
       if (input.desiredRole) {
-        whereConditions.push(
-          or(
-            ilike(jobs.title, `%${input.desiredRole}%`),
-            ilike(jobs.description, `%${input.desiredRole}%`),
-          ),
-        );
+        const roleConditions = [
+          ilike(jobs.title, `%${input.desiredRole}%`),
+          ilike(jobs.description, `%${input.desiredRole}%`),
+        ];
+        whereConditions.push(or(...roleConditions)!);
       }
 
       // Filter by skills if specified
@@ -1263,7 +1267,7 @@ ${extractedText}`,
         const skillFilters = input.requiredSkills.map(
           (skill) => sql`${jobs.requiredSkills} @> ARRAY[${skill}]::text[]`,
         );
-        whereConditions.push(or(...skillFilters));
+        whereConditions.push(or(...skillFilters)!);
       }
 
       // Filter by location if specified
@@ -1271,7 +1275,7 @@ ${extractedText}`,
         const locationFilters = input.locations.map((location) =>
           ilike(jobs.location, `%${location}%`),
         );
-        whereConditions.push(or(...locationFilters));
+        whereConditions.push(or(...locationFilters)!);
       }
 
       // Filter by remote preference if specified
@@ -1322,6 +1326,8 @@ ${extractedText}`,
         requiredSkills: job.requiredSkills ?? [],
         niceToHaveSkills: job.niceToHaveSkills ?? [],
         benefits: job.benefits ?? [],
+        isFeatured: job.isFeatured ?? false,
+        isUrgent: job.isUrgent ?? false,
         // Add computed fields for UI compatibility
         company: job.companyName ?? "Company",
         type: job.workType,
