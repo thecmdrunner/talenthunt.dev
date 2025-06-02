@@ -7,7 +7,7 @@ export default async function DashboardPage() {
 
   if (
     !user?.candidateProfile?.onboardingCompletedAt &&
-    !user?.recruiterProfile.onboardingCompletedAt
+    !user?.recruiterProfile?.onboardingCompletedAt
   ) {
     return redirect("/onboarding");
   }

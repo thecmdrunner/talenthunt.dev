@@ -93,10 +93,16 @@ export const userRouter = createTRPCRouter({
       const userId = ctx.session.userId;
 
       // Check if user has a candidate profile
-      const existingUser = await getUser(userId);
+      let existingUser = await getUser(userId);
 
       if (!existingUser?.candidateProfile) {
-        throw new Error("User does not have a candidate profile");
+        await Promise.allSettled([
+          ctx.db.insert(users).values({ userId, credits: 100 }), // 100 free credits
+          ctx.db.insert(candidateProfiles).values({ userId, currentStep: 0 }), // Move to basic info step
+          ctx.db.insert(recruiterProfiles).values({ userId, currentStep: 0 }), // Move to basic info step
+        ]);
+
+        existingUser = await getUser(userId);
       }
 
       const currentStep = existingUser.candidateProfile.currentStep ?? 0;

@@ -553,7 +553,10 @@ const candidate = await db
   .from(candidateProfiles)
   .where(eq(candidateProfiles.userId, userId));
 // skills
-await db.delete(skills).where(eq(skills.candidateId, candidate[0]!.id));
+
+if (candidate[0]!.id) {
+  await db.delete(skills).where(eq(skills.candidateId, candidate[0]!.id));
+}
 
 await db.delete(candidateProfiles).where(eq(candidateProfiles.userId, userId));
 await db.delete(users).where(eq(users.userId, userId));
