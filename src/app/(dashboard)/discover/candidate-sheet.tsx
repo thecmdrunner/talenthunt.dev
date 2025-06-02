@@ -137,7 +137,7 @@ export const CandidateSheetContent = ({
 
       <div className="space-y-6">
         {/* Match Score */}
-        <div className="w-max rounded-full border p-4">
+        <div className="w-max rounded-full border px-3.5 py-2">
           <div className="flex items-center justify-between">
             {/* <span className="text-sm font-medium">Match</span> */}
             <div className="flex items-center space-x-2">
@@ -146,8 +146,8 @@ export const CandidateSheetContent = ({
                   Math.round(selectedCandidate.matchScore * 100) >= 70
                     ? "bg-gradient-to-tr from-emerald-500 to-cyan-500"
                     : Math.round(selectedCandidate.matchScore * 100) >= 50
-                      ? "bg-gradient-to-tr from-orange-500 to-orange-600"
-                      : "bg-gradient-to-tr from-red-500 to-red-600"
+                      ? "bg-gradient-to-tr from-orange-100 to-orange-100"
+                      : "bg-gradient-to-tr from-red-100 to-red-100"
                 }`}
               ></div>
               <span className="text-sm font-medium">
@@ -158,9 +158,9 @@ export const CandidateSheetContent = ({
                     : "Poor"}{" "}
                 Match
               </span>
-              <span className="text-xs text-gray-500">
+              {/* <span className="text-xs text-gray-500">
                 ({Math.round(selectedCandidate.matchScore)}%)
-              </span>
+              </span> */}
             </div>
           </div>
           {/* <div className="mt-2 text-xs text-gray-500">
