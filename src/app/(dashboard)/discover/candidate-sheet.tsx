@@ -3,23 +3,35 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Textarea } from "@/components/ui/textarea";
 import { useTracking } from "@/lib/hooks/use-tracking";
 import { cn, formatShortNumber } from "@/lib/utils";
-import { type RouterOutputs } from "@/trpc/react";
+import { api, type RouterOutputs } from "@/trpc/react";
 import {
   Building,
   Calendar,
+  Copy,
   ExternalLink,
   Github,
   Linkedin,
   Mail,
+  Send,
+  Sparkles,
   VerifiedIcon,
 } from "lucide-react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export function getMatchLevel(score: number) {
   const matchPercentage = Math.round(score * 100);
@@ -59,6 +71,37 @@ export const CandidateSheetContent = ({
     trackExternalLinkClicked,
   } = useTracking();
 
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("q") ?? "";
+
+  const [isEmailPopoverOpen, setIsEmailPopoverOpen] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  // tRPC mutation for generating personalized email
+  const generateEmail = api.ai.generatePersonalizedEmail.useMutation();
+
+  const handleContactView = (candidateId: string) => {
+    trackContactInfoViewed(candidateId);
+    // Generate email when contact is viewed
+    if (!generateEmail.data && !generateEmail.isPending) {
+      generateEmail.mutate({
+        candidateId,
+        searchQuery,
+      });
+    }
+    setIsEmailPopoverOpen(true);
+  };
+
+  const handleCopyEmail = async () => {
+    if (generateEmail.data) {
+      const emailContent = `Subject: ${generateEmail.data.subject}\n\n${generateEmail.data.body}`;
+      await navigator.clipboard.writeText(emailContent);
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2000);
+      trackButtonClicked("copy_email", "candidate_detail");
+    }
+  };
+
   const handleExternalLink = (
     linkType: "linkedin" | "github" | "portfolio",
     candidateId?: string,
@@ -66,14 +109,15 @@ export const CandidateSheetContent = ({
     trackExternalLinkClicked(linkType, candidateId);
   };
 
-  const handleContactView = (candidateId: string) => {
-    trackContactInfoViewed(candidateId);
-  };
-
   return (
     <>
       <SheetHeader>
-        <div className="flex items-center space-x-4">
+        <div
+          onClick={() => {
+            void navigator.clipboard.writeText(selectedCandidate.id);
+          }}
+          className="flex items-center space-x-4"
+        >
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-2xl font-semibold text-white">
             {selectedCandidate?.firstName?.[0] ?? "?"}
             {selectedCandidate?.lastName?.[0] ?? ""}
@@ -93,7 +137,7 @@ export const CandidateSheetContent = ({
 
       <div className="space-y-6">
         {/* Match Score */}
-        <div className="w-max rounded-full border p-4">
+        <div className="w-max rounded-full border px-3.5 py-2">
           <div className="flex items-center justify-between">
             {/* <span className="text-sm font-medium">Match</span> */}
             <div className="flex items-center space-x-2">
@@ -102,8 +146,8 @@ export const CandidateSheetContent = ({
                   Math.round(selectedCandidate.matchScore * 100) >= 70
                     ? "bg-gradient-to-tr from-emerald-500 to-cyan-500"
                     : Math.round(selectedCandidate.matchScore * 100) >= 50
-                      ? "bg-gradient-to-tr from-orange-500 to-orange-600"
-                      : "bg-gradient-to-tr from-red-500 to-red-600"
+                      ? "bg-gradient-to-tr from-orange-100 to-orange-100"
+                      : "bg-gradient-to-tr from-red-100 to-red-100"
                 }`}
               ></div>
               <span className="text-sm font-medium">
@@ -114,9 +158,9 @@ export const CandidateSheetContent = ({
                     : "Poor"}{" "}
                 Match
               </span>
-              <span className="text-xs text-gray-500">
+              {/* <span className="text-xs text-gray-500">
                 ({Math.round(selectedCandidate.matchScore)}%)
-              </span>
+              </span> */}
             </div>
           </div>
           {/* <div className="mt-2 text-xs text-gray-500">
@@ -183,13 +227,123 @@ export const CandidateSheetContent = ({
         {/* Contact Actions */}
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <Button
-              className="h-12 flex-1 bg-gradient-to-r from-blue-600 to-blue-700 font-semibold shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
-              onClick={() => handleContactView(selectedCandidate.id)}
+            <Popover
+              open={isEmailPopoverOpen}
+              onOpenChange={setIsEmailPopoverOpen}
             >
-              <Mail className="mr-2 h-5 w-5" />
-              Contact
-            </Button>
+              <PopoverTrigger asChild>
+                <Button
+                  className="h-12 flex-1 bg-gradient-to-r from-blue-600 to-blue-700 font-semibold shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
+                  onClick={() => handleContactView(selectedCandidate.id)}
+                >
+                  <Mail className="mr-2 h-5 w-5" />
+                  Contact
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                side="left"
+                className="w-[500px] p-0"
+                align="center"
+              >
+                <div className="space-y-4 p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500">
+                      <Sparkles className="h-5 w-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">
+                        AI-Generated Personalized Email
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Based on {selectedCandidate.firstName}&apos;s profile
+                        and your search
+                      </p>
+                    </div>
+                  </div>
+
+                  {generateEmail.isPending && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Sparkles className="h-4 w-4 animate-pulse text-blue-500" />
+                        <span>AI is crafting a personalized email...</span>
+                      </div>
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-20 w-full" />
+                    </div>
+                  )}
+
+                  {generateEmail.error && (
+                    <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                      <p className="text-sm text-red-600">
+                        Failed to generate email. Please try again.
+                      </p>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2"
+                        onClick={() =>
+                          generateEmail.mutate({
+                            candidateId: selectedCandidate.id,
+                            searchQuery,
+                          })
+                        }
+                      >
+                        Retry
+                      </Button>
+                    </div>
+                  )}
+
+                  {generateEmail.data && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          Subject:
+                        </label>
+                        <div className="mt-1 rounded-md border bg-gray-50 p-3 text-sm">
+                          {generateEmail.data.subject}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">
+                          Email Body:
+                        </label>
+                        <Textarea
+                          className="mt-1 min-h-[120px] resize-none"
+                          value={generateEmail.data.body}
+                          readOnly
+                        />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleCopyEmail}
+                          variant="outline"
+                          className="flex-1"
+                        >
+                          <Copy className="mr-2 h-4 w-4" />
+                          {emailCopied ? "Copied!" : "Copy Email"}
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            const emailContent = `mailto:${selectedCandidate.linkedinEmail ?? ""}?subject=${encodeURIComponent(generateEmail.data.subject)}&body=${encodeURIComponent(generateEmail.data.body)}`;
+                            window.open(emailContent);
+                            trackButtonClicked(
+                              "send_email",
+                              "candidate_detail",
+                            );
+                          }}
+                          className="flex-1 bg-green-600 hover:bg-green-700"
+                        >
+                          <Send className="mr-2 h-4 w-4" />
+                          Open in Email
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
             <Button
               variant="outline"
               className="h-12 flex-1 border-2 border-gray-300 font-semibold shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
@@ -220,7 +374,7 @@ export const CandidateSheetContent = ({
 
         {selectedCandidate?.workTypes && (
           <>
-            <h3 className="text-lg leading-0 font-semibold text-gray-900">
+            <h3 className="mt-10 text-lg leading-0 font-semibold text-gray-900">
               Work Types
             </h3>
 

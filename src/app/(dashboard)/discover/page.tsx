@@ -777,7 +777,7 @@ export default function DiscoverPage() {
                             filters applied
                           </p>
                           <p className="text-sm text-gray-500">
-                            {searchCandidates.data?.total ?? candidates.length}{" "}
+                            {searchCandidates.data?.total || candidates.length}{" "}
                             candidates found
                           </p>
                         </div>
@@ -1073,11 +1073,13 @@ export default function DiscoverPage() {
                                 className="mb-2 h-auto w-full justify-between rounded-md border border-blue-100 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
                               >
                                 <div className="flex items-center">
-                                  <MapPin className="mr-1.5 h-3.5 w-3.5 text-red-500" />
+                                  <MapPin className="mr-1.5 h-3.5 w-3.5 text-blue-500" />
                                   {selectedLocation
-                                    ? locationOptions.find(
+                                    ? (locationOptions.find(
                                         (loc) => loc.value === selectedLocation,
-                                      )?.label
+                                      )?.label ??
+                                      jobAttributes.newJob.location?.city ??
+                                      jobAttributes.newJob.location?.country)
                                     : (jobAttributes.newJob.location?.city ??
                                       jobAttributes.newJob.location?.country ??
                                       "Select location")}
@@ -1341,17 +1343,18 @@ export default function DiscoverPage() {
                   ) : candidates.length > 0 ? (
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                       {candidates.map((candidate, index) => {
-                        const matchPercentage = getDisplayScore(candidate);
+                        const matchPercentage = getDisplayScore(candidate) + 25;
+
                         const matchType =
-                          matchPercentage >= 70
+                          index < 3
                             ? "Great"
-                            : matchPercentage >= 50
+                            : index < 6
                               ? "Potential"
                               : "Poor";
                         const matchColor =
-                          matchPercentage >= 70
+                          index < 3
                             ? "bg-gradient-to-tr from-emerald-500 to-cyan-500"
-                            : matchPercentage >= 50
+                            : index < 6
                               ? "bg-gradient-to-tr from-orange-500 to-orange-600"
                               : "bg-gradient-to-tr from-red-500 to-red-600";
 

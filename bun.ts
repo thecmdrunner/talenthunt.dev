@@ -2,7 +2,8 @@
 // import { candidateProfiles, users } from "@/server/db/schema";
 
 import { db } from "@/server/db";
-import { recruiterProfiles } from "@/server/db/schema";
+import { candidateProfiles } from "@/server/db/schema";
+import { eq } from "drizzle-orm";
 
 // const data = [
 //   {
@@ -484,6 +485,66 @@ import { recruiterProfiles } from "@/server/db/schema";
 //   .catch(console.error)
 //   .finally(() => process.exit(0));
 
+// update skills of candidateProfiles table
+
+// await db.insert(skills).values([
+//   {
+//     candidateId: "b528eede-e8cc-43c8-948a-1c9d17a1950c",
+//     name: "RAG",
+//     category: "Programming",
+//     proficiency: "intermediate",
+//     yearsOfExperience: 3,
+//   },
+//   {
+//     candidateId: "b528eede-e8cc-43c8-948a-1c9d17a1950c",
+//     name: "LangChain",
+//     category: "Programming",
+//     proficiency: "intermediate",
+//     yearsOfExperience: 2,
+//   },
+//   {
+//     candidateId: "b528eede-e8cc-43c8-948a-1c9d17a1950c",
+//     name: "Generative AI",
+//     category: "Programming",
+//     proficiency: "intermediate",
+//     yearsOfExperience: 2,
+//   },
+
+//   {
+//     candidateId: "b528eede-e8cc-43c8-948a-1c9d17a1950c",
+//     name: "Machine Learning",
+//     category: "Programming",
+//     proficiency: "intermediate",
+//     yearsOfExperience: 2,
+//   },
+//   {
+//     candidateId: "b528eede-e8cc-43c8-948a-1c9d17a1950c",
+//     name: "Deep Learning",
+//     category: "Programming",
+//     proficiency: "intermediate",
+//     yearsOfExperience: 2,
+//   },
+//   {
+//     candidateId: "b528eede-e8cc-43c8-948a-1c9d17a1950c",
+//     name: "Natural Language Processing",
+//     category: "Programming",
+//     proficiency: "intermediate",
+//     yearsOfExperience: 2,
+//   },
+//   {
+//     candidateId: "b528eede-e8cc-43c8-948a-1c9d17a1950c",
+//     name: "NLP",
+//     category: "Programming",
+//     proficiency: "intermediate",
+//     yearsOfExperience: 2,
+//   },
+// ]);
+
+const id = "d767af5e-b5da-4b07-878a-2b5a7eb1e6be";
+
 await db
-  .insert(recruiterProfiles)
-  .values({ userId: "user_2xonsyoTLKUBd3VVioz0hDlSZ7j", currentStep: 0 }); // Move to basic info step
+  .delete(candidateProfiles)
+
+  .where(eq(candidateProfiles.id, id));
+
+process.exit(0);
