@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useVideoRecording } from "@/hooks/useVideoRecording";
 import { useTracking } from "@/lib/hooks/use-tracking";
 import { api } from "@/trpc/react";
-import { Camera, Play, Square, X, Sparkles, Video, Clock, CheckCircle } from "lucide-react";
+import { Camera, CheckCircle, Clock, Square, Video, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface IntroduceYourselfProps {
@@ -87,7 +87,7 @@ export default function IntroduceYourself({
       // Automatically progress to next step after upload
       setTimeout(() => {
         onComplete();
-      }, 2000); // Give user 2 seconds to see the success message
+      }, 1000); // Give user 2 seconds to see the success message
     }
   }, [
     uploadRecordedVideo,
@@ -209,13 +209,31 @@ export default function IntroduceYourself({
           <div className="relative overflow-hidden rounded-3xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 p-12 shadow-2xl backdrop-blur-xl">
             {/* Geometric Background Elements */}
             <div className="absolute top-0 right-0 h-32 w-32 opacity-10">
-              <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                <polygon points="50,10 90,50 50,90 10,50" stroke="currentColor" fill="none" strokeWidth="1" />
+              <svg
+                viewBox="0 0 100 100"
+                className="h-full w-full text-blue-300"
+              >
+                <polygon
+                  points="50,10 90,50 50,90 10,50"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="1"
+                />
               </svg>
             </div>
             <div className="absolute bottom-0 left-0 h-24 w-24 opacity-10">
-              <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                <circle cx="50" cy="50" r="40" stroke="currentColor" fill="none" strokeWidth="1" />
+              <svg
+                viewBox="0 0 100 100"
+                className="h-full w-full text-blue-300"
+              >
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="1"
+                />
               </svg>
             </div>
 
@@ -225,28 +243,34 @@ export default function IntroduceYourself({
                 <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm">
                   <Video className="h-10 w-10 text-white" />
                 </div>
-                
+
                 <div className="space-y-4">
                   <h2 className="text-3xl font-bold text-white">
                     Tell Us About Yourself
                   </h2>
-                  <p className="text-white/80 text-lg leading-relaxed">
-                    Record a short video (up to 60 seconds) to share who you are, what
-                    you're passionate about, and what you're looking for.
+                  <p className="text-lg leading-relaxed text-white/80">
+                    Record a short video (up to 60 seconds) to share who you
+                    are, what you're passionate about, and what you're looking
+                    for.
                   </p>
                 </div>
 
                 {user?.candidateProfile?.onboardingData?.questions && (
                   <div className="rounded-xl border border-blue-400/30 bg-blue-600/20 p-4 backdrop-blur-sm">
                     <div className="space-y-2">
-                      {user.candidateProfile.onboardingData.questions.map((question, index) => (
-                        <div key={question} className="text-blue-200 flex items-start gap-3">
-                          <span className="flex-shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500/30 text-xs font-semibold">
-                            {index + 1}
-                          </span>
-                          <span className="text-sm">{question}</span>
-                        </div>
-                      ))}
+                      {user.candidateProfile.onboardingData.questions.map(
+                        (question, index) => (
+                          <div
+                            key={question}
+                            className="flex items-start gap-3 text-blue-200"
+                          >
+                            <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-500/30 text-xs font-semibold">
+                              {index + 1}
+                            </span>
+                            <span className="text-sm">{question}</span>
+                          </div>
+                        ),
+                      )}
                     </div>
                   </div>
                 )}
@@ -264,7 +288,7 @@ export default function IntroduceYourself({
                   <div className="flex justify-center">
                     <Button
                       size="lg"
-                      className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-12 py-6 text-lg font-semibold text-white shadow-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl transition-all duration-300"
+                      className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-12 py-6 text-lg font-semibold text-white shadow-xl transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl"
                       onClick={handleStartRecording}
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
@@ -279,11 +303,11 @@ export default function IntroduceYourself({
                 {/* Live Recording View */}
                 {isRecording && (
                   <div className="space-y-6">
-                    <div className="text-center space-y-2">
+                    <div className="space-y-2 text-center">
                       <h3 className="text-2xl font-semibold text-white">
                         Recording...
                       </h3>
-                      <p className="text-white/70 flex items-center justify-center gap-2">
+                      <p className="flex items-center justify-center gap-2 text-white/70">
                         <Clock className="h-4 w-4" />
                         Time: {recordingTimeFormatted} / 1:00
                       </p>
@@ -304,7 +328,9 @@ export default function IntroduceYourself({
                         {/* Recording Indicator Overlay */}
                         <div className="absolute top-4 left-4 flex items-center gap-3 rounded-full bg-red-500/90 px-4 py-2 backdrop-blur-sm">
                           <div className="h-3 w-3 animate-pulse rounded-full bg-white"></div>
-                          <span className="text-sm font-semibold text-white">REC</span>
+                          <span className="text-sm font-semibold text-white">
+                            REC
+                          </span>
                         </div>
 
                         {/* Timer Overlay */}
@@ -319,7 +345,7 @@ export default function IntroduceYourself({
                     <div className="flex justify-center">
                       <Button
                         size="lg"
-                        className="group relative overflow-hidden rounded-xl border border-red-400/30 bg-red-600/20 px-10 py-5 text-lg font-semibold text-white backdrop-blur-sm hover:bg-red-600/30 transition-all duration-300"
+                        className="group relative overflow-hidden rounded-xl border border-red-400/30 bg-red-600/20 px-10 py-5 text-lg font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-red-600/30"
                         onClick={handleStopRecording}
                       >
                         <div className="relative z-10 flex items-center gap-3">
@@ -334,7 +360,7 @@ export default function IntroduceYourself({
                 {/* Recording Preview */}
                 {recordedBlob && previewUrl && !videoUploaded && (
                   <div className="space-y-6">
-                    <div className="text-center space-y-2">
+                    <div className="space-y-2 text-center">
                       <h3 className="text-2xl font-semibold text-white">
                         Preview Your Video
                       </h3>
@@ -359,7 +385,7 @@ export default function IntroduceYourself({
                     <div className="flex justify-center gap-4">
                       <Button
                         size="lg"
-                        className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-10 py-5 text-lg font-semibold text-white shadow-xl hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl transition-all duration-300"
+                        className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 px-10 py-5 text-lg font-semibold text-white shadow-xl transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-2xl"
                         onClick={handleUploadRecorded}
                         disabled={isUploading}
                       >
@@ -381,7 +407,7 @@ export default function IntroduceYourself({
 
                       <Button
                         size="lg"
-                        className="group relative overflow-hidden rounded-xl border border-blue-400/30 bg-blue-600/20 px-10 py-5 text-lg font-semibold text-white backdrop-blur-sm hover:bg-blue-600/30 transition-all duration-300"
+                        className="group relative overflow-hidden rounded-xl border border-blue-400/30 bg-blue-600/20 px-10 py-5 text-lg font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-blue-600/30"
                         onClick={handleDiscardRecording}
                         disabled={isUploading}
                       >
@@ -398,13 +424,28 @@ export default function IntroduceYourself({
                 {videoUploaded && (
                   <div className="relative overflow-hidden rounded-2xl border border-green-400/30 bg-green-600/20 p-8 backdrop-blur-sm">
                     <div className="absolute top-0 right-0 h-24 w-24 opacity-10">
-                      <svg viewBox="0 0 100 100" className="h-full w-full text-green-300">
-                        <circle cx="50" cy="50" r="30" stroke="currentColor" fill="none" strokeWidth="2" />
-                        <path d="M35,50 L45,60 L65,40" stroke="currentColor" strokeWidth="3" fill="none" />
+                      <svg
+                        viewBox="0 0 100 100"
+                        className="h-full w-full text-green-300"
+                      >
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="30"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeWidth="2"
+                        />
+                        <path
+                          d="M35,50 L45,60 L65,40"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          fill="none"
+                        />
                       </svg>
                     </div>
-                    
-                    <div className="relative z-10 text-center space-y-4">
+
+                    <div className="relative z-10 space-y-4 text-center">
                       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-green-400/30 bg-green-600/30 backdrop-blur-sm">
                         <CheckCircle className="h-8 w-8 text-green-300" />
                       </div>
@@ -412,7 +453,8 @@ export default function IntroduceYourself({
                         Video Uploaded Successfully!
                       </h3>
                       <p className="text-green-200">
-                        Your introduction video has been saved. Proceeding to final step...
+                        Your introduction video has been saved. Proceeding to
+                        final step...
                       </p>
                     </div>
                   </div>
@@ -422,11 +464,21 @@ export default function IntroduceYourself({
                 {!isRecording && !recordedBlob && !videoUploaded && (
                   <div className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-700/30 p-8 backdrop-blur-sm">
                     <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
-                      <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                        <circle cx="50" cy="50" r="40" stroke="currentColor" fill="none" strokeWidth="1" />
+                      <svg
+                        viewBox="0 0 100 100"
+                        className="h-full w-full text-blue-300"
+                      >
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeWidth="1"
+                        />
                       </svg>
                     </div>
-                    
+
                     <div className="relative z-10">
                       <h3 className="mb-4 text-xl font-semibold text-white">
                         Tips for a great video:
