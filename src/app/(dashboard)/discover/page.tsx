@@ -4,7 +4,20 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -15,9 +28,12 @@ import {
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTracking } from "@/lib/hooks/use-tracking";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import {
   ArrowRight,
+  CheckIcon,
+  ChevronsUpDown,
   LucideBuilding2,
   LucideGlobe,
   LucideHandshake,
@@ -78,6 +94,69 @@ const additionalFilters = [
   { type: "location", label: "location", value: "location" },
 ];
 
+// Data for comboboxes
+const roleOptions = [
+  { label: "Frontend Developer", value: "frontend-developer" },
+  { label: "Backend Developer", value: "backend-developer" },
+  { label: "Full Stack Developer", value: "full-stack-developer" },
+  { label: "Mobile Developer", value: "mobile-developer" },
+  { label: "DevOps Engineer", value: "devops-engineer" },
+  { label: "Data Scientist", value: "data-scientist" },
+  { label: "AI/ML Engineer", value: "ai-ml-engineer" },
+  { label: "Product Manager", value: "product-manager" },
+  { label: "UI/UX Designer", value: "ui-ux-designer" },
+  { label: "QA Engineer", value: "qa-engineer" },
+];
+
+const skillOptions = [
+  { label: "React", value: "react" },
+  { label: "Next.js", value: "nextjs" },
+  { label: "TypeScript", value: "typescript" },
+  { label: "JavaScript", value: "javascript" },
+  { label: "Node.js", value: "nodejs" },
+  { label: "Python", value: "python" },
+  { label: "Java", value: "java" },
+  { label: "Go", value: "go" },
+  { label: "Rust", value: "rust" },
+  { label: "Docker", value: "docker" },
+  { label: "Kubernetes", value: "kubernetes" },
+  { label: "AWS", value: "aws" },
+  { label: "PostgreSQL", value: "postgresql" },
+  { label: "MongoDB", value: "mongodb" },
+  { label: "Redis", value: "redis" },
+  { label: "GraphQL", value: "graphql" },
+  { label: "REST API", value: "rest-api" },
+  { label: "TensorFlow", value: "tensorflow" },
+  { label: "PyTorch", value: "pytorch" },
+  { label: "Machine Learning", value: "machine-learning" },
+  { label: "AI", value: "ai" },
+  { label: "Comfy UI", value: "comfy-ui" },
+  { label: "Figma", value: "figma" },
+  { label: "Adobe Creative Suite", value: "adobe-creative-suite" },
+];
+
+const locationOptions = [
+  { label: "New York, NY", value: "new-york-ny" },
+  { label: "San Francisco, CA", value: "san-francisco-ca" },
+  { label: "Los Angeles, CA", value: "los-angeles-ca" },
+  { label: "Seattle, WA", value: "seattle-wa" },
+  { label: "Chicago, IL", value: "chicago-il" },
+  { label: "Boston, MA", value: "boston-ma" },
+  { label: "Austin, TX", value: "austin-tx" },
+  { label: "Denver, CO", value: "denver-co" },
+  { label: "London, UK", value: "london-uk" },
+  { label: "Berlin, Germany", value: "berlin-germany" },
+  { label: "Amsterdam, Netherlands", value: "amsterdam-netherlands" },
+  { label: "Toronto, Canada", value: "toronto-canada" },
+  { label: "Sydney, Australia", value: "sydney-australia" },
+  { label: "Tokyo, Japan", value: "tokyo-japan" },
+  { label: "Singapore", value: "singapore" },
+  { label: "Bangalore, India", value: "bangalore-india" },
+  { label: "Mumbai, India", value: "mumbai-india" },
+  { label: "Delhi, India", value: "delhi-india" },
+  { label: "Remote", value: "remote" },
+];
+
 // Convert match score to intuitive match level
 
 export default function DiscoverPage() {
@@ -97,6 +176,17 @@ export default function DiscoverPage() {
   const [selectedCandidate, setSelectedCandidate] = useState<
     (typeof candidates)[0] | null
   >(null);
+
+  // Filter states
+  const [selectedRole, setSelectedRole] = useState<string>("");
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [selectedExperience, setSelectedExperience] = useState<string>("");
+
+  // Combobox states
+  const [roleComboOpen, setRoleComboOpen] = useState(false);
+  const [skillComboOpen, setSkillComboOpen] = useState(false);
+  const [locationComboOpen, setLocationComboOpen] = useState(false);
 
   // Use tRPC mutation for AI-powered query processing
   const naturalLanguageQuery = api.ai.naturalLanguageQuery.useMutation();
@@ -124,14 +214,66 @@ export default function DiscoverPage() {
     if (naturalLanguageQuery.data) {
       // Trigger candidate search with the extracted job attributes
       searchCandidates.mutate(naturalLanguageQuery.data);
+
+      // Initialize filters from AI-extracted data if not already set
+      if (!selectedRole && naturalLanguageQuery.data.newJob.role) {
+        setSelectedRole(naturalLanguageQuery.data.newJob.role);
+      }
+      if (
+        selectedSkills.length === 0 &&
+        naturalLanguageQuery.data.newJob.skills
+      ) {
+        setSelectedSkills(naturalLanguageQuery.data.newJob.skills);
+      }
+      if (
+        !selectedLocation &&
+        (naturalLanguageQuery.data.newJob.location?.city ||
+          naturalLanguageQuery.data.newJob.location?.country)
+      ) {
+        setSelectedLocation(
+          naturalLanguageQuery.data.newJob.location?.city ??
+            naturalLanguageQuery.data.newJob.location?.country ??
+            "",
+        );
+      }
+      if (
+        !selectedExperience &&
+        naturalLanguageQuery.data.pastExperience?.duration?.years
+      ) {
+        setSelectedExperience(
+          `${naturalLanguageQuery.data.pastExperience.duration.years} years`,
+        );
+      }
     }
-  }, [naturalLanguageQuery.data]);
+  }, [
+    naturalLanguageQuery.data,
+    selectedRole,
+    selectedSkills.length,
+    selectedLocation,
+    selectedExperience,
+  ]);
 
   const clearSearch = () => {
     void setSearchQuery("");
     naturalLanguageQuery.reset();
     searchCandidates.reset();
+    setSelectedRole("");
+    setSelectedSkills([]);
+    setSelectedLocation("");
+    setSelectedExperience("");
     trackButtonClicked("clear_search", "discover_page");
+  };
+
+  const addSkill = (skill: string) => {
+    if (!selectedSkills.includes(skill)) {
+      setSelectedSkills([...selectedSkills, skill]);
+    }
+  };
+
+  const removeSkill = (skillToRemove: string) => {
+    setSelectedSkills(
+      selectedSkills.filter((skill) => skill !== skillToRemove),
+    );
   };
 
   const handleCandidateView = (candidate: (typeof candidates)[0]) => {
@@ -381,10 +523,448 @@ export default function DiscoverPage() {
 
         {/* Candidates Section */}
         <div className="flex flex-col gap-4 xl:flex-row">
-          {/* Left - candidates view */}
+          {/* Left - search filters */}
+          <div className="w-80 flex-shrink-0">
+            {isSearchActive && jobAttributes && (
+              <Card
+                id="filters-card"
+                className="sticky top-6 border-0 bg-white py-0 shadow-md"
+              >
+                <CardContent className="p-0">
+                  <div className="border-b border-gray-100 p-4">
+                    <div className="mb-1 flex items-center justify-between">
+                      <h3 className="font-semibold text-gray-900">Filters</h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 p-0 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                        onClick={clearSearch}
+                      >
+                        Reset
+                      </Button>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      {
+                        [
+                          selectedRole || jobAttributes.newJob.role,
+                          selectedSkills.length > 0
+                            ? selectedSkills.length
+                            : jobAttributes.newJob.skills?.length,
+                          selectedExperience ||
+                            jobAttributes.pastExperience?.duration?.years,
+                          (selectedLocation ||
+                            jobAttributes.newJob.location?.city) ??
+                            jobAttributes.newJob.location?.country,
+                          jobAttributes.newJob.location?.type,
+                        ].filter(Boolean).length
+                      }{" "}
+                      filters applied
+                    </p>
+                  </div>
+
+                  {/* Role Selection */}
+                  <div className="border-b border-gray-100 p-4">
+                    <h4 className="mb-2 text-sm font-medium text-gray-500">
+                      Role
+                    </h4>
+                    <Popover
+                      open={roleComboOpen}
+                      onOpenChange={setRoleComboOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={roleComboOpen}
+                          className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                        >
+                          {selectedRole
+                            ? roleOptions.find(
+                                (role) => role.value === selectedRole,
+                              )?.label
+                            : (jobAttributes.newJob.role ?? "Select role")}
+                          <ChevronsUpDown className="opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Search roles..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>No role found.</CommandEmpty>
+                            <CommandGroup>
+                              {/* Current role from AI if available */}
+                              {jobAttributes.newJob.role && !selectedRole && (
+                                <CommandItem
+                                  value={jobAttributes.newJob.role}
+                                  onSelect={(currentValue) => {
+                                    setSelectedRole(currentValue);
+                                    setRoleComboOpen(false);
+                                  }}
+                                >
+                                  {jobAttributes.newJob.role}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      selectedRole === jobAttributes.newJob.role
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                </CommandItem>
+                              )}
+                              {/* Similar roles from AI */}
+                              {jobAttributes.newJob.similarRoles?.map(
+                                (role) => (
+                                  <CommandItem
+                                    key={role}
+                                    value={role}
+                                    onSelect={(currentValue) => {
+                                      setSelectedRole(
+                                        currentValue === selectedRole
+                                          ? ""
+                                          : currentValue,
+                                      );
+                                      setRoleComboOpen(false);
+                                    }}
+                                  >
+                                    {role}
+                                    <CheckIcon
+                                      className={cn(
+                                        "ml-auto",
+                                        selectedRole === role
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ),
+                              )}
+                              {/* Predefined role options */}
+                              {roleOptions.map((role) => (
+                                <CommandItem
+                                  key={role.value}
+                                  value={role.value}
+                                  onSelect={(currentValue) => {
+                                    setSelectedRole(
+                                      currentValue === selectedRole
+                                        ? ""
+                                        : currentValue,
+                                    );
+                                    setRoleComboOpen(false);
+                                  }}
+                                >
+                                  {role.label}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      selectedRole === role.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Skills */}
+                  <div className="border-b border-gray-100 p-4">
+                    <h4 className="mb-2 text-sm font-medium text-gray-500">
+                      Skills
+                    </h4>
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      {/* AI-extracted skills */}
+                      {jobAttributes.newJob.skills?.map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="secondary"
+                          className="group rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100"
+                        >
+                          {skill}
+                          <X
+                            className="ml-1 h-3 w-3 cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeSkill(skill);
+                            }}
+                          />
+                        </Badge>
+                      ))}
+                      {/* User-selected skills */}
+                      {selectedSkills.map((skill) => (
+                        <Badge
+                          key={skill}
+                          variant="secondary"
+                          className="group rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-100"
+                        >
+                          {skillOptions.find((s) => s.value === skill)?.label ??
+                            skill}
+                          <X
+                            className="ml-1 h-3 w-3 cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeSkill(skill);
+                            }}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                    <Popover
+                      open={skillComboOpen}
+                      onOpenChange={setSkillComboOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={skillComboOpen}
+                          className="h-auto w-full rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+                        >
+                          <Plus className="mr-1 h-3 w-3" />
+                          Add skill
+                          <ChevronsUpDown className="ml-auto opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Search skills..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>No skill found.</CommandEmpty>
+                            <CommandGroup>
+                              {skillOptions
+                                .filter(
+                                  (skill) =>
+                                    !selectedSkills.includes(skill.value) &&
+                                    !jobAttributes.newJob.skills?.includes(
+                                      skill.label,
+                                    ),
+                                )
+                                .map((skill) => (
+                                  <CommandItem
+                                    key={skill.value}
+                                    value={skill.value}
+                                    onSelect={(currentValue) => {
+                                      addSkill(currentValue);
+                                      setSkillComboOpen(false);
+                                    }}
+                                  >
+                                    {skill.label}
+                                    <CheckIcon
+                                      className={cn(
+                                        "ml-auto",
+                                        selectedSkills.includes(skill.value)
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Experience */}
+                  <div className="border-b border-gray-100 p-4">
+                    <h4 className="mb-2 text-sm font-medium text-gray-500">
+                      Experience
+                    </h4>
+                    <Select
+                      value={
+                        selectedExperience ||
+                        (jobAttributes.pastExperience?.duration?.years
+                          ? `${jobAttributes.pastExperience.duration.years} years`
+                          : undefined)
+                      }
+                      onValueChange={setSelectedExperience}
+                    >
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                      >
+                        <SelectTrigger>
+                          <SelectValue>
+                            {selectedExperience ||
+                              (jobAttributes.pastExperience?.duration?.years
+                                ? `${jobAttributes.pastExperience.duration.years} years`
+                                : "Select experience")}
+                          </SelectValue>
+                        </SelectTrigger>
+                      </Button>
+                      <SelectContent>
+                        <SelectItem value="0-1 years">0-1 years</SelectItem>
+                        <SelectItem value="2-3 years">2-3 years</SelectItem>
+                        <SelectItem value="4-5 years">4-5 years</SelectItem>
+                        <SelectItem value="6+ years">6+ years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Location */}
+                  <div className="p-4">
+                    <h4 className="mb-2 text-sm font-medium text-gray-500">
+                      Location
+                    </h4>
+                    <Popover
+                      open={locationComboOpen}
+                      onOpenChange={setLocationComboOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={locationComboOpen}
+                          className="mb-2 h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                        >
+                          <div className="flex items-center">
+                            <MapPin className="mr-1.5 h-3.5 w-3.5 text-red-500" />
+                            {selectedLocation
+                              ? locationOptions.find(
+                                  (loc) => loc.value === selectedLocation,
+                                )?.label
+                              : (jobAttributes.newJob.location?.city ??
+                                jobAttributes.newJob.location?.country ??
+                                "Select location")}
+                          </div>
+                          <ChevronsUpDown className="opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Command>
+                          <CommandInput
+                            placeholder="Search locations..."
+                            className="h-9"
+                          />
+                          <CommandList>
+                            <CommandEmpty>No location found.</CommandEmpty>
+                            <CommandGroup>
+                              {/* Current location from AI if available */}
+                              {(jobAttributes.newJob.location?.city ??
+                                jobAttributes.newJob.location?.country) &&
+                                !selectedLocation && (
+                                  <CommandItem
+                                    value={
+                                      jobAttributes.newJob.location?.city ??
+                                      jobAttributes.newJob.location?.country ??
+                                      ""
+                                    }
+                                    onSelect={(currentValue) => {
+                                      setSelectedLocation(currentValue);
+                                      setLocationComboOpen(false);
+                                    }}
+                                  >
+                                    {jobAttributes.newJob.location?.city ??
+                                      jobAttributes.newJob.location?.country}
+                                    <CheckIcon
+                                      className={cn(
+                                        "ml-auto",
+                                        selectedLocation ===
+                                          (jobAttributes.newJob.location
+                                            ?.city ??
+                                            jobAttributes.newJob.location
+                                              ?.country)
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                )}
+                              {/* Predefined location options */}
+                              {locationOptions.map((location) => (
+                                <CommandItem
+                                  key={location.value}
+                                  value={location.value}
+                                  onSelect={(currentValue) => {
+                                    setSelectedLocation(
+                                      currentValue === selectedLocation
+                                        ? ""
+                                        : currentValue,
+                                    );
+                                    setLocationComboOpen(false);
+                                  }}
+                                >
+                                  {location.label}
+                                  <CheckIcon
+                                    className={cn(
+                                      "ml-auto",
+                                      selectedLocation === location.value
+                                        ? "opacity-100"
+                                        : "opacity-0",
+                                    )}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                    {/* Location Type */}
+                    {(jobAttributes.newJob.location?.type ||
+                      selectedLocation) && (
+                      <Select
+                        value={jobAttributes.newJob.location?.type ?? undefined}
+                        onValueChange={(value) => {
+                          // Update location type - you can add state for this if needed
+                        }}
+                      >
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                        >
+                          <SelectTrigger>
+                            <SelectValue>
+                              <div className="flex items-center">
+                                {jobAttributes.newJob.location?.type &&
+                                  locationTypes.find(
+                                    (type) =>
+                                      type.value ===
+                                      jobAttributes.newJob.location?.type,
+                                  )?.icon}
+                                <span className="ml-1.5 capitalize">
+                                  {jobAttributes.newJob.location?.type ??
+                                    "Select work type"}
+                                </span>
+                              </div>
+                            </SelectValue>
+                          </SelectTrigger>
+                        </Button>
+                        <SelectContent>
+                          {locationTypes.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              <div className="flex items-center">
+                                {type.icon}
+                                <span className="ml-2">{type.label}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Right - candidates view */}
           <div className="space-y-6">
             {/* Header Section */}
-            <div className="rounded-xl bg-white p-6 shadow-sm">
+            <div className="rounded-xl bg-white px-6 py-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
@@ -392,7 +972,7 @@ export default function DiscoverPage() {
                   </h2>
                   {candidates.length > 0 && (
                     <p className="text-sm text-gray-600">
-                      {searchCandidates.data?.total || candidates.length}{" "}
+                      {searchCandidates.data?.total ?? candidates.length}{" "}
                       candidates found
                     </p>
                   )}
@@ -461,16 +1041,16 @@ export default function DiscoverPage() {
                   );
                   const matchType =
                     matchPercentage >= 70
-                      ? "Decent"
+                      ? "Great"
                       : matchPercentage >= 50
                         ? "Potential"
                         : "Poor";
                   const matchColor =
                     matchPercentage >= 70
-                      ? "bg-orange-500"
+                      ? "bg-gradient-to-tr from-emerald-500 to-cyan-500"
                       : matchPercentage >= 50
-                        ? "bg-yellow-500"
-                        : "bg-red-500";
+                        ? "bg-gradient-to-tr from-orange-500 to-orange-600"
+                        : "bg-gradient-to-tr from-red-500 to-red-600";
 
                   return (
                     <Card
@@ -480,21 +1060,23 @@ export default function DiscoverPage() {
                     >
                       <CardContent className="p-0">
                         {/* Card Header with Match Score */}
-                        <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-4 py-2">
-                          <div className="flex items-center gap-2">
-                            <Badge
+                        <div className="group relative flex h-9 items-center justify-between border-b border-gray-100 bg-gray-50 px-4 py-1">
+                          <div className="absolute left-2 flex items-center gap-2">
+                            {/* <Badge
                               className={`${matchColor} rounded-md px-2 py-0.5 text-xs font-medium text-white`}
                             >
                               {matchPercentage}%
-                            </Badge>
-                            <span className="text-sm font-medium text-gray-700">
+                            </Badge> */}
+                            <span
+                              className={`rounded-md px-2 py-0.5 text-xs font-medium text-white ${matchColor}`}
+                            >
                               {matchType} Match
                             </span>
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 w-7 rounded-full p-0"
+                            className="absolute right-2 h-7 w-7 rounded-full p-0"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -506,7 +1088,7 @@ export default function DiscoverPage() {
                               strokeWidth="2"
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className="text-gray-400 hover:text-blue-600"
+                              className="text-gray-400 group-hover:text-blue-600"
                             >
                               <circle cx="12" cy="12" r="1" />
                               <circle cx="19" cy="12" r="1" />
@@ -689,225 +1271,6 @@ export default function DiscoverPage() {
               </div>
             )}
           </div>
-
-          {/* Right - search filters */}
-          {isSearchActive && jobAttributes && (
-            <div className="w-80 flex-shrink-0">
-              <Card className="sticky top-6 border-0 bg-white py-0 shadow-md">
-                <CardContent className="p-0">
-                  <div className="border-b border-gray-100 p-4">
-                    <div className="mb-1 flex items-center justify-between">
-                      <h3 className="font-semibold text-gray-900">Filters</h3>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 p-0 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
-                        onClick={clearSearch}
-                      >
-                        Reset
-                      </Button>
-                    </div>
-                    <p className="text-sm text-gray-500">
-                      {
-                        [
-                          jobAttributes.newJob.role,
-                          jobAttributes.newJob.skills?.length,
-                          jobAttributes.pastExperience?.duration?.years,
-                          jobAttributes.newJob.location?.city ??
-                            jobAttributes.newJob.location?.country,
-                          jobAttributes.newJob.location?.type,
-                        ].filter(Boolean).length
-                      }{" "}
-                      filters applied
-                    </p>
-                  </div>
-
-                  {/* Role Selection */}
-                  <div className="border-b border-gray-100 p-4">
-                    <h4 className="mb-2 text-sm font-medium text-gray-500">
-                      Role
-                    </h4>
-                    <Select value={jobAttributes.newJob.role ?? undefined}>
-                      <Button
-                        variant="outline"
-                        className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
-                        asChild
-                      >
-                        <SelectTrigger>
-                          <SelectValue>
-                            {jobAttributes.newJob.role ?? "Select role"}
-                          </SelectValue>
-                        </SelectTrigger>
-                      </Button>
-                      <SelectContent>
-                        {jobAttributes.newJob.role && (
-                          <SelectItem value={jobAttributes.newJob.role}>
-                            {jobAttributes.newJob.role}
-                          </SelectItem>
-                        )}
-                        {jobAttributes.newJob.similarRoles?.map((role) => (
-                          <SelectItem key={role} value={role}>
-                            {role}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Skills */}
-                  <div className="border-b border-gray-100 p-4">
-                    <h4 className="mb-2 text-sm font-medium text-gray-500">
-                      Skills
-                    </h4>
-                    <div className="mb-3 flex flex-wrap gap-2">
-                      {jobAttributes.newJob.skills?.map((skill) => (
-                        <Badge
-                          key={skill}
-                          variant="secondary"
-                          className="group rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100"
-                        >
-                          {skill}
-                          <X
-                            className="ml-1 h-3 w-3 cursor-pointer opacity-0 transition-opacity group-hover:opacity-100"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Add skill removal logic here
-                            }}
-                          />
-                        </Badge>
-                      ))}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-auto w-full rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
-                    >
-                      <Plus className="mr-1 h-3 w-3" />
-                      Add skill
-                    </Button>
-                  </div>
-
-                  {/* Experience */}
-                  {jobAttributes.pastExperience?.duration && (
-                    <div className="border-b border-gray-100 p-4">
-                      <h4 className="mb-2 text-sm font-medium text-gray-500">
-                        Experience
-                      </h4>
-                      <Select
-                        value={
-                          jobAttributes.pastExperience.duration.years
-                            ? `${jobAttributes.pastExperience.duration.years} years`
-                            : undefined
-                        }
-                      >
-                        <Button
-                          asChild
-                          variant="outline"
-                          className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
-                        >
-                          <SelectTrigger>
-                            <SelectValue>
-                              {jobAttributes.pastExperience.duration.years
-                                ? `${jobAttributes.pastExperience.duration.years} years`
-                                : "Select experience"}
-                            </SelectValue>
-                          </SelectTrigger>
-                        </Button>
-                        <SelectContent>
-                          <SelectItem value="0-1 years">0-1 years</SelectItem>
-                          <SelectItem value="2-3 years">2-3 years</SelectItem>
-                          <SelectItem value="4-5 years">4-5 years</SelectItem>
-                          <SelectItem value="6+ years">6+ years</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-
-                  {/* Location */}
-                  {(jobAttributes.newJob.location?.city ??
-                    jobAttributes.newJob.location?.country) && (
-                    <div className="border-b border-gray-100 p-4">
-                      <h4 className="mb-2 text-sm font-medium text-gray-500">
-                        Location
-                      </h4>
-                      <Button
-                        variant="outline"
-                        className="mb-2 h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
-                      >
-                        <div className="flex items-center">
-                          <MapPin className="mr-1.5 h-3.5 w-3.5 text-red-500" />
-                          {jobAttributes.newJob.location?.city ??
-                            jobAttributes.newJob.location?.country}
-                        </div>
-                      </Button>
-                      {jobAttributes.newJob.location?.type && (
-                        <Select
-                          value={
-                            jobAttributes.newJob.location.type ?? undefined
-                          }
-                        >
-                          <Button
-                            asChild
-                            variant="outline"
-                            className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
-                          >
-                            <SelectTrigger>
-                              <SelectValue>
-                                <div className="flex items-center">
-                                  {
-                                    locationTypes.find(
-                                      (type) =>
-                                        type.value ===
-                                        jobAttributes.newJob.location?.type,
-                                    )?.icon
-                                  }
-                                  <span className="ml-1.5 capitalize">
-                                    {jobAttributes.newJob.location.type}
-                                  </span>
-                                </div>
-                              </SelectValue>
-                            </SelectTrigger>
-                          </Button>
-                          <SelectContent>
-                            {locationTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
-                                <div className="flex items-center">
-                                  {type.icon}
-                                  <span className="ml-2">{type.label}</span>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Additional Filters */}
-                  <div className="p-4">
-                    <h4 className="mb-2 text-sm font-medium text-gray-500">
-                      Additional Filters
-                    </h4>
-                    <div className="space-y-2">
-                      {additionalFilters.map((filter) => (
-                        <Button
-                          key={filter.value}
-                          variant="outline"
-                          className="h-auto w-full justify-start rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                          onClick={() => {
-                            // Add filter selection logic here
-                          }}
-                        >
-                          <Plus className="mr-2 h-3.5 w-3.5 text-gray-500" />
-                          {filter.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
         </div>
       </div>
 
