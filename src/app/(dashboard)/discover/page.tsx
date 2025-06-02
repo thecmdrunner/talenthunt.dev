@@ -1275,29 +1275,31 @@ export default function DiscoverPage() {
                   {/* Header Section */}
 
                   <div className="flex items-center justify-end gap-2">
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <Button asChild variant={"outline"}>
-                        <SelectTrigger className="w-40 rounded-md px-3 py-1 text-sm">
-                          <LucideSortDesc />
+                    {candidates.length > 0 && (
+                      <Select value={sortBy} onValueChange={setSortBy}>
+                        <Button asChild variant={"outline"}>
+                          <SelectTrigger className="w-40 rounded-md px-3 py-1 text-sm">
+                            <LucideSortDesc />
 
-                          <SelectValue>
-                            {
-                              sortOptions.find(
-                                (option) => option.value === sortBy,
-                              )?.label
-                            }
-                          </SelectValue>
-                        </SelectTrigger>
-                      </Button>
+                            <SelectValue>
+                              {
+                                sortOptions.find(
+                                  (option) => option.value === sortBy,
+                                )?.label
+                              }
+                            </SelectValue>
+                          </SelectTrigger>
+                        </Button>
 
-                      <SelectContent>
-                        {sortOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                        <SelectContent>
+                          {sortOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
 
                   {isLoading ? (
@@ -1548,7 +1550,7 @@ export default function DiscoverPage() {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid hidden grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                       {[1, 2, 3, 4].map((i) => (
                         <Card
                           key={i}

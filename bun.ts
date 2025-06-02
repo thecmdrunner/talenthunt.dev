@@ -2,7 +2,16 @@
 // import { candidateProfiles, users } from "@/server/db/schema";
 
 import { db } from "@/server/db";
+<<<<<<< HEAD
 import { candidateProfiles } from "@/server/db/schema";
+=======
+import {
+  candidateProfiles,
+  recruiterProfiles,
+  skills,
+  users,
+} from "@/server/db/schema";
+>>>>>>> 7efbe5a (ui)
 import { eq } from "drizzle-orm";
 
 // const data = [
@@ -485,6 +494,7 @@ import { eq } from "drizzle-orm";
 //   .catch(console.error)
 //   .finally(() => process.exit(0));
 
+<<<<<<< HEAD
 // update skills of candidateProfiles table
 
 // await db.insert(skills).values([
@@ -546,5 +556,22 @@ await db
   .delete(candidateProfiles)
 
   .where(eq(candidateProfiles.id, id));
+=======
+const userId = "user_2xonsyoTLKUBd3VVioz0hDlSZ7j";
+
+await db.delete(recruiterProfiles).where(eq(recruiterProfiles.userId, userId));
+
+const candidate = await db
+  .select()
+  .from(candidateProfiles)
+  .where(eq(candidateProfiles.userId, userId));
+// skills
+await db.delete(skills).where(eq(skills.candidateId, candidate[0]!.id));
+
+await db.delete(candidateProfiles).where(eq(candidateProfiles.userId, userId));
+await db.delete(users).where(eq(users.userId, userId));
+
+console.log(`Deleted user ${userId}`);
+>>>>>>> 7efbe5a (ui)
 
 process.exit(0);
