@@ -776,10 +776,10 @@ export default function DiscoverPage() {
                             }{" "}
                             filters applied
                           </p>
-                          <p className="text-sm text-gray-500">
+                          {/* <p className="text-sm text-gray-500">
                             {searchCandidates.data?.total || candidates.length}{" "}
                             candidates found
-                          </p>
+                          </p> */}
                         </div>
 
                         {/* Role Selection */}
