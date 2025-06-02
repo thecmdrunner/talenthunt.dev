@@ -16,7 +16,6 @@ import {
   Briefcase,
   Clock,
   Edit,
-  Filter,
   Globe,
   MapPin,
   Plus,
@@ -80,6 +79,24 @@ export default function JobsPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const router = useRouter();
+
+  // Filter jobs based on search query, status, and type
+  const filteredJobs = mockJobs.filter((job) => {
+    const matchesSearch =
+      searchQuery.trim() === "" ||
+      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      job.requiredSkills.some((skill) =>
+        skill.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+
+    const matchesStatus = statusFilter === "all" || job.status === statusFilter;
+
+    const matchesType =
+      typeFilter === "all" ||
+      job.workType.toLowerCase().replace("-", "-") === typeFilter;
+
+    return matchesSearch && matchesStatus && matchesType;
+  });
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -235,14 +252,6 @@ export default function JobsPage() {
                   ))}
                 </SelectContent>
               </Select>
-
-              <Button
-                variant="outline"
-                className="rounded-xl border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30 hover:text-white"
-              >
-                <Filter className="mr-2 h-4 w-4" />
-                More Filters
-              </Button>
             </div>
           </div>
         </motion.div>
@@ -257,20 +266,30 @@ export default function JobsPage() {
           {[
             {
               icon: Briefcase,
-              label: "Total Jobs",
-              value: "12",
+              label:
+                searchQuery || statusFilter !== "all" || typeFilter !== "all"
+                  ? "Filtered Jobs"
+                  : "Total Jobs",
+              value:
+                searchQuery || statusFilter !== "all" || typeFilter !== "all"
+                  ? filteredJobs.length.toString()
+                  : "12",
               color: "from-blue-500 to-blue-600",
             },
             {
               icon: Users,
               label: "Total Applicants",
-              value: "342",
+              value: filteredJobs
+                .reduce((sum, job) => sum + job.applicationCount, 0)
+                .toString(),
               color: "from-blue-600 to-blue-700",
             },
             {
               icon: Target,
               label: "Active Jobs",
-              value: "8",
+              value: filteredJobs
+                .filter((job) => job.status === "active")
+                .length.toString(),
               color: "from-green-500 to-green-600",
             },
             {
@@ -306,146 +325,167 @@ export default function JobsPage() {
 
         {/* Job Cards */}
         <div className="grid gap-6 md:grid-cols-2">
-          {mockJobs.map((job, index) => (
+          {filteredJobs.length > 0 ? (
+            filteredJobs.map((job, index) => (
+              <motion.div
+                key={job.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + index * 0.1 }}
+              >
+                <Card className="group hover:shadow-3xl relative overflow-hidden border border-blue-400/30 bg-gradient-to-br from-blue-800/60 to-blue-900/80 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60">
+                  <div className="absolute top-0 right-0 h-24 w-24 opacity-10">
+                    <svg
+                      viewBox="0 0 100 100"
+                      className="h-full w-full text-blue-300"
+                    >
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="30"
+                        stroke="currentColor"
+                        fill="none"
+                        strokeWidth="2"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="15"
+                        stroke="currentColor"
+                        fill="currentColor"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </div>
+
+                  <CardHeader className="relative z-10 pb-4">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <h3 className="text-xl font-semibold text-white">
+                            {job.title}
+                          </h3>
+                          <Badge
+                            className={cn(
+                              "border-0",
+                              job.status === "active" &&
+                                "bg-green-500/20 text-green-300",
+                            )}
+                          >
+                            <div className="mr-1.5 h-2 w-2 animate-pulse rounded-full bg-current"></div>
+                            {formatStatus(job.status)}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-white/60">
+                          Posted {job.postedAt}
+                        </p>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-white/60 hover:bg-blue-600/20 hover:text-white"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-white/60 hover:bg-red-500/20 hover:text-red-300"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="relative z-10 space-y-4">
+                    {/* Job Details */}
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex items-center gap-2 text-white/70">
+                        <MapPin className="h-4 w-4 text-blue-300" />
+                        <span>{job.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-white/70">
+                        <Clock className="h-4 w-4 text-blue-300" />
+                        <span>{job.workType}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex items-center gap-2 text-white/70">
+                        <Users className="h-4 w-4 text-blue-300" />
+                        <span className="font-medium text-white">
+                          {job.applicationCount}
+                        </span>{" "}
+                        applicants
+                      </div>
+                      <div className="flex items-center gap-2 text-white/70">
+                        <Clock className="h-4 w-4 text-blue-300" />
+                        <span>Expires in {job.expiresIn}</span>
+                      </div>
+                    </div>
+
+                    <div className="h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent"></div>
+
+                    {/* Required Skills */}
+                    <div>
+                      <p className="mb-3 text-sm font-medium text-white/80">
+                        Required Skills
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {job.requiredSkills.map((skill, skillIndex) => (
+                          <Badge
+                            key={skillIndex}
+                            className="border border-blue-400/30 bg-blue-600/20 text-blue-200 hover:bg-blue-600/30"
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 pt-2">
+                      <Button
+                        variant="outline"
+                        className="flex-1 rounded-xl border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30 hover:text-white"
+                      >
+                        <Users className="mr-2 h-4 w-4" />
+                        View Applicants
+                      </Button>
+                      <Button className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-blue-800">
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+                        <span className="relative z-10 flex items-center justify-center">
+                          <Sparkles className="mr-2 h-4 w-4" />
+                          Find Candidates
+                        </span>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))
+          ) : (
             <motion.div
-              key={job.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + index * 0.1 }}
+              className="col-span-full"
             >
-              <Card className="group hover:shadow-3xl relative overflow-hidden border border-blue-400/30 bg-gradient-to-br from-blue-800/60 to-blue-900/80 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60">
-                <div className="absolute top-0 right-0 h-24 w-24 opacity-10">
-                  <svg
-                    viewBox="0 0 100 100"
-                    className="h-full w-full text-blue-300"
-                  >
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="30"
-                      stroke="currentColor"
-                      fill="none"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="15"
-                      stroke="currentColor"
-                      fill="currentColor"
-                      opacity="0.3"
-                    />
-                  </svg>
-                </div>
-
-                <CardHeader className="relative z-10 pb-4">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <h3 className="text-xl font-semibold text-white">
-                          {job.title}
-                        </h3>
-                        <Badge
-                          className={cn(
-                            "border-0",
-                            job.status === "active" &&
-                              "bg-green-500/20 text-green-300",
-                          )}
-                        >
-                          <div className="mr-1.5 h-2 w-2 animate-pulse rounded-full bg-current"></div>
-                          {formatStatus(job.status)}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-white/60">
-                        Posted {job.postedAt}
-                      </p>
-                    </div>
-                    <div className="flex gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-white/60 hover:bg-blue-600/20 hover:text-white"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-white/60 hover:bg-red-500/20 hover:text-red-300"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="relative z-10 space-y-4">
-                  {/* Job Details */}
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2 text-white/70">
-                      <MapPin className="h-4 w-4 text-blue-300" />
-                      <span>{job.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-white/70">
-                      <Clock className="h-4 w-4 text-blue-300" />
-                      <span>{job.workType}</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2 text-white/70">
-                      <Users className="h-4 w-4 text-blue-300" />
-                      <span className="font-medium text-white">
-                        {job.applicationCount}
-                      </span>{" "}
-                      applicants
-                    </div>
-                    <div className="flex items-center gap-2 text-white/70">
-                      <Clock className="h-4 w-4 text-blue-300" />
-                      <span>Expires in {job.expiresIn}</span>
-                    </div>
-                  </div>
-
-                  <div className="h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent"></div>
-
-                  {/* Required Skills */}
-                  <div>
-                    <p className="mb-3 text-sm font-medium text-white/80">
-                      Required Skills
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {job.requiredSkills.map((skill, skillIndex) => (
-                        <Badge
-                          key={skillIndex}
-                          className="border border-blue-400/30 bg-blue-600/20 text-blue-200 hover:bg-blue-600/30"
-                        >
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-3 pt-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1 rounded-xl border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30 hover:text-white"
-                    >
-                      <Users className="mr-2 h-4 w-4" />
-                      View Applicants
-                    </Button>
-                    <Button className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-blue-800">
-                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
-                      <span className="relative z-10 flex items-center justify-center">
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        Find Candidates
-                      </span>
-                    </Button>
-                  </div>
+              <Card className="border border-blue-400/30 bg-blue-800/40 backdrop-blur-xl">
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <Search className="mb-4 h-12 w-12 text-white/40" />
+                  <h3 className="mb-2 text-xl font-semibold text-white">
+                    No jobs found
+                  </h3>
+                  <p className="text-white/60">
+                    Try adjusting your search terms or filters to find more
+                    results.
+                  </p>
                 </CardContent>
               </Card>
             </motion.div>
-          ))}
+          )}
         </div>
       </div>
     </div>
