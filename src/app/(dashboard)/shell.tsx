@@ -51,9 +51,11 @@ export default function Shell(props: PropsWithChildren) {
     <div
       className={cn(
         "relative flex min-h-screen flex-1 flex-col gap-4 overflow-hidden pt-0",
-        isDiscoverPage
-          ? "bg-gradient-to-br from-cyan-100/50 via-purple-50/50 to-pink-100/50"
-          : "bg-white",
+        // isDiscoverPage
+        //   ? "bg-gradient-to-br from-cyan-100/50 via-purple-50/50 to-pink-100/50"
+        //   : "bg-white",
+
+        "bg-gradient-to-br from-blue-950 via-blue-800 to-blue-700",
       )}
     >
       {state === "collapsed" ||

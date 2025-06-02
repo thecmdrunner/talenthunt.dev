@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,13 +13,9 @@ import {
   Github,
   Globe,
   Linkedin,
-  Mail,
-  MapPin,
-  Phone,
   Search,
   Sparkles,
   Target,
-  Twitter,
   Users,
   Zap,
 } from "lucide-react";
@@ -677,10 +672,7 @@ export default function LandingPage() {
       </div>
 
       {/* Enhanced Features Section with blue consistency */}
-      <div
-        id="features"
-        className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-800/50 to-blue-900/80 backdrop-blur-sm"
-      >
+      <div id="features" className="relative z-10">
         <div className="mx-auto max-w-6xl px-6 py-24">
           <div className="mb-20 text-center">
             <h2 className="mb-6 text-5xl font-bold text-white">
@@ -749,7 +741,7 @@ export default function LandingPage() {
       </div>
 
       {/* Enhanced Verification Section with blue consistency */}
-      <div className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-900/80 to-blue-800/60 backdrop-blur-sm">
+      <div className="relative z-10">
         <div className="mx-auto max-w-6xl px-6 py-24 text-center">
           <h2 className="mb-8 text-5xl font-bold text-white">
             Verified Talent, Verified Quality
@@ -869,7 +861,7 @@ export default function LandingPage() {
       </div>
 
       {/* Enhanced Footer with perfect blue consistency */}
-      <footer className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-900/90 to-blue-950/95 backdrop-blur-sm">
+      {/* <footer className="relative z-10 border-t border-blue-400/20 bg-gradient-to-b from-blue-900/90 to-blue-950/95 backdrop-blur-sm">
         <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-transparent via-blue-300/50 to-transparent"></div>
 
         <div className="mx-auto max-w-7xl px-6 py-16">
@@ -1027,7 +1019,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </footer>
+      </footer> */}
 
       {/* Start Your Journey CTA - Fixed at Bottom */}
       <div className="relative z-20 border-t border-blue-400/20 bg-gradient-to-b from-blue-950/95 to-blue-950 backdrop-blur-sm">

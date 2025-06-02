@@ -13,15 +13,20 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
+  Briefcase,
   Clock,
   Edit,
   Filter,
+  Globe,
   MapPin,
   Plus,
   Search,
+  Sparkles,
+  Target,
   Trash2,
   Users,
 } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -98,167 +103,350 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Explore Job Postings
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your active and draft job listings
-          </p>
-        </div>
-        <Button asChild>
-          <Link
-            href="/jobs/new"
-            className="bg-slate-900 text-white hover:bg-slate-800"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Post New Job
-          </Link>
-        </Button>
-      </div>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Geometric Background Elements */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Large Geometric Shapes */}
+        <div className="absolute top-10 left-10 h-[600px] w-[600px] animate-pulse rounded-full bg-gradient-to-br from-blue-400/15 to-blue-600/10 blur-3xl"></div>
+        <div className="absolute right-10 bottom-20 h-[500px] w-[500px] animate-pulse rounded-full bg-gradient-to-tl from-blue-300/12 to-blue-500/8 blur-3xl"></div>
 
-      {/* Search and Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative max-w-md flex-1">
-          <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
-          <Input
-            placeholder="Search jobs by title or skills..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div
+            className="h-full w-full"
+            style={{
+              backgroundImage: `
+                linear-gradient(90deg, rgba(96,165,250,0.2) 1px, transparent 1px),
+                linear-gradient(rgba(96,165,250,0.2) 1px, transparent 1px)
+              `,
+              backgroundSize: "50px 50px",
+            }}
+          ></div>
+        </div>
+
+        {/* SVG Geometric Patterns */}
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 1400 1000"
+          fill="none"
+        >
+          <path
+            d="M50 150L200 80L350 200L500 120L650 250L800 180L950 300L1100 220L1250 350"
+            stroke="rgba(96,165,250,0.15)"
+            strokeWidth="2"
+            fill="none"
           />
-        </div>
-
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="All Status" />
-          </SelectTrigger>
-          <SelectContent>
-            {statusOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="All Types" />
-          </SelectTrigger>
-          <SelectContent>
-            {typeOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Button variant="outline" size="sm">
-          <Filter className="mr-2 h-4 w-4" />
-          More Filters
-        </Button>
+          <circle cx="200" cy="80" r="8" fill="rgba(59,130,246,0.5)" />
+          <circle
+            cx="650"
+            cy="250"
+            r="6"
+            fill="rgba(59,130,246,0.4)"
+            className="animate-pulse"
+          />
+        </svg>
       </div>
 
-      {/* Job Cards */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {mockJobs.map((job) => (
-          <Card key={job.id} className="relative">
-            <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-semibold">{job.title}</h3>
-                    <Badge
-                      variant={getStatusBadgeVariant(job.status)}
-                      className={cn(
-                        job.status === "active" &&
-                          "bg-green-100 text-green-800 hover:bg-green-100",
-                      )}
+      {/* Main Content */}
+      <div className="relative z-10 mx-auto max-w-7xl px-6 py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 flex items-start justify-between"
+        >
+          <div>
+            <div className="mb-4 flex items-center gap-3">
+              <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
+                <div className="absolute inset-2 rounded-lg border border-white/20"></div>
+                <Briefcase className="relative z-10 h-7 w-7 text-white" />
+              </div>
+              <h1 className="text-4xl font-bold text-white">Job Postings</h1>
+            </div>
+            <p className="text-xl text-white/80">
+              Manage your active and draft job listings
+            </p>
+          </div>
+          <Button
+            asChild
+            className="group relative overflow-hidden rounded-xl bg-white px-6 py-3 font-semibold text-blue-900 shadow-lg transition-all duration-300 hover:bg-blue-50 hover:shadow-xl"
+          >
+            <Link href="/jobs/new">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>
+              <span className="relative z-10 flex items-center">
+                <Plus className="mr-2 h-4 w-4" />
+                Post New Job
+              </span>
+            </Link>
+          </Button>
+        </motion.div>
+
+        {/* Search and Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mb-8"
+        >
+          <div className="relative rounded-2xl border border-blue-400/30 bg-blue-800/40 p-6 backdrop-blur-xl">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600/5 to-blue-500/5"></div>
+
+            <div className="relative z-10 flex flex-wrap items-center gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform text-white/60" />
+                <Input
+                  placeholder="Search jobs by title or skills..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full rounded-xl border-blue-400/30 bg-blue-700/30 py-3 pl-12 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
+                />
+              </div>
+
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[160px] rounded-xl border-blue-400/30 bg-blue-700/30 text-white">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent className="border-blue-400/30 bg-blue-800/95 backdrop-blur-xl">
+                  {statusOptions.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className="text-white hover:bg-blue-700/50 focus:bg-blue-700/50"
                     >
-                      {formatStatus(job.status)}
-                    </Badge>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    Posted {job.postedAt}
-                  </p>
-                </div>
-                <div className="flex gap-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              {/* Job Details */}
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="text-muted-foreground flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <span>{job.location}</span>
-                </div>
-                <div className="text-muted-foreground flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <span>{job.workType}</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="text-muted-foreground flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span>{job.applicationCount} applicants</span>
-                </div>
-                <div className="text-muted-foreground flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  <span>Expires: In {job.expiresIn}</span>
-                </div>
-              </div>
-
-              {/* Required Skills */}
-              <div>
-                <p className="mb-2 text-sm font-medium">Required Skills</p>
-                <div className="flex flex-wrap gap-2">
-                  {job.requiredSkills.map((skill, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {skill}
-                    </Badge>
+                      {option.label}
+                    </SelectItem>
                   ))}
-                </div>
-              </div>
+                </SelectContent>
+              </Select>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                <Button variant="outline" size="sm" className="flex-1">
-                  <Users className="mr-2 h-4 w-4" />
-                  View Applicants
-                </Button>
-                <Button
-                  size="sm"
-                  className="flex-1 bg-slate-900 hover:bg-slate-800"
-                >
-                  <Search className="mr-2 h-4 w-4" />
-                  Find Candidates
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-[160px] rounded-xl border-blue-400/30 bg-blue-700/30 text-white">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent className="border-blue-400/30 bg-blue-800/95 backdrop-blur-xl">
+                  {typeOptions.map((option) => (
+                    <SelectItem
+                      key={option.value}
+                      value={option.value}
+                      className="text-white hover:bg-blue-700/50 focus:bg-blue-700/50"
+                    >
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Button
+                variant="outline"
+                className="rounded-xl border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30 hover:text-white"
+              >
+                <Filter className="mr-2 h-4 w-4" />
+                More Filters
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Stats Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8 grid gap-4 md:grid-cols-4"
+        >
+          {[
+            {
+              icon: Briefcase,
+              label: "Total Jobs",
+              value: "12",
+              color: "from-blue-500 to-blue-600",
+            },
+            {
+              icon: Users,
+              label: "Total Applicants",
+              value: "342",
+              color: "from-blue-600 to-blue-700",
+            },
+            {
+              icon: Target,
+              label: "Active Jobs",
+              value: "8",
+              color: "from-green-500 to-green-600",
+            },
+            {
+              icon: Globe,
+              label: "Views This Week",
+              value: "1.2k",
+              color: "from-purple-500 to-purple-600",
+            },
+          ].map((stat, index) => (
+            <Card
+              key={index}
+              className="group relative overflow-hidden border border-blue-400/30 bg-blue-800/40 backdrop-blur-xl transition-all duration-300 hover:border-blue-300/50"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-blue-500/5"></div>
+              <CardContent className="relative z-10 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-white/70">{stat.label}</p>
+                    <p className="text-2xl font-bold text-white">
+                      {stat.value}
+                    </p>
+                  </div>
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}
+                  >
+                    <stat.icon className="h-6 w-6 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </motion.div>
+
+        {/* Job Cards */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {mockJobs.map((job, index) => (
+            <motion.div
+              key={job.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + index * 0.1 }}
+            >
+              <Card className="group hover:shadow-3xl relative overflow-hidden border border-blue-400/30 bg-gradient-to-br from-blue-800/60 to-blue-900/80 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60">
+                <div className="absolute top-0 right-0 h-24 w-24 opacity-10">
+                  <svg
+                    viewBox="0 0 100 100"
+                    className="h-full w-full text-blue-300"
+                  >
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="30"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="15"
+                      stroke="currentColor"
+                      fill="currentColor"
+                      opacity="0.3"
+                    />
+                  </svg>
+                </div>
+
+                <CardHeader className="relative z-10 pb-4">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-xl font-semibold text-white">
+                          {job.title}
+                        </h3>
+                        <Badge
+                          className={cn(
+                            "border-0",
+                            job.status === "active" &&
+                              "bg-green-500/20 text-green-300",
+                          )}
+                        >
+                          <div className="mr-1.5 h-2 w-2 animate-pulse rounded-full bg-current"></div>
+                          {formatStatus(job.status)}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-white/60">
+                        Posted {job.postedAt}
+                      </p>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-white/60 hover:bg-blue-600/20 hover:text-white"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-white/60 hover:bg-red-500/20 hover:text-red-300"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="relative z-10 space-y-4">
+                  {/* Job Details */}
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center gap-2 text-white/70">
+                      <MapPin className="h-4 w-4 text-blue-300" />
+                      <span>{job.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/70">
+                      <Clock className="h-4 w-4 text-blue-300" />
+                      <span>{job.workType}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center gap-2 text-white/70">
+                      <Users className="h-4 w-4 text-blue-300" />
+                      <span className="font-medium text-white">
+                        {job.applicationCount}
+                      </span>{" "}
+                      applicants
+                    </div>
+                    <div className="flex items-center gap-2 text-white/70">
+                      <Clock className="h-4 w-4 text-blue-300" />
+                      <span>Expires in {job.expiresIn}</span>
+                    </div>
+                  </div>
+
+                  <div className="h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent"></div>
+
+                  {/* Required Skills */}
+                  <div>
+                    <p className="mb-3 text-sm font-medium text-white/80">
+                      Required Skills
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {job.requiredSkills.map((skill, skillIndex) => (
+                        <Badge
+                          key={skillIndex}
+                          className="border border-blue-400/30 bg-blue-600/20 text-blue-200 hover:bg-blue-600/30"
+                        >
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-2">
+                    <Button
+                      variant="outline"
+                      className="flex-1 rounded-xl border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30 hover:text-white"
+                    >
+                      <Users className="mr-2 h-4 w-4" />
+                      View Applicants
+                    </Button>
+                    <Button className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-blue-800">
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+                      <span className="relative z-10 flex items-center justify-center">
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        Find Candidates
+                      </span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );
