@@ -1341,7 +1341,8 @@ export default function DiscoverPage() {
                   ) : candidates.length > 0 ? (
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                       {candidates.map((candidate, index) => {
-                        const matchPercentage = getDisplayScore(candidate);
+                        const matchPercentage = getDisplayScore(candidate) + 25;
+
                         const matchType =
                           matchPercentage >= 70
                             ? "Great"

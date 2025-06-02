@@ -220,7 +220,7 @@ export const CandidateSheetContent = ({
 
         {selectedCandidate?.workTypes && (
           <>
-            <h3 className="text-lg leading-0 font-semibold text-gray-900">
+            <h3 className="mt-10 text-lg leading-0 font-semibold text-gray-900">
               Work Types
             </h3>
 

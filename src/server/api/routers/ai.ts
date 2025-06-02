@@ -310,7 +310,7 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
 
       // Use the cache helper with AI processing callback
       const result = await withCache({
-        key: cacheKey,
+        key: cacheKey + Date.now(),
         ttlSeconds: CACHE_CONFIG.AI_RESPONSE_TTL,
 
         callback: async () => {
@@ -387,6 +387,8 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
             });
           }
         },
+
+        disableCache: true,
       });
 
       // Log whether this was a cache hit or miss
@@ -465,7 +467,7 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
       );
 
       const result = await withCache({
-        key: cacheKey + 123,
+        key: cacheKey + Date.now(),
         ttlSeconds: CACHE_CONFIG.AI_RESPONSE_TTL,
         callback: async () => {
           // Generate embedding for the search query
@@ -1200,7 +1202,14 @@ ${extractedText}`,
       });
 
       // Sort by match score descending
-      candidatesWithScores.sort((a, b) => b.matchScore - a.matchScore);
+      candidatesWithScores
+        .sort((a, b) => b.matchScore - a.matchScore)
+
+        // artificially add 30% to the match score
+        .map((candidate) => ({
+          ...candidate,
+          matchScore: candidate.matchScore + 30,
+        }));
 
       console.log(
         `✅ Found ${candidatesWithScores.length} matching candidates`,
