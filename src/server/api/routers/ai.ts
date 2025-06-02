@@ -1452,16 +1452,20 @@ ${extractedText}`,
         };
 
         const recruiterContext = {
-          firstName: recruiter?.firstName || "",
-          lastName: recruiter?.lastName || "",
-          company: recruiter?.companyName || "",
-          title: recruiter?.title || "",
+          // firstName: recruiter?.firstName || "",
+          // lastName: recruiter?.lastName || "",
+          // company: recruiter?.companyName || "",
+          // title: recruiter?.title || "",
+          firstName: "Pranav",
+          lastName: "Kulkarni",
+          company: "Prostack Labs",
+          title: "Tech Recruiter",
         };
 
         console.log("🤖 Generating personalized email with AI...");
 
         const { object: emailContent } = await generateObject({
-          model: openrouter("openai/gpt-4o"),
+          model: openrouter("google/gemini-2.0-flash-001"),
           schema: z.object({
             subject: z
               .string()
