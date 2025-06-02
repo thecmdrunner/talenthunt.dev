@@ -178,13 +178,13 @@ export default function LandingPage() {
               Features
               <div className="absolute -bottom-1 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 hover:w-full"></div>
             </Link>
-            <Link
+            {/* <Link
               href="#pricing"
               className="relative font-medium text-white/80 transition-colors hover:text-white"
             >
               Pricing
               <div className="absolute -bottom-1 left-0 h-0.5 w-0 bg-blue-300 transition-all duration-300 hover:w-full"></div>
-            </Link>
+            </Link> */}
             <Link href="/dashboard">
               <Button className="group relative overflow-hidden rounded-full border border-blue-400/30 bg-blue-600/20 px-6 py-2 font-medium text-white backdrop-blur-sm hover:bg-blue-600/30">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-600/10 opacity-0 transition-opacity group-hover:opacity-100"></div>
