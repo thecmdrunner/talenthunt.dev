@@ -1461,7 +1461,7 @@ ${extractedText}`,
         console.log("🤖 Generating personalized email with AI...");
 
         const { object: emailContent } = await generateObject({
-          model: groq("llama3-8b-8192"),
+          model: openrouter("openai/gpt-4o"),
           schema: z.object({
             subject: z
               .string()
