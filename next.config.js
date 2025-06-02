@@ -15,6 +15,18 @@ const config = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn-icons-png.flaticon.com",
+      },
+    ],
+  },
 };
 
 export default config;

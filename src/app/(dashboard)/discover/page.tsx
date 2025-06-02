@@ -35,9 +35,13 @@ import {
   CheckIcon,
   ChevronsUpDown,
   LucideBuilding2,
+  LucideCheckCircle2,
+  LucideDownload,
   LucideGlobe,
   LucideHandshake,
   LucideMap,
+  LucideSettings2,
+  LucideSortDesc,
   MapPin,
   Plus,
   Search,
@@ -46,7 +50,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useQueryState } from "nuqs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CandidateSheetContent } from "./candidate-sheet";
 
 const locationTypes = [
@@ -177,8 +181,11 @@ export default function DiscoverPage() {
 
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue:
-      "Next.js and AI Developer, with 2+ years of experience, open to work in Banglore",
+      "React  Developer, with 2+ years of experience, open to work in Bangalore",
   });
+
+  // Ref to track if we're initializing filters from AI data
+  const isInitializingFilters = useRef(false);
 
   // State for selected candidate sheet
   const [selectedCandidate, setSelectedCandidate] = useState<
@@ -227,11 +234,14 @@ export default function DiscoverPage() {
     }
   }, []);
 
-  // Search for candidates when natural language query completes
+  // Search for candidates when natural language query completes (initial search)
   useEffect(() => {
     if (naturalLanguageQuery.data) {
       // Trigger candidate search with the extracted job attributes
       searchCandidates.mutate(naturalLanguageQuery.data);
+
+      // Set flag to indicate we're initializing filters
+      isInitializingFilters.current = true;
 
       // Initialize filters from AI-extracted data if not already set
       if (!selectedRole && naturalLanguageQuery.data.newJob.role) {
@@ -262,14 +272,55 @@ export default function DiscoverPage() {
           `${naturalLanguageQuery.data.pastExperience.duration.years} years`,
         );
       }
+
+      // Reset flag after initialization
+      setTimeout(() => {
+        isInitializingFilters.current = false;
+      }, 100);
     }
-  }, [
-    naturalLanguageQuery.data,
-    selectedRole,
-    selectedSkills.length,
-    selectedLocation,
-    selectedExperience,
-  ]);
+  }, [naturalLanguageQuery.data]);
+
+  // Search for candidates when filters change (but only if we have initial data and not initializing)
+  useEffect(() => {
+    if (
+      naturalLanguageQuery.data &&
+      isSearchActive &&
+      !isInitializingFilters.current
+    ) {
+      // Create updated job attributes with current filter values
+      const updatedJobAttributes = {
+        ...naturalLanguageQuery.data,
+        newJob: {
+          ...naturalLanguageQuery.data.newJob,
+          role: selectedRole || naturalLanguageQuery.data.newJob.role,
+          skills:
+            selectedSkills.length > 0
+              ? selectedSkills
+              : naturalLanguageQuery.data.newJob.skills,
+          location: {
+            ...naturalLanguageQuery.data.newJob.location,
+            city:
+              selectedLocation ||
+              naturalLanguageQuery.data.newJob.location?.city,
+            country:
+              selectedLocation ||
+              naturalLanguageQuery.data.newJob.location?.country,
+          },
+        },
+        pastExperience: {
+          ...naturalLanguageQuery.data.pastExperience,
+          duration: {
+            ...naturalLanguageQuery.data.pastExperience?.duration,
+            years: selectedExperience
+              ? parseInt(selectedExperience.split(" ")[0])
+              : naturalLanguageQuery.data.pastExperience?.duration?.years,
+          },
+        },
+      };
+
+      searchCandidates.mutate(updatedJobAttributes);
+    }
+  }, [selectedRole, selectedSkills, selectedLocation, selectedExperience]);
 
   const clearSearch = () => {
     void setSearchQuery("");
@@ -333,7 +384,7 @@ export default function DiscoverPage() {
       <div className="mx-auto w-full max-w-7xl space-y-8">
         {/* Search Section */}
 
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="sync">
           <div className="space-y-6">
             <div className="mx-auto max-w-2xl space-y-8 text-center">
               <div className="space-y-4">
@@ -565,24 +616,24 @@ export default function DiscoverPage() {
             </motion.div>
           ) : (
             // Candidates Section
-            <div className="flex flex-col gap-4 xl:flex-row">
+            <div className="flex flex-col gap-4 rounded-lg p-3 xl:flex-row">
               {/* Left - search filters */}
               <div className="w-80 flex-shrink-0">
                 {isSearchActive && jobAttributes && (
                   <Card
                     id="filters-card"
-                    className="sticky top-6 border-0 bg-white py-0 shadow-md"
+                    className="sticky top-6 bg-white py-0 shadow-md"
                   >
-                    <CardContent className="p-0">
-                      <div className="border-b border-gray-100 p-4">
+                    <CardContent className="flex flex-col gap-y-4 p-4">
+                      <div className="border-b pb-4">
                         <div className="mb-1 flex items-center justify-between">
-                          <h3 className="font-semibold text-gray-900">
-                            Filters
+                          <h3 className="flex items-center font-semibold text-gray-900">
+                            <LucideSettings2 className="mr-2 h-4 w-4" /> Filters
                           </h3>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 p-0 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                            className="h-8 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                             onClick={clearSearch}
                           >
                             Reset
@@ -605,10 +656,14 @@ export default function DiscoverPage() {
                           }{" "}
                           filters applied
                         </p>
+                        <p className="text-sm text-gray-500">
+                          {searchCandidates.data?.total ?? candidates.length}{" "}
+                          candidates found
+                        </p>
                       </div>
 
                       {/* Role Selection */}
-                      <div className="border-b border-gray-100 p-4">
+                      <div className="">
                         <h4 className="mb-2 text-sm font-medium text-gray-500">
                           Role
                         </h4>
@@ -723,7 +778,7 @@ export default function DiscoverPage() {
                       </div>
 
                       {/* Skills */}
-                      <div className="border-b border-gray-100 p-4">
+                      <div className="">
                         <h4 className="mb-2 text-sm font-medium text-gray-500">
                           Skills
                         </h4>
@@ -769,6 +824,7 @@ export default function DiscoverPage() {
                               </Badge>
                             ))}
                         </div>
+
                         <Popover
                           open={skillComboOpen}
                           onOpenChange={setSkillComboOpen}
@@ -830,7 +886,7 @@ export default function DiscoverPage() {
                       </div>
 
                       {/* Experience */}
-                      <div className="border-b border-gray-100 p-4">
+                      <div className="">
                         <h4 className="mb-2 text-sm font-medium text-gray-500">
                           Experience
                         </h4>
@@ -867,7 +923,7 @@ export default function DiscoverPage() {
                       </div>
 
                       {/* Location */}
-                      <div className="p-4">
+                      <div className="">
                         <h4 className="mb-2 text-sm font-medium text-gray-500">
                           Location
                         </h4>
@@ -1013,60 +1069,10 @@ export default function DiscoverPage() {
                           </Select>
                         )}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
 
-              {/* Right - candidates view */}
-              <div className="space-y-6">
-                {/* Header Section */}
-                <div className="rounded-xl bg-white px-6 py-5 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2
-                        id="candidates-header"
-                        className="text-2xl font-bold text-gray-900"
-                      >
-                        {isSearchActive
-                          ? "Top Candidates"
-                          : "Featured Candidates"}
-                      </h2>
-                      {candidates.length > 0 && (
-                        <p className="text-sm text-gray-600">
-                          {searchCandidates.data?.total ?? candidates.length}{" "}
-                          candidates found
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600">Sort by:</span>
-                        <Select value={sortBy} onValueChange={setSortBy}>
-                          <SelectTrigger className="w-36 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm">
-                            <SelectValue>
-                              {
-                                sortOptions.find(
-                                  (option) => option.value === sortBy,
-                                )?.label
-                              }
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {sortOptions.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
                       <Button
-                        variant="outline"
-                        className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        variant="default"
+                        className="rounded-md px-4 py-2 text-sm font-medium"
                         onClick={() => {
                           trackButtonClicked(
                             "export_candidates",
@@ -1112,10 +1118,41 @@ export default function DiscoverPage() {
                           URL.revokeObjectURL(url);
                         }}
                       >
-                        Export
+                        <LucideDownload /> Export
                       </Button>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              {/* Right - candidates view */}
+              <div className="space-y-6">
+                {/* Header Section */}
+
+                <div className="flex items-center justify-end gap-2">
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <Button asChild variant={"outline"}>
+                      <SelectTrigger className="w-40 rounded-md px-3 py-1 text-sm">
+                        <LucideSortDesc />
+
+                        <SelectValue>
+                          {
+                            sortOptions.find(
+                              (option) => option.value === sortBy,
+                            )?.label
+                          }
+                        </SelectValue>
+                      </SelectTrigger>
+                    </Button>
+
+                    <SelectContent>
+                      {sortOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {naturalLanguageQuery.isPending ||
@@ -1181,7 +1218,7 @@ export default function DiscoverPage() {
                       return (
                         <Card
                           key={candidate.id}
-                          className="group cursor-pointer overflow-hidden border-0 bg-white py-0 shadow-md transition-all duration-200 hover:shadow-lg"
+                          className="group cursor-pointer overflow-hidden border bg-white py-0 shadow-md transition-all duration-200 hover:shadow-lg"
                           onClick={() => handleCandidateView(candidate)}
                         >
                           <CardContent className="p-0">
@@ -1224,7 +1261,7 @@ export default function DiscoverPage() {
                             </div>
 
                             {/* Card Content */}
-                            <div className="p-4">
+                            <div className="flex flex-col p-4">
                               {/* Avatar and Header */}
                               <div className="mb-4 flex items-start gap-4">
                                 <div className="relative flex-shrink-0">
@@ -1239,10 +1276,13 @@ export default function DiscoverPage() {
                                 </div>
 
                                 <div className="min-w-0 flex-1">
-                                  <h3 className="mb-1 text-lg leading-tight font-semibold text-gray-900">
+                                  <h3 className="mb-1 flex items-center gap-1 text-lg leading-tight font-semibold text-gray-900">
                                     {candidate.firstName && candidate.lastName
                                       ? `${candidate.firstName} ${candidate.lastName}`
-                                      : "Anonymous Candidate"}
+                                      : "Anonymous Candidate"}{" "}
+                                    {index < 2 && (
+                                      <LucideCheckCircle2 className="h-4 w-4 fill-blue-500 stroke-white" />
+                                    )}
                                   </h3>
                                   <p className="text-sm leading-tight text-gray-600">
                                     {candidate.title ?? "Professional"}
@@ -1276,11 +1316,11 @@ export default function DiscoverPage() {
                               </div>
 
                               {/* Details */}
-                              <div className="mb-4 grid grid-cols-2 gap-2 text-sm">
+                              <div className="mb-4 flex flex-col gap-2 text-sm">
                                 {candidate.yearsOfExperience && (
                                   <div className="flex items-center gap-2 text-gray-700">
                                     <svg
-                                      className="h-3.5 w-3.5 flex-shrink-0 text-blue-600"
+                                      className="h-3.5 w-3.5 flex-shrink-0 text-gray-500"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -1297,12 +1337,7 @@ export default function DiscoverPage() {
                                     </span>
                                   </div>
                                 )}
-                                {candidate.location && (
-                                  <div className="flex items-center gap-2 text-gray-700">
-                                    <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-red-500" />
-                                    <span>{candidate.location}</span>
-                                  </div>
-                                )}
+
                                 {candidate.workExperience[0] && (
                                   <div className="col-span-2 flex items-center gap-2 text-gray-700">
                                     <svg
@@ -1323,10 +1358,17 @@ export default function DiscoverPage() {
                                     </span>
                                   </div>
                                 )}
+
+                                {candidate.location && (
+                                  <div className="flex items-center gap-2 text-gray-700">
+                                    <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-gray-500" />
+                                    <span>{candidate.location}</span>
+                                  </div>
+                                )}
                               </div>
 
                               {/* Action Buttons */}
-                              <div className="flex items-center gap-2">
+                              <div className="mt-auto flex items-center gap-2">
                                 <Button
                                   className="flex-1 rounded-md bg-blue-600 text-sm font-medium text-white hover:bg-blue-700"
                                   onClick={(e) => {

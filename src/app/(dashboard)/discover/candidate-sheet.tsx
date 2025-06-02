@@ -16,8 +16,9 @@ import {
   Github,
   Linkedin,
   Mail,
-  MapPin,
+  VerifiedIcon,
 } from "lucide-react";
+import Image from "next/image";
 
 export function getMatchLevel(score: number) {
   if (score >= 85) {
@@ -127,47 +128,96 @@ export const CandidateSheetContent = ({
         </div>
 
         {/* Basic Info */}
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold">About</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">About</h3>
           {selectedCandidate?.bio && (
-            <p className="text-sm text-gray-600">{selectedCandidate?.bio}</p>
+            <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 shadow-sm">
+              <p className="text-sm leading-relaxed text-gray-700">
+                {selectedCandidate?.bio}
+              </p>
+            </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-2 gap-3 text-sm">
             {selectedCandidate?.yearsOfExperience && (
-              <div className="flex items-center space-x-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
-                <span>{selectedCandidate?.yearsOfExperience} years exp</span>
-              </div>
+              <Badge
+                variant="secondary"
+                className="border-border w-full border px-3 py-1.5 text-sm font-medium transition-all duration-200"
+              >
+                <Calendar className="h-5 w-5 text-blue-500" />
+                <span className="font-medium text-gray-700">
+                  {selectedCandidate?.yearsOfExperience} years exp
+                </span>
+              </Badge>
             )}
+
             {selectedCandidate?.location && (
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-gray-500" />
-                <span>{selectedCandidate?.location}</span>
-              </div>
+              <Badge
+                variant="secondary"
+                className="border-border w-full border px-3 py-1.5 text-sm font-medium transition-all duration-200"
+              >
+                {/* <MapPin className="h-5 w-5 text-red-500" /> */}
+                📍
+                <span className="font-medium text-gray-700">
+                  {selectedCandidate?.location}
+                </span>
+              </Badge>
             )}
             {selectedCandidate?.isRemoteOpen && (
-              <div className="flex items-center space-x-2">
-                <ExternalLink className="h-4 w-4 text-gray-500" />
-                <span>Open to remote</span>
-              </div>
+              <Badge
+                variant="secondary"
+                className="border-border w-full border px-3 py-1.5 text-sm font-medium transition-all duration-200"
+              >
+                <ExternalLink className="h-5 w-5" />
+                <span className="font-medium">Open to remote</span>
+              </Badge>
             )}
-            {selectedCandidate?.workTypes &&
-              selectedCandidate?.workTypes.length > 0 && (
-                <div className="flex items-center space-x-2">
-                  <Building className="h-4 w-4 text-gray-500" />
-                  <span>{selectedCandidate?.workTypes.join(", ")}</span>
-                </div>
-              )}
+
+            <Badge
+              variant="secondary"
+              className="border-border w-full border px-3 py-1.5 text-sm font-medium transition-all duration-200"
+            >
+              <VerifiedIcon className="h-5 w-5" />
+              <span className="font-medium">Verified</span>
+            </Badge>
           </div>
         </div>
 
+        {selectedCandidate?.workTypes && (
+          <>
+            <h3 className="text-lg leading-0 font-semibold text-gray-900">
+              Work Types
+            </h3>
+
+            <div className="col-span-2 flex flex-wrap gap-2">
+              {selectedCandidate.workTypes.map(
+                (workType: string, index: number) => (
+                  <Badge
+                    key={index}
+                    variant="outline"
+                    className="border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100"
+                  >
+                    <Building className="mr-1 h-3 w-3" />
+                    {workType}
+                  </Badge>
+                ),
+              )}
+            </div>
+          </>
+        )}
+
         {/* Skills */}
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold">Skills</h3>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Skills & Expertise
+          </h3>
           <div className="flex flex-wrap gap-2">
             {selectedCandidate?.skills.map((skill: string, index: number) => (
-              <Badge key={index} variant="secondary">
+              <Badge
+                key={index}
+                variant="secondary"
+                className="border-border border px-3 py-1.5 text-sm font-medium transition-all duration-200"
+              >
                 {skill}
               </Badge>
             ))}
@@ -179,16 +229,16 @@ export const CandidateSheetContent = ({
           selectedCandidate?.linkedinUrl ??
           selectedCandidate?.parsedGithubUrl ??
           selectedCandidate?.parsedLinkedinUrl) && (
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Social Links</h3>
-            <div className="flex flex-wrap gap-3">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900">Connect</h3>
+            <div className="grid gap-3">
               {/* GitHub from username */}
               {selectedCandidate?.githubUsername && (
                 <a
                   href={`https://github.com/${selectedCandidate.githubUsername}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                  className="group relative flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-gray-400 hover:shadow-md"
                   onClick={() =>
                     handleExternalLink(
                       "github",
@@ -196,9 +246,23 @@ export const CandidateSheetContent = ({
                     )
                   }
                 >
-                  <Github className="h-5 w-5" />
-                  <span className="text-sm">GitHub</span>
-                  <ExternalLink className="h-3 w-3 opacity-60" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg transition-colors">
+                    {/* <Github className="h-5 w-5" /> */}
+                    <Image
+                      width={100}
+                      height={100}
+                      src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                      alt="GitHub"
+                      className="object-cover object-center"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">GitHub</div>
+                    <div className="text-sm text-gray-500">
+                      @{selectedCandidate.githubUsername}
+                    </div>
+                  </div>
+                  <ExternalLink className="h-4 w-4 text-gray-400 transition-colors group-hover:text-gray-600" />
                 </a>
               )}
 
@@ -209,7 +273,7 @@ export const CandidateSheetContent = ({
                     href={selectedCandidate.parsedGithubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                    className="group relative flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-gray-900 hover:shadow-md"
                     onClick={() =>
                       handleExternalLink(
                         "github",
@@ -217,9 +281,21 @@ export const CandidateSheetContent = ({
                       )
                     }
                   >
-                    <Github className="h-5 w-5" />
-                    <span className="text-sm">GitHub</span>
-                    <ExternalLink className="h-3 w-3 opacity-60" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900 text-white transition-colors group-hover:bg-gray-800">
+                      <Github className="h-5 w-5" />
+                      {/* <Image
+                        width={100}
+                        height={100}
+                        src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                        alt="GitHub"
+                        className="object-cover object-center"
+                      /> */}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">GitHub</div>
+                      <div className="text-sm text-gray-500">View profile</div>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-gray-400 transition-colors group-hover:text-gray-600" />
                   </a>
                 )}
 
@@ -229,7 +305,7 @@ export const CandidateSheetContent = ({
                   href={selectedCandidate.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                  className="group relative flex items-center gap-3 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-50/50 p-4 shadow-sm transition-all duration-200 hover:border-blue-500 hover:shadow-md"
                   onClick={() =>
                     handleExternalLink(
                       "linkedin",
@@ -237,9 +313,23 @@ export const CandidateSheetContent = ({
                     )
                   }
                 >
-                  <Linkedin className="h-5 w-5 text-blue-600" />
-                  <span className="text-sm">LinkedIn</span>
-                  <ExternalLink className="h-3 w-3 opacity-60" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg text-white transition-colors">
+                    {/* <Linkedin className="h-5 w-5" /> */}
+                    <Image
+                      width={100}
+                      height={100}
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/960px-LinkedIn_logo_initials.png"
+                      alt="LinkedIn"
+                      className="object-cover object-center"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900">LinkedIn</div>
+                    <div className="text-sm text-blue-600">
+                      Professional profile
+                    </div>
+                  </div>
+                  <ExternalLink className="h-4 w-4 text-blue-400 transition-colors group-hover:text-blue-600" />
                 </a>
               )}
 
@@ -250,7 +340,7 @@ export const CandidateSheetContent = ({
                     href={selectedCandidate.parsedLinkedinUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-lg border p-3 transition-colors hover:bg-gray-50"
+                    className="group relative flex items-center gap-3 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-50/50 p-4 shadow-sm transition-all duration-200 hover:border-blue-500 hover:shadow-md"
                     onClick={() =>
                       handleExternalLink(
                         "linkedin",
@@ -258,9 +348,16 @@ export const CandidateSheetContent = ({
                       )
                     }
                   >
-                    <Linkedin className="h-5 w-5 text-blue-600" />
-                    <span className="text-sm">LinkedIn</span>
-                    <ExternalLink className="h-3 w-3 opacity-60" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white transition-colors group-hover:bg-blue-700">
+                      <Linkedin className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">LinkedIn</div>
+                      <div className="text-sm text-blue-600">
+                        Professional profile
+                      </div>
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-blue-400 transition-colors group-hover:text-blue-600" />
                   </a>
                 )}
 
@@ -268,11 +365,16 @@ export const CandidateSheetContent = ({
               {selectedCandidate?.linkedinEmail &&
                 !selectedCandidate?.linkedinUrl &&
                 !selectedCandidate?.parsedLinkedinUrl && (
-                  <div className="flex items-center gap-2 rounded-lg border bg-gray-50 p-3">
-                    <Mail className="h-5 w-5 text-gray-500" />
-                    <span className="text-sm text-gray-600">
-                      {selectedCandidate.linkedinEmail}
-                    </span>
+                  <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50/50 p-4 shadow-sm">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-500 text-white">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">Email</div>
+                      <div className="text-sm text-gray-600">
+                        {selectedCandidate.linkedinEmail}
+                      </div>
+                    </div>
                   </div>
                 )}
             </div>
@@ -281,37 +383,65 @@ export const CandidateSheetContent = ({
 
         {/* Work Experience */}
         {selectedCandidate?.workExperience.length > 0 && (
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Work Experience</h3>
-            <div className="space-y-4">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900">Experience</h3>
+            <div className="space-y-3">
               {selectedCandidate?.workExperience.map(
                 (
                   work: (typeof selectedCandidate.workExperience)[0],
                   index: number,
                 ) => (
-                  <div key={index} className="rounded-lg border p-4">
+                  <div
+                    key={index}
+                    className="group relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md"
+                  >
+                    {/* Timeline dot for visual hierarchy */}
+                    <div className="absolute top-6 -left-2 h-4 w-4 rounded-full border-2 border-white bg-blue-500 shadow-sm" />
+
                     <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <h4 className="font-medium">{work.position}</h4>
-                        <p className="text-sm text-gray-600">{work.company}</p>
-                        <p className="text-xs text-gray-500">
-                          {work.startDate
-                            ? new Date(work.startDate).getFullYear()
-                            : "Unknown"}{" "}
-                          -{" "}
-                          {work.isCurrent
-                            ? "Present"
-                            : work.endDate
-                              ? new Date(work.endDate).getFullYear()
-                              : "Unknown"}
-                        </p>
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-3">
+                          <h4 className="text-lg font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
+                            {work.position}
+                          </h4>
+                          {work.isCurrent && (
+                            <Badge
+                              variant="default"
+                              className="border-green-200 bg-green-100 text-xs font-medium text-green-800"
+                            >
+                              Current
+                            </Badge>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Building className="h-4 w-4 text-gray-400" />
+                          <p className="font-medium text-gray-700">
+                            {work.company}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-gray-400" />
+                          <p className="text-sm text-gray-600">
+                            {work.startDate
+                              ? new Date(work.startDate).getFullYear()
+                              : "Unknown"}{" "}
+                            -{" "}
+                            {work.isCurrent
+                              ? "Present"
+                              : work.endDate
+                                ? new Date(work.endDate).getFullYear()
+                                : "Unknown"}
+                          </p>
+                        </div>
                       </div>
-                      {work.isCurrent && (
-                        <Badge variant="outline" className="text-xs">
-                          Current
-                        </Badge>
-                      )}
                     </div>
+
+                    {/* Add subtle gradient background for current role */}
+                    {work.isCurrent && (
+                      <div className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-green-50/50 to-blue-50/50" />
+                    )}
                   </div>
                 ),
               )}
@@ -322,40 +452,82 @@ export const CandidateSheetContent = ({
         {/* Salary Expectations */}
         {(selectedCandidate?.expectedSalaryMin ??
           selectedCandidate?.expectedSalaryMax) && (
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold">Salary Expectations</h3>
-            <div className="rounded-lg border p-4">
-              <p className="text-sm">
-                {selectedCandidate?.salaryCurrency ?? "USD"}{" "}
-                {selectedCandidate?.expectedSalaryMin
-                  ? `${selectedCandidate?.expectedSalaryMin.toLocaleString()}`
-                  : "Flexible"}
-                {selectedCandidate?.expectedSalaryMax &&
-                selectedCandidate?.expectedSalaryMin
-                  ? ` - ${selectedCandidate?.expectedSalaryMax.toLocaleString()}`
-                  : selectedCandidate?.expectedSalaryMax
-                    ? ` up to ${selectedCandidate?.expectedSalaryMax.toLocaleString()}`
-                    : "+"}{" "}
-                per year
-              </p>
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Salary Expectations
+            </h3>
+            <div className="relative overflow-hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 p-6 shadow-sm">
+              {/* Decorative background pattern */}
+              <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-emerald-100/40" />
+              <div className="absolute -bottom-2 -left-2 h-16 w-16 rounded-full bg-teal-100/40" />
+
+              <div className="relative flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-sm">
+                  <span className="text-lg font-bold">$</span>
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold text-gray-900">
+                      {selectedCandidate?.salaryCurrency ?? "USD"}
+                    </span>
+                    <span className="text-3xl font-black text-emerald-600">
+                      {selectedCandidate?.expectedSalaryMin
+                        ? `${selectedCandidate?.expectedSalaryMin.toLocaleString()}`
+                        : "Flexible"}
+                    </span>
+                    {selectedCandidate?.expectedSalaryMax &&
+                      selectedCandidate?.expectedSalaryMin && (
+                        <>
+                          <span className="text-xl font-semibold text-gray-500">
+                            -
+                          </span>
+                          <span className="text-3xl font-black text-emerald-600">
+                            {selectedCandidate?.expectedSalaryMax.toLocaleString()}
+                          </span>
+                        </>
+                      )}
+                    {selectedCandidate?.expectedSalaryMax &&
+                      !selectedCandidate?.expectedSalaryMin && (
+                        <>
+                          <span className="text-lg font-medium text-gray-600">
+                            up to
+                          </span>
+                          <span className="text-3xl font-black text-emerald-600">
+                            {selectedCandidate?.expectedSalaryMax.toLocaleString()}
+                          </span>
+                        </>
+                      )}
+                    {!selectedCandidate?.expectedSalaryMax &&
+                      selectedCandidate?.expectedSalaryMin && (
+                        <span className="text-2xl font-bold text-gray-400">
+                          +
+                        </span>
+                      )}
+                  </div>
+                  <p className="mt-1 text-sm font-medium text-emerald-700">
+                    per year
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         {/* Contact Actions */}
-        <div className="space-y-3">
-          <h3 className="text-lg font-semibold">Actions</h3>
-          <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Take Action</h3>
+          <div className="grid grid-cols-2 gap-3">
             <Button
-              className="flex-1"
+              className="h-12 flex-1 bg-gradient-to-r from-blue-600 to-blue-700 font-semibold shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
               onClick={() => handleContactView(selectedCandidate.id)}
             >
-              <Mail className="mr-2 h-4 w-4" />
+              <Mail className="mr-2 h-5 w-5" />
               Contact
             </Button>
             <Button
               variant="outline"
-              className="flex-1"
+              className="h-12 flex-1 border-2 border-gray-300 font-semibold shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
               onClick={() => {
                 trackButtonClicked("view_resume", "candidate_detail");
                 // Open resume in new tab
@@ -375,7 +547,7 @@ export const CandidateSheetContent = ({
                 }
               }}
             >
-              <ExternalLink className="mr-2 h-4 w-4" />
+              <ExternalLink className="mr-2 h-5 w-5" />
               View Resume
             </Button>
           </div>
