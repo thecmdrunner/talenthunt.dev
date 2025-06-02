@@ -556,7 +556,10 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
 
               // Calculate cosine similarity
               try {
-                if (candidate.resumeEmbedding) {
+                if (
+                  candidate.resumeEmbedding?.startsWith("[") &&
+                  candidate.resumeEmbedding?.endsWith("]")
+                ) {
                   const candidateEmbedding = JSON.parse(
                     candidate.resumeEmbedding,
                   ) as number[];
