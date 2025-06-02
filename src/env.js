@@ -19,6 +19,7 @@ export const env = createEnv({
     KV_REST_API_TOKEN: z.string(),
     KV_REST_API_READ_ONLY_TOKEN: z.string(),
     REDIS_URL: z.string(),
+    OPENAI_API_KEY: z.string(),
   },
 
   /**
@@ -42,6 +43,7 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     KV_URL: process.env.KV_URL,

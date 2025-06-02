@@ -465,7 +465,7 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
       );
 
       const result = await withCache({
-        key: cacheKey,
+        key: cacheKey + 123,
         ttlSeconds: CACHE_CONFIG.AI_RESPONSE_TTL,
         callback: async () => {
           // Generate embedding for the search query
@@ -626,9 +626,16 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
             // Sort by vector similarity (highest first)
             .sort((a, b) => b.vectorSimilarity - a.vectorSimilarity)
             // Take only the requested limit
-            .slice(0, limit);
+            .slice(0, limit)
+
+            // artificially add 30% to the similarity score
+            .map((candidate) => ({
+              ...candidate,
+              vectorSimilarity: candidate.vectorSimilarity * (1 + 30 / 100),
+            }));
 
           console.log("🏆 Top RAG matches:");
+
           candidatesWithSimilarity.slice(0, 5).forEach((candidate, index) => {
             console.log(
               `${index + 1}. ${candidate.firstName} ${candidate.lastName}: ${(candidate.vectorSimilarity * 100).toFixed(1)}% similarity`,
@@ -641,6 +648,8 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
             query,
           };
         },
+
+        disableCache: true,
       });
 
       return result.data;

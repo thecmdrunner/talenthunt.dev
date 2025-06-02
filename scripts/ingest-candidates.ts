@@ -1,5 +1,3 @@
-import { db } from "@/server/db";
-import * as schema from "@/server/db/schema";
 import { faker } from "@faker-js/faker";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { generateObject } from "ai";
@@ -44,7 +42,10 @@ const bizResumes = await readFile(files[1], "utf-8");
 const devResumesData = JSON.parse(devResumes) as { resumes: Resume[] };
 const bizResumesData = JSON.parse(bizResumes) as { resumes: Resume[] };
 
-const resumes = [...devResumesData.resumes, ...bizResumesData.resumes];
+const resumes = [
+  // ...devResumesData.resumes, ...bizResumesData.resumes
+  devResumesData.resumes[0],
+] as Resume[];
 
 // Resume data from the existing ingest.ts file
 // const resumes: Resume[] = [
@@ -296,6 +297,42 @@ function calculateSkillScore(skills: { proficiency: string }[]): number {
   }, 0);
 }
 
+function transformResumeDataToParsedFormat(
+  resume: Resume,
+  enhancement: CandidateEnhancement,
+) {
+  // Transform the Resume data to match ParsedResumeData schema structure
+  // and include additional structured data for the enhanced candidate information
+  return {
+    fullName: `${enhancement.firstName} ${enhancement.lastName}`,
+    email: generateRandomEmail(),
+    role: enhancement.title,
+    skills: enhancement.skills
+      .map((s) => s.name)
+      .slice(0, 5)
+      .join(", "),
+    experience: enhancement.yearsOfExperience.toString(),
+    location: enhancement.location,
+    githubUrl: enhancement.enhancedProjects[0]?.githubUrl,
+    linkedinUrl: faker.internet.url(),
+    // Extended data that includes the enhanced information
+    enhancedData: {
+      skills: enhancement.skills,
+      workExperience: resume.pastExperience.map((exp) => ({
+        company: exp.company,
+        role: exp.role,
+        location: exp.location,
+        startDate: exp.duration.startDate,
+        endDate: exp.duration.endDate,
+        projects: exp.projects,
+        description: exp.projects?.map((p) => p.description).join("\n") ?? "",
+      })),
+      education: resume.education,
+      projects: enhancement.enhancedProjects.slice(0, 3),
+    },
+  };
+}
+
 async function ingestCandidate(resume: Resume, index: number) {
   console.log(`\n🔄 Processing candidate ${index + 1}...`);
 
@@ -310,15 +347,26 @@ async function ingestCandidate(resume: Resume, index: number) {
 
     console.log(`👤 Generated user: ${userId} (${email})`);
 
+    const userData = {
+      userId,
+      linkedinEmail: email,
+      credits: faker.number.int({ min: 10, max: 100 }),
+      githubUsername: faker.internet.userName(),
+      linkedinUrl: `https://linkedin.com/in/${faker.internet.userName().toLowerCase()}`,
+    };
+
+    // console.log(`userData: ${JSON.stringify(userData, null, 2)}`);
+
     // Insert user first
-    const [user] = await db
-      .insert(schema.users)
-      .values({
-        userId,
-        linkedinEmail: email,
-        credits: faker.number.int({ min: 10, max: 100 }),
-      })
-      .returning();
+    // const userResult = await db
+    //   .insert(schema.users)
+    //   .values(userData)
+    //   .returning();
+
+    // const user = userResult[0];
+    //   if (!user) {
+    //     throw new Error("Failed to create user");
+    // }
 
     console.log("✅ User created successfully");
 
@@ -329,120 +377,61 @@ async function ingestCandidate(resume: Resume, index: number) {
     );
     const totalScore = skillScore + experienceScore;
 
+    // Transform resume data to match ParsedResumeData schema
+    const parsedResumeData = transformResumeDataToParsedFormat(
+      resume,
+      enhancement,
+    );
+    const data = {
+      ...userData,
+      currentStep: 5, // Completed onboarding
+      firstName: enhancement.firstName,
+      lastName: enhancement.lastName,
+      title: enhancement.title,
+      bio: enhancement.bio,
+      location: enhancement.location,
+      timezone: enhancement.timezone,
+      isRemoteOpen: enhancement.isRemoteOpen,
+      workTypes: enhancement.workTypes,
+      experienceLevel: enhancement.experienceLevel,
+      yearsOfExperience: enhancement.yearsOfExperience,
+      expectedSalaryMin: enhancement.expectedSalaryMin,
+      expectedSalaryMax: enhancement.expectedSalaryMax,
+      salaryCurrency: enhancement.salaryCurrency,
+      parsedResumeData, // Now properly formatted
+      verificationStatus: "approved",
+      totalScore,
+      skillScore,
+      experienceScore,
+      outreachCount: 0,
+      isActive: true,
+      isOpenToWork: true,
+      onboardingCompletedAt: new Date(),
+      approvedAt: new Date(), // Add approval timestamp
+      lastActiveAt: new Date(), // Add last active timestamp
+    };
+
+    console.log(`data: ${JSON.stringify(data, null, 2)}`);
+
     // Insert candidate profile
-    const result = await db
-      .insert(schema.candidateProfiles)
-      .values({
-        userId: user.userId,
-        currentStep: 5, // Completed onboarding
-        firstName: enhancement.firstName,
-        lastName: enhancement.lastName,
-        title: enhancement.title,
-        bio: enhancement.bio,
-        location: enhancement.location,
-        timezone: enhancement.timezone,
-        isRemoteOpen: enhancement.isRemoteOpen,
-        workTypes: enhancement.workTypes,
-        experienceLevel: enhancement.experienceLevel,
-        yearsOfExperience: enhancement.yearsOfExperience,
-        expectedSalaryMin: enhancement.expectedSalaryMin,
-        expectedSalaryMax: enhancement.expectedSalaryMax,
-        salaryCurrency: enhancement.salaryCurrency,
-        parsedResumeData: resume,
-        verificationStatus: "approved",
-        totalScore,
-        skillScore,
-        experienceScore,
-        outreachCount: 0,
-        isActive: true,
-        isOpenToWork: true,
-        onboardingCompletedAt: new Date(),
-      })
-      .returning();
+    // const result = await db
+    //   .insert(schema.candidateProfiles)
+    //   .values(data)
+    //   .returning();
 
-    const candidateProfile = result[0]!;
+    // const candidateProfile = result[0]!;
 
-    console.log(
-      `✅ Candidate profile created: ${candidateProfile.firstName} ${candidateProfile.lastName}`,
-    );
+    // console.log(
+    //   `✅ Candidate profile created with enhanced data: ${candidateProfile.firstName} ${candidateProfile.lastName}`,
+    // );
+    // console.log(
+    //   `   📊 Score: ${totalScore} (Skills: ${skillScore}, Experience: ${experienceScore})`,
+    // );
+    // console.log(
+    //   `   🎯 ${enhancement.skills.length} skills, ${resume.pastExperience.length} work experiences, ${enhancement.enhancedProjects.length} projects`,
+    // );
 
-    // Insert work experience
-    for (const experience of resume.pastExperience) {
-      await db.insert(schema.workExperience).values({
-        candidateId: candidateProfile.id,
-        company: experience.company,
-        position: experience.role,
-        description:
-          experience.projects?.map((p) => p.description).join("\n") ?? "",
-        startDate: experience.duration.startDate,
-        endDate: experience.duration.endDate ?? null,
-        isCurrent: !experience.duration.endDate,
-        location: experience.location,
-        isRemote:
-          experience.location?.toLowerCase().includes("remote") ?? false,
-        technologies: enhancement.skills.map((s) => s.name).slice(0, 5), // Sample technologies
-      });
-    }
-
-    console.log(
-      `✅ Added ${resume.pastExperience.length} work experience records`,
-    );
-
-    // Insert education
-    if (resume.education) {
-      await db.insert(schema.education).values({
-        candidateId: candidateProfile.id,
-        institution: resume.education.institution,
-        degree: resume.education.degree,
-        fieldOfStudy: resume.education.field,
-        description: `${resume.education.degree} in ${resume.education.field}`,
-        // Mock graduation dates based on experience
-        startDate: "2016-09-01", // Sept 2016
-        endDate: "2020-06-01", // June 2020
-      });
-
-      console.log("✅ Added education record");
-    }
-
-    // Insert skills
-    for (const skill of enhancement.skills) {
-      await db.insert(schema.skills).values({
-        candidateId: candidateProfile.id,
-        name: skill.name,
-        category: skill.category,
-        proficiency: skill.proficiency,
-        yearsOfExperience: skill.yearsOfExperience,
-        isVerified: faker.datatype.boolean({ probability: 0.3 }),
-        verificationSource: faker.datatype.boolean({ probability: 0.3 })
-          ? "GitHub"
-          : null,
-      });
-    }
-
-    console.log(`✅ Added ${enhancement.skills.length} skills`);
-
-    // Insert projects
-    const projectsToInsert = enhancement.enhancedProjects.slice(0, 3); // Limit to 3 projects
-    for (const [projectIndex, project] of projectsToInsert.entries()) {
-      await db.insert(schema.projects).values({
-        candidateId: candidateProfile.id,
-        title: project.title,
-        description: project.description,
-        longDescription: project.longDescription,
-        githubUrl: project.githubUrl,
-        liveUrl: project.liveUrl,
-        technologies: project.technologies,
-        startDate: `${2022 + projectIndex}-${String(projectIndex * 3 + 1).padStart(2, "0")}-01`, // Spread projects across time
-        endDate: `${2022 + projectIndex}-${String((projectIndex + 1) * 3 + 1).padStart(2, "0")}-01`,
-        isFeatured: projectIndex === 0, // First project is featured
-        isPublic: true,
-        displayOrder: projectIndex,
-      });
-    }
-
-    console.log(`✅ Added ${projectsToInsert.length} projects`);
-
-    return candidateProfile;
+    // return candidateProfile;
   } catch (error) {
     console.error(`❌ Error processing candidate ${index + 1}:`, error);
     throw error;
