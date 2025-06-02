@@ -197,7 +197,7 @@ export default function OnboardingPage() {
 
       {/* Main Content */}
       <div className="relative z-10 flex min-h-[calc(100vh-100px)] items-center justify-center p-4">
-        <div className="w-full max-w-6xl">
+      <div className="w-full max-w-6xl">
           {/* Enhanced Header Section */}
           <div className="mb-16 text-center">
             <div className="mb-8 flex justify-center">
@@ -228,7 +228,7 @@ export default function OnboardingPage() {
                 </svg>
                 <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
               </span>
-            </h1>
+          </h1>
 
             <p className="mx-auto mb-12 max-w-4xl text-2xl leading-relaxed text-white/80">
               Whether you're looking for your next opportunity or seeking top
@@ -304,7 +304,7 @@ export default function OnboardingPage() {
                     opacity="0.6"
                   />
                 </svg>
-              </div>
+        </div>
 
               {/* Additional geometric elements */}
               <div className="absolute bottom-0 left-0 h-24 w-24 opacity-5">
@@ -326,18 +326,18 @@ export default function OnboardingPage() {
                   </div>
                   <h2 className="mb-6 text-3xl font-bold text-white">
                     I'm Looking for a Job
-                  </h2>
+              </h2>
                   <p className="text-xl leading-relaxed text-white/80">
-                    Showcase your skills and get discovered by top recruiters
-                  </p>
+                Showcase your skills and get discovered by top recruiters
+              </p>
                 </div>
 
                 <ul className="mb-10 space-y-5">
-                  {[
-                    "Connect LinkedIn & GitHub profiles",
-                    "Upload resume and showcase projects",
-                    "Get verified and featured",
-                    "Receive personalized job opportunities",
+                {[
+                  "Connect LinkedIn & GitHub profiles",
+                  "Upload resume and showcase projects",
+                  "Get verified and featured",
+                  "Receive personalized job opportunities",
                   ].map((feature, index) => (
                     <li
                       key={index}
@@ -361,8 +361,8 @@ export default function OnboardingPage() {
                     </span>
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
 
             {/* Enhanced Recruiter Card - perfect landing page match */}
             <Card className="group hover:shadow-3xl relative overflow-hidden rounded-3xl border border-blue-400/40 bg-gradient-to-br from-blue-700/60 to-blue-900/80 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-blue-300/60">
@@ -441,7 +441,7 @@ export default function OnboardingPage() {
                   </div>
                   <h2 className="mb-6 text-3xl font-bold text-white">
                     I'm Looking to Hire
-                  </h2>
+              </h2>
                   <p className="text-xl leading-relaxed text-white/80">
                     Find perfect candidates using AI-powered natural language
                     search
@@ -449,11 +449,11 @@ export default function OnboardingPage() {
                 </div>
 
                 <ul className="mb-10 space-y-5">
-                  {[
-                    "Search with natural language queries",
-                    "Access verified candidate profiles",
-                    "Auto-screen and rank candidates",
-                    "Launch personalized outreach campaigns",
+                {[
+                  "Search with natural language queries",
+                  "Access verified candidate profiles",
+                  "Auto-screen and rank candidates",
+                  "Launch personalized outreach campaigns",
                   ].map((feature, index) => (
                     <li
                       key={index}
@@ -477,18 +477,18 @@ export default function OnboardingPage() {
                     </span>
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
-          </div>
+            </CardContent>
+          </Card>
+        </div>
 
           {/* Enhanced Footer Note */}
           <div className="mt-16 text-center">
             <div className="relative mx-auto max-w-lg">
               <div className="absolute -inset-4 rounded-2xl border border-blue-400/10"></div>
               <p className="relative z-10 text-lg text-white/60">
-                Already have an account? You can change your role anytime in
-                settings.
-              </p>
+            Already have an account? You can change your role anytime in
+            settings.
+          </p>
             </div>
           </div>
         </div>
