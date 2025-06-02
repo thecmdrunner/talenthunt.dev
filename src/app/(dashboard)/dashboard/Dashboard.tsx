@@ -19,7 +19,6 @@ import {
   TrendingUp,
   User,
   Users,
-  Brain,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -63,7 +62,7 @@ export default function Dashboard({
 
   if (!isCandidateOnboarded && !isRecruiterOnboarded) {
     return (
-      <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-blue-800 to-blue-700">
+      <div className="relative min-h-screen overflow-hidden">
         {/* Enhanced Geometric Background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute top-10 left-10 h-[600px] w-[600px] animate-pulse rounded-full bg-gradient-to-br from-blue-400/15 to-blue-600/10 blur-3xl"></div>
@@ -82,7 +81,11 @@ export default function Dashboard({
             ></div>
           </div>
 
-          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1400 1000" fill="none">
+          <svg
+            className="absolute inset-0 h-full w-full"
+            viewBox="0 0 1400 1000"
+            fill="none"
+          >
             <path
               d="M50 150L200 80L350 200L500 120L650 250L800 180L950 300L1100 220L1250 350"
               stroke="rgba(96,165,250,0.15)"
@@ -95,29 +98,28 @@ export default function Dashboard({
               strokeWidth="1.5"
               fill="none"
             />
-            
-            <circle cx="50" cy="150" r="6" fill="rgba(96,165,250,0.4)" className="animate-pulse" />
+
+            <circle
+              cx="50"
+              cy="150"
+              r="6"
+              fill="rgba(96,165,250,0.4)"
+              className="animate-pulse"
+            />
             <circle cx="200" cy="80" r="8" fill="rgba(59,130,246,0.5)" />
-            <circle cx="350" cy="200" r="5" fill="rgba(147,197,253,0.3)" className="animate-pulse" />
+            <circle
+              cx="350"
+              cy="200"
+              r="5"
+              fill="rgba(147,197,253,0.3)"
+              className="animate-pulse"
+            />
           </svg>
 
           <div className="absolute top-1/4 left-1/5 h-4 w-4 animate-bounce rounded-full bg-blue-300/40"></div>
           <div className="absolute top-1/3 right-1/4 h-3 w-3 rotate-45 animate-pulse bg-blue-400/30"></div>
           <div className="absolute bottom-1/3 left-1/2 h-2 w-2 animate-ping rounded-full bg-blue-300/50"></div>
         </div>
-
-        {/* Navigation Header */}
-        <nav className="relative z-10 px-6 py-6">
-          <div className="mx-auto flex max-w-7xl items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-                <div className="absolute inset-2 rounded-lg border border-white/20"></div>
-                <Brain className="relative z-10 h-7 w-7 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-white">TalentHunt</span>
-            </div>
-          </div>
-        </nav>
 
         <div className="relative z-10 mx-auto max-w-4xl px-4 py-16">
           <Card className="relative overflow-hidden rounded-3xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-2xl backdrop-blur-xl">
@@ -135,74 +137,95 @@ export default function Dashboard({
                 <User className="h-10 w-10 text-white" />
               </div>
               <h1 className="mb-4 text-3xl font-bold text-white">
-              Welcome to Your Career Hub
-            </h1>
+                Welcome to Your Career Hub
+              </h1>
               <p className="mb-8 text-lg text-white/80">
-              Choose your journey and unlock opportunities in the world of
-              talent.
-            </p>
+                Choose your journey and unlock opportunities in the world of
+                talent.
+              </p>
 
-            <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 md:grid-cols-2">
                 <Card className="group cursor-pointer border border-blue-400/30 bg-blue-700/30 backdrop-blur-sm transition-all hover:border-blue-300/50 hover:shadow-lg">
                   <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
-                    <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                      <circle cx="50" cy="50" r="30" stroke="currentColor" fill="none" strokeWidth="2" />
+                    <svg
+                      viewBox="0 0 100 100"
+                      className="h-full w-full text-blue-300"
+                    >
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="30"
+                        stroke="currentColor"
+                        fill="none"
+                        strokeWidth="2"
+                      />
                     </svg>
                   </div>
                   <CardContent className="relative z-10 p-8 text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100/20 group-hover:bg-blue-200/30 backdrop-blur-sm">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100/20 backdrop-blur-sm group-hover:bg-blue-200/30">
                       <Target className="h-6 w-6 text-blue-300" />
                     </div>
                     <h3 className="mb-2 text-xl font-semibold text-white">
-                    I&apos;m Looking for Opportunities
-                  </h3>
+                      I&apos;m Looking for Opportunities
+                    </h3>
                     <p className="mb-4 text-white/70">
-                    Build your profile and get discovered by top recruiters
-                  </p>
-                    <Button asChild className="w-full bg-white text-blue-900 hover:bg-blue-50 font-medium">
-                    <Link href="/onboarding/candidate">
-                      Get Started as Candidate
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+                      Build your profile and get discovered by top recruiters
+                    </p>
+                    <Button
+                      asChild
+                      className="w-full bg-white font-medium text-blue-900 hover:bg-blue-50"
+                    >
+                      <Link href="/onboarding/candidate">
+                        Get Started as Candidate
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
 
                 <Card className="group cursor-pointer border border-blue-400/30 bg-blue-700/30 backdrop-blur-sm transition-all hover:border-blue-300/50 hover:shadow-lg">
                   <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
-                    <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-                      <polygon points="50,20 80,50 50,80 20,50" stroke="currentColor" fill="none" strokeWidth="2" />
+                    <svg
+                      viewBox="0 0 100 100"
+                      className="h-full w-full text-blue-300"
+                    >
+                      <polygon
+                        points="50,20 80,50 50,80 20,50"
+                        stroke="currentColor"
+                        fill="none"
+                        strokeWidth="2"
+                      />
                     </svg>
                   </div>
                   <CardContent className="relative z-10 p-8 text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100/20 group-hover:bg-blue-200/30 backdrop-blur-sm">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100/20 backdrop-blur-sm group-hover:bg-blue-200/30">
                       <Search className="h-6 w-6 text-blue-300" />
                     </div>
                     <h3 className="mb-2 text-xl font-semibold text-white">
-                    I&apos;m Hiring Talent
-                  </h3>
+                      I&apos;m Hiring Talent
+                    </h3>
                     <p className="mb-4 text-white/70">
-                    Find and connect with the perfect candidates
-                  </p>
-                  <Button
-                    asChild
-                      className="w-full bg-white text-blue-900 hover:bg-blue-50 font-medium"
-                  >
-                    <Link href="/onboarding/recruiter">
-                      Get Started as Recruiter
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </CardContent>
-        </Card>
+                      Find and connect with the perfect candidates
+                    </p>
+                    <Button
+                      asChild
+                      className="w-full bg-white font-medium text-blue-900 hover:bg-blue-50"
+                    >
+                      <Link href="/onboarding/recruiter">
+                        Get Started as Recruiter
+                      </Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-950 via-blue-800 to-blue-700">
+    <div className="relative min-h-screen overflow-hidden">
       {/* Enhanced Geometric Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute top-10 left-10 h-[600px] w-[600px] animate-pulse rounded-full bg-gradient-to-br from-blue-400/15 to-blue-600/10 blur-3xl"></div>
@@ -221,7 +244,11 @@ export default function Dashboard({
           ></div>
         </div>
 
-        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1400 1000" fill="none">
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 1400 1000"
+          fill="none"
+        >
           <path
             d="M50 150L200 80L350 200L500 120L650 250L800 180L950 300L1100 220L1250 350"
             stroke="rgba(96,165,250,0.15)"
@@ -234,10 +261,22 @@ export default function Dashboard({
             strokeWidth="1.5"
             fill="none"
           />
-          
-          <circle cx="50" cy="150" r="6" fill="rgba(96,165,250,0.4)" className="animate-pulse" />
+
+          <circle
+            cx="50"
+            cy="150"
+            r="6"
+            fill="rgba(96,165,250,0.4)"
+            className="animate-pulse"
+          />
           <circle cx="200" cy="80" r="8" fill="rgba(59,130,246,0.5)" />
-          <circle cx="350" cy="200" r="5" fill="rgba(147,197,253,0.3)" className="animate-pulse" />
+          <circle
+            cx="350"
+            cy="200"
+            r="5"
+            fill="rgba(147,197,253,0.3)"
+            className="animate-pulse"
+          />
         </svg>
 
         <div className="absolute top-1/4 left-1/5 h-4 w-4 animate-bounce rounded-full bg-blue-300/40"></div>
@@ -245,87 +284,74 @@ export default function Dashboard({
         <div className="absolute bottom-1/3 left-1/2 h-2 w-2 animate-ping rounded-full bg-blue-300/50"></div>
       </div>
 
-      {/* Navigation Header */}
-      <nav className="relative z-10 px-6 py-6">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-              <div className="absolute inset-2 rounded-lg border border-white/20"></div>
-              <Brain className="relative z-10 h-7 w-7 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-white">TalentHunt</span>
-          </div>
-        </div>
-      </nav>
-
       <div className="relative z-10 mx-auto max-w-7xl px-4">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-2">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-2">
             <h1 className="mb-2 text-3xl font-bold text-white">
-            Welcome back {clerkUser?.fullName ?? ""}! 👋
-          </h1>
+              Welcome back {clerkUser?.fullName ?? ""}! 👋
+            </h1>
 
-          <div className="flex gap-2">
-            <button
-              className={cn(
-                  "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors backdrop-blur-sm",
-                tabValue === "candidate"
+            <div className="flex gap-2">
+              <button
+                className={cn(
+                  "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium backdrop-blur-sm transition-colors",
+                  tabValue === "candidate"
                     ? "bg-white text-blue-900 shadow-sm"
-                    : "bg-blue-600/20 text-white hover:bg-blue-600/30 border border-blue-400/30",
-              )}
-              onClick={() => setTabValue("candidate")}
-            >
-              <Target className="h-4 w-4" />
-              Profile Analytics
-            </button>
-            <button
-              className={cn(
-                  "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors backdrop-blur-sm",
-                tabValue === "recruiter"
+                    : "border border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30",
+                )}
+                onClick={() => setTabValue("candidate")}
+              >
+                <Target className="h-4 w-4" />
+                Profile Analytics
+              </button>
+              <button
+                className={cn(
+                  "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium backdrop-blur-sm transition-colors",
+                  tabValue === "recruiter"
                     ? "bg-white text-blue-900 shadow-sm"
-                    : "bg-blue-600/20 text-white hover:bg-blue-600/30 border border-blue-400/30",
-              )}
-              onClick={() => setTabValue("recruiter")}
-            >
-              <Search className="h-4 w-4" />
-              Recruiter Analytics
-            </button>
+                    : "border border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30",
+                )}
+                onClick={() => setTabValue("recruiter")}
+              >
+                <Search className="h-4 w-4" />
+                Recruiter Analytics
+              </button>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {isCandidateOnboarded && (
+              <Badge className="border border-blue-400/30 bg-blue-100/20 text-blue-300 backdrop-blur-sm">
+                <Target className="mr-1 h-3 w-3" />
+              </Badge>
+            )}
+            {isRecruiterOnboarded && (
+              <Badge className="border border-blue-400/30 bg-blue-100/20 text-blue-300 backdrop-blur-sm">
+                <Search className="mr-1 h-3 w-3" />
+              </Badge>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          {isCandidateOnboarded && (
-              <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm">
-              <Target className="mr-1 h-3 w-3" />
-            </Badge>
-          )}
-          {isRecruiterOnboarded && (
-              <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm">
-              <Search className="mr-1 h-3 w-3" />
-            </Badge>
-          )}
-        </div>
-      </div>
 
-      {hasBothProfiles ? (
-        <Tabs
-          value={tabValue}
-          className="w-full"
-          onValueChange={(value) => setTabValue(value as TabValue)}
-        >
-          <TabsContent value="candidate">
-            <CandidateDashboard user={user} />
-          </TabsContent>
+        {hasBothProfiles ? (
+          <Tabs
+            value={tabValue}
+            className="w-full"
+            onValueChange={(value) => setTabValue(value as TabValue)}
+          >
+            <TabsContent value="candidate">
+              <CandidateDashboard user={user} />
+            </TabsContent>
 
-          <TabsContent value="recruiter">
-            <RecruiterDashboard user={user} />
-          </TabsContent>
-        </Tabs>
-      ) : isCandidateOnboarded ? (
-        <CandidateDashboard user={user} />
-      ) : (
-        <RecruiterDashboard user={user} />
-      )}
+            <TabsContent value="recruiter">
+              <RecruiterDashboard user={user} />
+            </TabsContent>
+          </Tabs>
+        ) : isCandidateOnboarded ? (
+          <CandidateDashboard user={user} />
+        ) : (
+          <RecruiterDashboard user={user} />
+        )}
       </div>
     </div>
   );
@@ -343,13 +369,27 @@ function CandidateDashboard({
   const isComplete = currentStep >= maxSteps;
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-8">
+    <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* Profile Progress */}
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl lg:col-span-2">
         <div className="absolute top-0 right-0 h-20 w-20 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <circle cx="50" cy="50" r="30" stroke="currentColor" fill="none" strokeWidth="2" />
-            <circle cx="50" cy="50" r="15" stroke="currentColor" fill="currentColor" opacity="0.3" />
+            <circle
+              cx="50"
+              cy="50"
+              r="30"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="2"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="15"
+              stroke="currentColor"
+              fill="currentColor"
+              opacity="0.3"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10 pb-4">
@@ -363,7 +403,9 @@ function CandidateDashboard({
         <CardContent className="relative z-10">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-white/80">Progress</span>
+              <span className="text-sm font-medium text-white/80">
+                Progress
+              </span>
               <div className="flex items-center gap-2">
                 {isComplete ? (
                   <CheckCircle className="h-4 w-4 text-green-400" />
@@ -390,7 +432,10 @@ function CandidateDashboard({
                   : "Complete your profile to get discovered by top recruiters"}
               </span>
               {!isComplete && (
-                <Button size="sm" className="bg-white text-blue-900 hover:bg-blue-50">
+                <Button
+                  size="sm"
+                  className="bg-white text-blue-900 hover:bg-blue-50"
+                >
                   Continue Setup
                 </Button>
               )}
@@ -403,7 +448,12 @@ function CandidateDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <polygon points="50,20 80,50 50,80 20,50" stroke="currentColor" fill="none" strokeWidth="1" />
+            <polygon
+              points="50,20 80,50 50,80 20,50"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10 pb-4">
@@ -422,7 +472,16 @@ function CandidateDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <rect x="20" y="20" width="60" height="60" stroke="currentColor" fill="none" strokeWidth="1" rx="10" />
+            <rect
+              x="20"
+              y="20"
+              width="60"
+              height="60"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+              rx="10"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10">
@@ -457,7 +516,14 @@ function CandidateDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <circle cx="50" cy="50" r="40" stroke="currentColor" fill="none" strokeWidth="1" />
+            <circle
+              cx="50"
+              cy="50"
+              r="40"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10">
@@ -471,7 +537,7 @@ function CandidateDashboard({
             <div className="rounded-lg border border-blue-500/30 bg-blue-700/40 p-3 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium text-white">Senior Developer</h4>
-                <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30">
+                <Badge className="border border-blue-400/30 bg-blue-100/20 text-blue-300">
                   95% match
                 </Badge>
               </div>
@@ -488,7 +554,12 @@ function CandidateDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <polygon points="50,10 90,50 50,90 10,50" stroke="currentColor" fill="none" strokeWidth="1" />
+            <polygon
+              points="50,10 90,50 50,90 10,50"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10">
@@ -502,7 +573,7 @@ function CandidateDashboard({
             {["React", "TypeScript", "Node.js", "Python"].map((skill) => (
               <Badge
                 key={skill}
-                className="bg-blue-100/20 text-blue-300 border border-blue-400/30 backdrop-blur-sm"
+                className="border border-blue-400/30 bg-blue-100/20 text-blue-300 backdrop-blur-sm"
               >
                 {skill}
               </Badge>
@@ -526,13 +597,23 @@ function RecruiterDashboard({
   const isComplete = currentStep >= maxSteps;
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-8">
+    <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
       {/* Profile Setup */}
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl lg:col-span-2">
         <div className="absolute top-0 right-0 h-20 w-20 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <polygon points="50,10 90,50 50,90 10,50" stroke="currentColor" fill="none" strokeWidth="2" />
-            <polygon points="50,25 75,50 50,75 25,50" stroke="currentColor" fill="currentColor" opacity="0.3" />
+            <polygon
+              points="50,10 90,50 50,90 10,50"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="2"
+            />
+            <polygon
+              points="50,25 75,50 50,75 25,50"
+              stroke="currentColor"
+              fill="currentColor"
+              opacity="0.3"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10 pb-4">
@@ -546,7 +627,9 @@ function RecruiterDashboard({
         <CardContent className="relative z-10">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-white/80">Setup Progress</span>
+              <span className="text-sm font-medium text-white/80">
+                Setup Progress
+              </span>
               <div className="flex items-center gap-2">
                 {isComplete ? (
                   <CheckCircle className="h-4 w-4 text-green-400" />
@@ -573,7 +656,10 @@ function RecruiterDashboard({
                   : "Complete setup to start searching for candidates"}
               </span>
               {!isComplete && (
-                <Button size="sm" className="bg-white text-blue-900 hover:bg-blue-50">
+                <Button
+                  size="sm"
+                  className="bg-white text-blue-900 hover:bg-blue-50"
+                >
                   Complete Setup
                 </Button>
               )}
@@ -586,7 +672,14 @@ function RecruiterDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <circle cx="50" cy="50" r="30" stroke="currentColor" fill="none" strokeWidth="1" />
+            <circle
+              cx="50"
+              cy="50"
+              r="30"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10 pb-4">
@@ -605,7 +698,16 @@ function RecruiterDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <rect x="20" y="20" width="60" height="60" stroke="currentColor" fill="none" strokeWidth="1" rx="10" />
+            <rect
+              x="20"
+              y="20"
+              width="60"
+              height="60"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+              rx="10"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10">
@@ -618,7 +720,7 @@ function RecruiterDashboard({
           <p className="text-sm text-white/70">
             Use natural language to find the perfect candidates.
           </p>
-          <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
+          <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700">
             Start AI Search
           </Button>
         </CardContent>
@@ -628,7 +730,12 @@ function RecruiterDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <polygon points="50,15 85,50 50,85 15,50" stroke="currentColor" fill="none" strokeWidth="1" />
+            <polygon
+              points="50,15 85,50 50,85 15,50"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10">
@@ -642,7 +749,9 @@ function RecruiterDashboard({
             <div className="rounded-lg border border-green-500/30 bg-green-500/20 p-3 backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <span className="font-medium text-white">React Developers</span>
-                <Badge className="bg-green-100/20 text-green-300 border border-green-400/30">Active</Badge>
+                <Badge className="border border-green-400/30 bg-green-100/20 text-green-300">
+                  Active
+                </Badge>
               </div>
               <p className="text-sm text-white/70">12 contacts, 3 responses</p>
             </div>
@@ -657,7 +766,14 @@ function RecruiterDashboard({
       <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
           <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <circle cx="50" cy="50" r="40" stroke="currentColor" fill="none" strokeWidth="1" />
+            <circle
+              cx="50"
+              cy="50"
+              r="40"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+            />
           </svg>
         </div>
         <CardHeader className="relative z-10">
@@ -674,7 +790,9 @@ function RecruiterDashboard({
                 <p className="font-medium text-white">Sarah Chen</p>
                 <p className="text-sm text-white/70">Senior React Developer</p>
               </div>
-              <Badge className="bg-blue-100/20 text-blue-300 border border-blue-400/30">97%</Badge>
+              <Badge className="border border-blue-400/30 bg-blue-100/20 text-blue-300">
+                97%
+              </Badge>
             </div>
             <Button className="w-full bg-white text-blue-900 hover:bg-blue-50">
               View All Candidates
