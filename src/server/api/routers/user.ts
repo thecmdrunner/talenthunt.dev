@@ -34,7 +34,7 @@ export const userRouter = createTRPCRouter({
     const existingUser = await getUser(userId);
 
     if (!existingUser) {
-      await Promise.all([
+      await Promise.allSettled([
         ctx.db.insert(users).values({ userId, credits: 100 }), // 100 free credits
         ctx.db.insert(candidateProfiles).values({ userId, currentStep: 0 }), // Move to basic info step
         ctx.db.insert(recruiterProfiles).values({ userId, currentStep: 0 }), // Move to basic info step
