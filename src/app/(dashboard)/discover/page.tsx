@@ -626,7 +626,7 @@ export default function DiscoverPage() {
                               {selectedRole
                                 ? roleOptions.find(
                                     (role) => role.value === selectedRole,
-                                  )?.label
+                                  )?.label || jobAttributes.newJob.role
                                 : (jobAttributes.newJob.role ?? "Select role")}
                               <ChevronsUpDown className="opacity-50" />
                             </Button>
