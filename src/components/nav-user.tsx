@@ -134,7 +134,7 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link
-                  href="/upgrade"
+                  href="#"
                   className="cursor-pointer"
                   onClick={() => handlePageNavigation("upgrade")}
                 >

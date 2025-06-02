@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Search, X } from "lucide-react";
+import { Briefcase, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
@@ -953,8 +953,8 @@ export default function NewJobPage() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                 <span className="relative z-10 flex items-center justify-center">
-                  <Search className="mr-2 h-4 w-4" />
-                  Find Candidates
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Post Job
                 </span>
               </Button>
             </div>
