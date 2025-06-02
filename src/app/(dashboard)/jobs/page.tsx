@@ -450,11 +450,15 @@ export default function JobsPage() {
                       <Button
                         variant="outline"
                         className="flex-1 rounded-xl border-blue-400/30 bg-blue-600/20 text-white hover:bg-blue-600/30 hover:text-white"
+                        onClick={() => router.push(`/jobs/${job.id}/applicants`)}
                       >
                         <Users className="mr-2 h-4 w-4" />
                         View Applicants
                       </Button>
-                      <Button className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-blue-800">
+                      <Button 
+                        className="group relative flex-1 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 font-semibold text-white shadow-lg transition-all duration-300 hover:from-blue-700 hover:to-blue-800"
+                        onClick={() => router.push('/discover')}
+                      >
                         <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                         <span className="relative z-10 flex items-center justify-center">
                           <Sparkles className="mr-2 h-4 w-4" />
