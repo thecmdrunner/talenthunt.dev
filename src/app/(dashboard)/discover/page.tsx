@@ -15,7 +15,6 @@ import {
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTracking } from "@/lib/hooks/use-tracking";
-import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { ArrowRight, LucideChevronDown, Plus, Sparkles } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -46,7 +45,6 @@ export default function DiscoverPage() {
     trackPageVisited,
     trackSearch,
     trackCandidateViewed,
-    trackFilterApplied,
     trackButtonClicked,
   } = useTracking();
 
@@ -98,12 +96,7 @@ export default function DiscoverPage() {
 
   const handleCandidateView = (candidate: (typeof candidates)[0]) => {
     setSelectedCandidate(candidate);
-
     trackCandidateViewed(candidate.id, candidate.matchScore);
-  };
-
-  const handleFilterSelect = (filterType: string, value: string) => {
-    trackFilterApplied(filterType, value);
   };
 
   const isSearchActive = Boolean(searchQuery && naturalLanguageQuery.data);
@@ -118,9 +111,7 @@ export default function DiscoverPage() {
           <div className="mx-auto max-w-2xl space-y-4 text-center">
             <div className="relative">
               <div className="mb-2 text-left">
-                <span className="text-muted-foreground">
-                  I&apos;m looking for a...
-                </span>
+                <span className="text-white">I&apos;m looking for a...</span>
               </div>
               <div className="flex gap-2">
                 <form
@@ -246,69 +237,6 @@ export default function DiscoverPage() {
                 )}
               </AnimatePresence>
             </div>
-          </div>
-
-          <div className="relative flex w-max items-center">
-            <div
-              className={cn(
-                "flex items-center gap-2 rounded-full border border-transparent bg-gradient-to-r from-cyan-50 to-violet-50 px-6 py-3 shadow-sm",
-                "text-2xl font-semibold text-black",
-                "transition-all",
-              )}
-              style={{
-                borderImage:
-                  "linear-gradient(90deg, #22d3ee 0%, #a78bfa 100%) 1",
-                borderWidth: "2px",
-                background: "linear-gradient(90deg, #ecfeff 0%, #f5f3ff 100%)",
-              }}
-            >
-              <span className="flex items-center">
-                <svg
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                  fill="none"
-                  className="mr-2 h-7 w-7 text-cyan-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g>
-                    <path
-                      d="M16 7.5L17.5 13.5L23.5 15L17.5 16.5L16 22.5L14.5 16.5L8.5 15L14.5 13.5L16 7.5Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinejoin="round"
-                    />
-                    <circle
-                      cx="16"
-                      cy="16"
-                      r="15"
-                      stroke="currentColor"
-                      strokeOpacity="0.08"
-                      strokeWidth="2"
-                    />
-                  </g>
-                </svg>
-                <span className="text-2xl font-medium text-black">AI</span>
-              </span>
-            </div>
-            <span
-              className={cn(
-                "absolute -top-4 left-1/2 z-10 -translate-x-1/2",
-                "rounded-full bg-violet-500 px-5 py-1.5 text-base font-semibold text-white shadow-lg",
-                "border-2 border-white",
-              )}
-              style={{
-                fontSize: "1.25rem",
-                lineHeight: "1.75rem",
-                letterSpacing: "0.01em",
-              }}
-            >
-              New
-            </span>
-            <span
-              className="pointer-events-none absolute top-1/2 -right-10 h-6 w-6 -translate-y-1/2 rounded-full bg-gradient-to-br from-violet-400 to-transparent opacity-60 blur-[6px]"
-              aria-hidden="true"
-            />
           </div>
 
           {/* Active Search Display */}
@@ -489,13 +417,13 @@ export default function DiscoverPage() {
         </div>
 
         {/* Candidates Section */}
-        <div className="space-y-6">
+        <div className="space-y-6 text-white">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">
               {isSearchActive ? "Top candidates" : "Featured candidates"}
             </h2>
             {candidates.length > 0 && (
-              <div className="text-muted-foreground text-sm">
+              <div className="text-sm">
                 {searchCandidates.data?.total} candidates found
               </div>
             )}
