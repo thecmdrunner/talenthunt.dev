@@ -105,7 +105,7 @@ export const userRouter = createTRPCRouter({
         existingUser = await getUser(userId);
       }
 
-      const currentStep = existingUser.candidateProfile.currentStep ?? 0;
+      const currentStep = existingUser?.candidateProfile.currentStep ?? 0;
 
       // Update candidate profile step and optionally resume URL and parsed data
       const updateData: Partial<CandidateProfileSelect> = {
