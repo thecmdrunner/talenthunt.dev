@@ -745,23 +745,28 @@ export default function DiscoverPage() {
                             </Badge>
                           ))}
                           {/* User-selected skills */}
-                          {selectedSkills.map((skill) => (
-                            <Badge
-                              key={skill}
-                              variant="secondary"
-                              className="group rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-100"
-                            >
-                              {skillOptions.find((s) => s.value === skill)
-                                ?.label ?? skill}
-                              <X
-                                className="ml-1 h-3 w-3 cursor-pointer"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  removeSkill(skill);
-                                }}
-                              />
-                            </Badge>
-                          ))}
+                          {selectedSkills
+                            .filter(
+                              (skill) =>
+                                !jobAttributes.newJob.skills?.includes(skill),
+                            )
+                            .map((skill) => (
+                              <Badge
+                                key={skill}
+                                variant="secondary"
+                                className="group rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 hover:bg-green-100"
+                              >
+                                {skillOptions.find((s) => s.value === skill)
+                                  ?.label ?? skill}
+                                <X
+                                  className="ml-1 h-3 w-3 cursor-pointer"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removeSkill(skill);
+                                  }}
+                                />
+                              </Badge>
+                            ))}
                         </div>
                         <Popover
                           open={skillComboOpen}
