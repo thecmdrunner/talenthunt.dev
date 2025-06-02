@@ -35,8 +35,8 @@ export default function Dashboard({
 
   const { user: clerkUser } = useUser();
 
-  const isCandidateOnboarded = !!user?.candidateProfile.onboardingCompletedAt;
-  const isRecruiterOnboarded = !!user?.recruiterProfile.onboardingCompletedAt;
+  const isCandidateOnboarded = !!user?.candidateProfile?.onboardingCompletedAt;
+  const isRecruiterOnboarded = !!user?.recruiterProfile?.onboardingCompletedAt;
   const hasBothProfiles = isCandidateOnboarded && isRecruiterOnboarded;
 
   // Track page visit

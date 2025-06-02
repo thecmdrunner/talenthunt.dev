@@ -43,13 +43,6 @@ export const useVideoRecording = () => {
     },
   });
 
-  const { mutateAsync: reviewVideo } = api.ai.reviewCandidateVideo.useMutation({
-    onError: (error) => {
-      console.error("Failed to review video:", error);
-      // Don't show error toast here as we'll handle it in uploadVideo
-    },
-  });
-
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
@@ -191,30 +184,9 @@ export const useVideoRecording = () => {
         await saveIntroVideo({ videoUrl });
 
         toast.dismiss(uploadToastId);
-        const reviewToastId = toast.loading(
-          "Video uploaded! Your profile is under review.",
+        toast.success(
+          "Video uploaded successfully! Your profile will be reviewed.",
         );
-
-        try {
-          // Review video with AI
-          const reviewResult = await reviewVideo({ videoUrl });
-
-          toast.dismiss(reviewToastId);
-
-          if (reviewResult.autoApproved) {
-            toast.success("🎉 Video approved! Your profile is now live!");
-          } else if (reviewResult.approved) {
-            toast.success(
-              "Video uploaded! Your profile is under manual review.",
-            );
-          } else {
-            toast.error("Video needs improvement. Please try recording again.");
-          }
-        } catch (reviewError) {
-          toast.dismiss(reviewToastId);
-          toast.success("Video uploaded! Your profile is under review.");
-          console.error("Review failed:", reviewError);
-        }
 
         return videoUrl;
       } catch (error) {
@@ -230,7 +202,7 @@ export const useVideoRecording = () => {
         setIsUploading(false);
       }
     },
-    [getVideoUploadUrl, saveIntroVideo, reviewVideo, supabase],
+    [getVideoUploadUrl, saveIntroVideo, supabase],
   );
 
   const uploadRecordedVideo = useCallback(async () => {

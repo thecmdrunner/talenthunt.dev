@@ -118,6 +118,14 @@ export const candidateProfiles = createTable(
     resumeUrl: d.text(),
     resumeText: d.text(), // Extracted text from resume
     parsedResumeData: d.jsonb().$type<ParsedResumeData>(), // AI-parsed resume data: role, skills, experience, location, etc.
+
+    // Vector embeddings for semantic search
+    resumeEmbedding: d.text(), // JSON string of vector array - using text to store embedding array
+    resumeEmbeddingModel: d
+      .varchar({ length: 100 })
+      .default("text-embedding-3-small"), // Track which model was used
+    resumeEmbeddingCreatedAt: d.timestamp({ withTimezone: true }), // When embedding was generated
+
     verificationStatus: d
       .varchar({ length: 20 })
       .default("pending")
@@ -155,6 +163,8 @@ export const candidateProfiles = createTable(
     index("candidate_verification_status_idx").on(t.verificationStatus),
     index("candidate_total_score_idx").on(t.totalScore),
     index("candidate_is_active_idx").on(t.isActive),
+    // Add index for embedding lookups
+    index("candidate_resume_embedding_idx").on(t.resumeEmbeddingCreatedAt),
   ],
 );
 

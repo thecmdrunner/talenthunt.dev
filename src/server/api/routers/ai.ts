@@ -5,11 +5,20 @@ import {
   CREDITS_COST,
 } from "@/lib/constants";
 import {
+  generateEmbedding,
+  prepareResumeTextForEmbedding,
+} from "@/lib/embeddings";
+import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { candidateProfiles, users, workExperience } from "@/server/db/schema";
+import {
+  candidateProfiles,
+  jobs,
+  users,
+  workExperience,
+} from "@/server/db/schema";
 import {
   jobAttributesSchema,
   jobSearchPreferencesSchema,
@@ -19,7 +28,7 @@ import { parsedResumeDataSchema } from "@/types/resume";
 import { groq } from "@ai-sdk/groq";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { TRPCError } from "@trpc/server";
-import { generateObject } from "ai";
+import { cosineSimilarity, generateObject } from "ai";
 import { and, desc, eq, gte, ilike, lte, or, SQL, sql } from "drizzle-orm";
 import PDFParser from "pdf2json";
 import { z } from "zod";
@@ -393,6 +402,259 @@ Provide confidence score (0-1) and detailed reasoning for your decision.`,
       return result.data;
     }),
 
+  // NEW: RAG-based candidate discovery using vector embeddings
+  discoverCandidates: protectedProcedure
+    .input(
+      z.object({
+        query: z.string().min(1, "Query cannot be empty"),
+        limit: z.number().min(1).max(50).default(20),
+      }),
+    )
+    .output(
+      z.object({
+        candidates: z.array(
+          z.object({
+            id: z.string(),
+            firstName: z.string().nullable(),
+            lastName: z.string().nullable(),
+            title: z.string().nullable(),
+            bio: z.string().nullable(),
+            location: z.string().nullable(),
+            yearsOfExperience: z.number().nullable(),
+            skills: z.array(z.string()),
+            workExperience: z.array(
+              z.object({
+                company: z.string(),
+                position: z.string(),
+                startDate: z.date().nullable(),
+                endDate: z.date().nullable(),
+                isCurrent: z.boolean().nullable(),
+              }),
+            ),
+            totalScore: z.number().nullable(),
+            isOpenToWork: z.boolean().nullable(),
+            expectedSalaryMin: z.number().nullable(),
+            expectedSalaryMax: z.number().nullable(),
+            salaryCurrency: z.string().nullable(),
+            isRemoteOpen: z.boolean().nullable(),
+            workTypes: z.array(z.string()).nullable(),
+            resumeUrl: z.string().nullable(),
+            vectorSimilarity: z.number(), // Vector similarity score (0-1)
+            // Social links
+            githubUsername: z.string().nullable(),
+            linkedinEmail: z.string().nullable(),
+            linkedinUrl: z.string().nullable(),
+            parsedGithubUrl: z.string().nullable(),
+            parsedLinkedinUrl: z.string().nullable(),
+          }),
+        ),
+        total: z.number(),
+        query: z.string(), // Echo back the query for debugging
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { query, limit } = input;
+      const userId = ctx.session.userId;
+
+      console.log(`🔍 RAG Discovery: "${query}" (limit: ${limit})`);
+
+      // Create cache key for this discovery query
+      const cacheKey = createStandardCacheKey(
+        "discover_candidates",
+        `${query}:${limit}`,
+      );
+
+      const result = await withCache({
+        key: cacheKey + 123,
+        ttlSeconds: CACHE_CONFIG.AI_RESPONSE_TTL,
+        callback: async () => {
+          // Generate embedding for the search query
+          console.log("🧠 Generating query embedding for semantic search...");
+          let queryEmbedding: number[];
+
+          try {
+            queryEmbedding = await generateEmbedding(query);
+            console.log("✅ Query embedding generated successfully");
+          } catch (embeddingError) {
+            console.error(
+              "❌ Failed to generate query embedding:",
+              embeddingError,
+            );
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to process search query for semantic search",
+            });
+          }
+
+          // Get all candidates with embeddings
+          console.log("📊 Fetching candidates with embeddings...");
+          const candidatesWithEmbeddings =
+            await ctx.db.query.candidateProfiles.findMany({
+              where: and(
+                eq(candidateProfiles.verificationStatus, "approved"),
+                eq(candidateProfiles.isActive, true),
+                eq(candidateProfiles.isOpenToWork, true),
+                sql`${candidateProfiles.resumeEmbedding} IS NOT NULL`, // Only candidates with embeddings
+              ),
+              columns: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                title: true,
+                bio: true,
+                location: true,
+                yearsOfExperience: true,
+                totalScore: true,
+                isOpenToWork: true,
+                expectedSalaryMin: true,
+                expectedSalaryMax: true,
+                salaryCurrency: true,
+                isRemoteOpen: true,
+                resumeUrl: true,
+                workTypes: true,
+                parsedResumeData: true,
+                resumeEmbedding: true,
+              },
+              with: {
+                user: {
+                  columns: {
+                    githubUsername: true,
+                    linkedinEmail: true,
+                    linkedinUrl: true,
+                  },
+                },
+                skills: {
+                  columns: {
+                    name: true,
+                    proficiency: true,
+                    yearsOfExperience: true,
+                  },
+                },
+                workExperience: {
+                  columns: {
+                    company: true,
+                    position: true,
+                    startDate: true,
+                    endDate: true,
+                    isCurrent: true,
+                  },
+                  orderBy: [desc(workExperience.startDate)],
+                  limit: 3,
+                },
+              },
+              limit: 200, // Get more to calculate similarities, then slice
+            });
+
+          console.log(
+            `📋 Found ${candidatesWithEmbeddings.length} candidates with embeddings`,
+          );
+
+          // Calculate vector similarities and rank candidates
+          const candidatesWithSimilarity = candidatesWithEmbeddings
+            .map((candidate) => {
+              let vectorSimilarity = 0;
+
+              // Calculate cosine similarity
+              try {
+                if (candidate.resumeEmbedding) {
+                  const candidateEmbedding = JSON.parse(
+                    candidate.resumeEmbedding,
+                  ) as number[];
+                  vectorSimilarity = cosineSimilarity(
+                    queryEmbedding,
+                    candidateEmbedding,
+                  );
+                }
+              } catch (error) {
+                console.warn(
+                  `Failed to parse embedding for candidate ${candidate.id}:`,
+                  error,
+                );
+              }
+
+              // Collect skills
+              const candidateSkillsFromTable = candidate.skills.map((s) =>
+                s.name.toLowerCase(),
+              );
+              const parsedSkills: string[] = [];
+              if (candidate.parsedResumeData?.skills) {
+                const skillsFromResume = candidate.parsedResumeData.skills
+                  .split(",")
+                  .map((skill) => skill.trim().toLowerCase())
+                  .filter(Boolean);
+                parsedSkills.push(...skillsFromResume);
+              }
+              const allCandidateSkills = [
+                ...new Set([...candidateSkillsFromTable, ...parsedSkills]),
+              ];
+
+              console.log({ allCandidateSkills });
+
+              return {
+                id: candidate.id,
+                firstName: candidate.firstName,
+                lastName: candidate.lastName,
+                title: candidate.title,
+                bio: candidate.bio,
+                location: candidate.location,
+                yearsOfExperience: candidate.yearsOfExperience,
+                skills: allCandidateSkills,
+                workExperience: candidate.workExperience.map((we) => ({
+                  company: we.company,
+                  position: we.position,
+                  startDate: we.startDate ? new Date(we.startDate) : null,
+                  endDate: we.endDate ? new Date(we.endDate) : null,
+                  isCurrent: we.isCurrent,
+                })),
+                totalScore: candidate.totalScore,
+                isOpenToWork: candidate.isOpenToWork,
+                expectedSalaryMin: candidate.expectedSalaryMin,
+                expectedSalaryMax: candidate.expectedSalaryMax,
+                salaryCurrency: candidate.salaryCurrency,
+                isRemoteOpen: candidate.isRemoteOpen,
+                workTypes: candidate.workTypes,
+                resumeUrl: candidate.resumeUrl,
+                vectorSimilarity,
+                githubUsername: candidate.user.githubUsername,
+                linkedinEmail: candidate.user.linkedinEmail,
+                linkedinUrl: candidate.user.linkedinUrl,
+                parsedGithubUrl: candidate.parsedResumeData?.githubUrl ?? null,
+                parsedLinkedinUrl:
+                  candidate.parsedResumeData?.linkedinUrl ?? null,
+              };
+            })
+            // Sort by vector similarity (highest first)
+            .sort((a, b) => b.vectorSimilarity - a.vectorSimilarity)
+            // Take only the requested limit
+            .slice(0, limit)
+
+            // artificially add 30% to the similarity score
+            .map((candidate) => ({
+              ...candidate,
+              vectorSimilarity: candidate.vectorSimilarity * (1 + 30 / 100),
+            }));
+
+          console.log("🏆 Top RAG matches:");
+
+          candidatesWithSimilarity.slice(0, 5).forEach((candidate, index) => {
+            console.log(
+              `${index + 1}. ${candidate.firstName} ${candidate.lastName}: ${(candidate.vectorSimilarity * 100).toFixed(1)}% similarity`,
+            );
+          });
+
+          return {
+            candidates: candidatesWithSimilarity,
+            total: candidatesWithSimilarity.length,
+            query,
+          };
+        },
+
+        disableCache: true,
+      });
+
+      return result.data;
+    }),
+
   parseResume: publicProcedure
     .input(z.object({ resumeUrl: z.string() }))
     .mutation(async ({ input, ctx }) => {
@@ -513,6 +775,49 @@ ${extractedText}`,
           console.log("\n📄 Extracted Resume Data:");
           console.log(JSON.stringify(result.object, null, 2));
 
+          // Generate vector embedding for the resume
+          console.log("🧠 Generating vector embedding for resume...");
+          const resumeTextForEmbedding = prepareResumeTextForEmbedding(
+            extractedText,
+            {
+              role: result.object.role,
+              skills: result.object.skills,
+              experience: result.object.experience,
+              location: result.object.location,
+            },
+          );
+
+          const embedding = await generateEmbedding(resumeTextForEmbedding);
+          console.log("✅ Vector embedding generated successfully");
+
+          // Update candidate profile with resume text and embedding
+          if (userId) {
+            try {
+              // Find the candidate profile
+              const candidateProfile =
+                await ctx.db.query.candidateProfiles.findFirst({
+                  where: eq(candidateProfiles.userId, userId),
+                });
+
+              if (candidateProfile) {
+                await ctx.db
+                  .update(candidateProfiles)
+                  .set({
+                    resumeText: extractedText,
+                    parsedResumeData: result.object,
+                    resumeEmbedding: JSON.stringify(embedding),
+                    resumeEmbeddingCreatedAt: new Date(),
+                  })
+                  .where(eq(candidateProfiles.id, candidateProfile.id));
+
+                console.log("💾 Resume data and embedding saved to database");
+              }
+            } catch (dbError) {
+              console.error("❌ Failed to save to database:", dbError);
+              // Don't throw error here, still return the parsed data
+            }
+          }
+
           return result.object;
         },
       });
@@ -606,7 +911,7 @@ ${extractedText}`,
           );
         }
         if (locationFilters.length > 0) {
-          whereConditions.push(or(...locationFilters));
+          whereConditions.push(or(...locationFilters)!);
         }
       }
 
@@ -959,12 +1264,11 @@ ${extractedText}`,
 
       // Filter by desired role if specified
       if (input.desiredRole) {
-        whereConditions.push(
-          or(
-            ilike(jobs.title, `%${input.desiredRole}%`),
-            ilike(jobs.description, `%${input.desiredRole}%`),
-          ),
-        );
+        const roleConditions = [
+          ilike(jobs.title, `%${input.desiredRole}%`),
+          ilike(jobs.description, `%${input.desiredRole}%`),
+        ];
+        whereConditions.push(or(...roleConditions)!);
       }
 
       // Filter by skills if specified
@@ -972,7 +1276,7 @@ ${extractedText}`,
         const skillFilters = input.requiredSkills.map(
           (skill) => sql`${jobs.requiredSkills} @> ARRAY[${skill}]::text[]`,
         );
-        whereConditions.push(or(...skillFilters));
+        whereConditions.push(or(...skillFilters)!);
       }
 
       // Filter by location if specified
@@ -980,7 +1284,7 @@ ${extractedText}`,
         const locationFilters = input.locations.map((location) =>
           ilike(jobs.location, `%${location}%`),
         );
-        whereConditions.push(or(...locationFilters));
+        whereConditions.push(or(...locationFilters)!);
       }
 
       // Filter by remote preference if specified
@@ -1031,6 +1335,8 @@ ${extractedText}`,
         requiredSkills: job.requiredSkills ?? [],
         niceToHaveSkills: job.niceToHaveSkills ?? [],
         benefits: job.benefits ?? [],
+        isFeatured: job.isFeatured ?? false,
+        isUrgent: job.isUrgent ?? false,
         // Add computed fields for UI compatibility
         company: job.companyName ?? "Company",
         type: job.workType,
