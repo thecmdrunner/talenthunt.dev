@@ -16,6 +16,7 @@ import {
 import {
   candidateProfiles,
   jobs,
+  recruiterProfiles,
   users,
   workExperience,
 } from "@/server/db/schema";
@@ -1372,5 +1373,153 @@ ${extractedText}`,
         jobs: transformedJobs,
         total: transformedJobs.length,
       };
+    }),
+
+  generatePersonalizedEmail: protectedProcedure
+    .input(
+      z.object({
+        candidateId: z.string(),
+        searchQuery: z.string(),
+      }),
+    )
+    .output(
+      z.object({
+        subject: z.string(),
+        body: z.string(),
+        candidateName: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { candidateId, searchQuery } = input;
+      const userId = ctx.session.userId;
+
+      console.log(
+        `📧 Generating personalized email for candidate: ${candidateId}`,
+      );
+
+      // Check if user has sufficient credits
+      const user = await ctx.db.query.users.findFirst({
+        where: eq(users.userId, userId),
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      const requiredCredits = CREDITS_COST.NATURAL_LANGUAGE_SEARCH; // Reuse existing credit cost
+      if (user.credits < requiredCredits) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: CREDIT_ERROR_MESSAGES.NATURAL_LANGUAGE_SEARCH,
+        });
+      }
+
+      // Get candidate profile
+      const candidate = await ctx.db.query.candidateProfiles.findFirst({
+        where: eq(candidateProfiles.id, candidateId),
+        with: {
+          workExperience: true,
+        },
+      });
+
+      if (!candidate) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Candidate not found",
+        });
+      }
+
+      // Get recruiter profile for personalization
+      const recruiter = await ctx.db.query.recruiterProfiles.findFirst({
+        where: eq(recruiterProfiles.userId, userId),
+      });
+
+      try {
+        // Prepare candidate context
+        const candidateContext = {
+          name:
+            `${candidate.firstName || ""} ${candidate.lastName || ""}`.trim() ||
+            "there",
+          title: candidate.title || "",
+          bio: candidate.bio ?? "",
+          skills: candidate.skills || [],
+          yearsOfExperience: candidate.yearsOfExperience || 0,
+          location: candidate.location || "",
+          workExperience: candidate.workExperience || [],
+        };
+
+        const recruiterContext = {
+          firstName: recruiter?.firstName || "",
+          lastName: recruiter?.lastName || "",
+          company: recruiter?.companyName || "",
+          title: recruiter?.title || "",
+        };
+
+        console.log("🤖 Generating personalized email with AI...");
+
+        const { object: emailContent } = await generateObject({
+          model: groq("llama3-8b-8192"),
+          schema: z.object({
+            subject: z
+              .string()
+              .describe("Professional email subject line (max 60 chars)"),
+            body: z
+              .string()
+              .describe("Personalized email body in professional tone"),
+            candidateName: z
+              .string()
+              .describe("Candidate's first name for personalization"),
+          }),
+          prompt: `You are helping a recruiter write a personalized outreach email to a potential candidate.
+
+RECRUITER CONTEXT:
+- Name: ${recruiterContext.firstName} ${recruiterContext.lastName}
+- Company: ${recruiterContext.company}
+- Title: ${recruiterContext.title}
+- Search Query: "${searchQuery}"
+
+CANDIDATE CONTEXT:
+- Name: ${candidateContext.name}
+- Current Title: ${candidateContext.title}
+- Bio: ${candidateContext.bio}
+- Skills: ${candidateContext.skills.join(", ")}
+- Experience: ${candidateContext.yearsOfExperience} years
+- Location: ${candidateContext.location}
+- Work History: ${candidateContext.workExperience.map((exp) => `${exp.position} at ${exp.company}`).join("; ")}
+
+Write a professional, personalized email that:
+1. References specific skills/experience from their profile
+2. Mentions why they're a good fit based on the search requirements
+3. Is engaging but not overly salesy
+4. Includes a clear call to action
+5. Keeps the tone professional but warm
+6. Mentions the recruiter's company if available
+
+The email should be 150-250 words and feel genuine, not templated.`,
+        });
+
+        console.log("✅ Personalized email generated successfully");
+
+        // Deduct credits
+        await ctx.db
+          .update(users)
+          .set({ credits: user.credits - requiredCredits })
+          .where(eq(users.userId, userId));
+
+        return {
+          subject: emailContent.subject,
+          body: emailContent.body,
+          candidateName: emailContent.candidateName,
+        };
+      } catch (error) {
+        console.error("❌ Failed to generate personalized email:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to generate personalized email. Please try again.",
+        });
+      }
     }),
 });
