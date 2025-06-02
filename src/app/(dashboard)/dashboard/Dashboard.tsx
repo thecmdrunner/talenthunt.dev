@@ -570,14 +570,24 @@ function CandidateDashboard({
         </CardHeader>
         <CardContent className="relative z-10">
           <div className="flex flex-wrap gap-2">
-            {["React", "TypeScript", "Node.js", "Python"].map((skill) => (
-              <Badge
-                key={skill}
-                className="border border-blue-400/30 bg-blue-100/20 text-blue-300 backdrop-blur-sm"
-              >
-                {skill}
-              </Badge>
-            ))}
+            {user.candidateProfile.parsedResumeData?.skills ? (
+              user.candidateProfile.parsedResumeData.skills
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter((skill) => skill.length > 0)
+                .map((skill) => (
+                  <Badge
+                    key={skill}
+                    className="border border-blue-400/30 bg-blue-100/20 text-blue-300 backdrop-blur-sm"
+                  >
+                    {skill}
+                  </Badge>
+                ))
+            ) : (
+              <p className="text-sm text-white/70">
+                Complete your profile to showcase your skills
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
