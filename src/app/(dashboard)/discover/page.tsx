@@ -177,7 +177,7 @@ export default function DiscoverPage() {
 
   const [searchQuery, setSearchQuery] = useQueryState("q", {
     defaultValue:
-      "i want a next js dev experienced in AI apps and has over 2 years of experience and is open to work in Banglore",
+      "Next.js and AI Developer, with 2+ years of experience, open to work in Banglore",
   });
 
   // State for selected candidate sheet
@@ -621,7 +621,8 @@ export default function DiscoverPage() {
                               variant="outline"
                               role="combobox"
                               aria-expanded={roleComboOpen}
-                              className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                              // border-blue-100 bg-white hover:border-blue-300 hover:bg-blue-50
+                              className="h-auto w-full justify-between rounded-md border border-blue-100 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
                             >
                               {selectedRole
                                 ? roleOptions.find(
@@ -777,7 +778,7 @@ export default function DiscoverPage() {
                               variant="outline"
                               role="combobox"
                               aria-expanded={skillComboOpen}
-                              className="h-auto w-full rounded-md border border-dashed border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+                              className="h-auto w-full rounded-md border border-dashed border-blue-100 bg-white px-3 py-1.5 text-sm text-gray-600 hover:border-blue-300 hover:bg-blue-50"
                             >
                               <Plus className="mr-1 h-3 w-3" />
                               Add skill
@@ -845,7 +846,7 @@ export default function DiscoverPage() {
                           <Button
                             asChild
                             variant="outline"
-                            className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                            className="h-auto w-full justify-between rounded-md border border-blue-100 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
                           >
                             <SelectTrigger>
                               <SelectValue>
@@ -879,7 +880,7 @@ export default function DiscoverPage() {
                               variant="outline"
                               role="combobox"
                               aria-expanded={locationComboOpen}
-                              className="mb-2 h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                              className="mb-2 h-auto w-full justify-between rounded-md border border-blue-100 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
                             >
                               <div className="flex items-center">
                                 <MapPin className="mr-1.5 h-3.5 w-3.5 text-red-500" />
@@ -980,7 +981,7 @@ export default function DiscoverPage() {
                             <Button
                               asChild
                               variant="outline"
-                              className="h-auto w-full justify-between rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
+                              className="h-auto w-full justify-between rounded-md border border-blue-100 bg-white px-3 py-2 text-sm font-medium text-gray-800 hover:border-blue-300 hover:bg-blue-50"
                             >
                               <SelectTrigger>
                                 <SelectValue>
@@ -1042,7 +1043,7 @@ export default function DiscoverPage() {
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-600">Sort by:</span>
                         <Select value={sortBy} onValueChange={setSortBy}>
-                          <SelectTrigger className="w-32 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm">
+                          <SelectTrigger className="w-36 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm">
                             <SelectValue>
                               {
                                 sortOptions.find(
