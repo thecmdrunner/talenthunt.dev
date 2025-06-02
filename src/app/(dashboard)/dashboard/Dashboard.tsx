@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useTracking } from "@/lib/hooks/use-tracking";
-import { cn } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
 import { useUser } from "@clerk/nextjs";
 import {
@@ -18,7 +17,6 @@ import {
   Target,
   TrendingUp,
   User,
-  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -30,8 +28,7 @@ export default function Dashboard({
 }: {
   user: RouterOutputs["user"]["getOrCreateUser"];
 }) {
-  const { trackPageVisited, trackOnboardingStarted, trackTabSwitched } =
-    useTracking();
+  const { trackPageVisited } = useTracking();
 
   const { user: clerkUser } = useUser();
 
@@ -292,7 +289,7 @@ export default function Dashboard({
               Welcome back {clerkUser?.fullName ?? ""}! 👋
             </h1>
 
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <button
                 className={cn(
                   "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium backdrop-blur-sm transition-colors",
@@ -317,19 +314,7 @@ export default function Dashboard({
                 <Search className="h-4 w-4" />
                 Recruiter Analytics
               </button>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {isCandidateOnboarded && (
-              <Badge className="border border-blue-400/30 bg-blue-100/20 text-blue-300 backdrop-blur-sm">
-                <Target className="mr-1 h-3 w-3" />
-              </Badge>
-            )}
-            {isRecruiterOnboarded && (
-              <Badge className="border border-blue-400/30 bg-blue-100/20 text-blue-300 backdrop-blur-sm">
-                <Search className="mr-1 h-3 w-3" />
-              </Badge>
-            )}
+            </div> */}
           </div>
         </div>
 
@@ -626,25 +611,47 @@ function RecruiterDashboard({
             />
           </svg>
         </div>
+
+        {/* Floating decorative elements */}
+        <div className="absolute top-4 left-4 h-2 w-2 animate-pulse rounded-full bg-blue-300/40"></div>
+        <div className="absolute right-6 bottom-6 h-3 w-3 rotate-45 animate-pulse bg-blue-400/30"></div>
+
         <CardHeader className="relative z-10 pb-4">
-          <CardTitle className="flex items-center gap-2 text-white">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100/20 backdrop-blur-sm">
-              <User className="h-4 w-4 text-blue-300" />
+          <CardTitle className="flex items-center gap-3 text-white">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
+              <Briefcase className="h-5 w-5 text-white" />
             </div>
-            Recruiter Setup
+            <div>
+              <div className="text-lg font-bold">Recruiter Dashboard</div>
+              <div className="text-sm font-normal text-blue-200">
+                Build your hiring presence
+              </div>
+            </div>
           </CardTitle>
         </CardHeader>
-        <CardContent className="relative z-10">
+
+        <CardContent className="relative z-10 space-y-6">
+          {/* Progress Section */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-white/80">
-                Setup Progress
+              <span className="text-sm font-medium text-white/90">
+                Profile Completion
               </span>
               <div className="flex items-center gap-2">
                 {isComplete ? (
-                  <CheckCircle className="h-4 w-4 text-green-400" />
+                  <div className="flex items-center gap-1">
+                    <CheckCircle className="h-4 w-4 text-green-400" />
+                    <span className="text-xs font-medium text-green-400">
+                      Complete
+                    </span>
+                  </div>
                 ) : (
-                  <AlertCircle className="h-4 w-4 text-amber-400" />
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-amber-400" />
+                    <span className="text-xs font-medium text-amber-400">
+                      In Progress
+                    </span>
+                  </div>
                 )}
                 <span className="text-sm font-bold text-white">
                   {currentStep}/{maxSteps}
@@ -652,29 +659,71 @@ function RecruiterDashboard({
               </div>
             </div>
 
-            <div className="h-3 w-full rounded-full bg-blue-900/40">
+            <div className="relative h-3 w-full overflow-hidden rounded-full bg-blue-900/40">
               <div
-                className="h-3 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 transition-all duration-500"
+                className="relative h-full rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 transition-all duration-700 ease-out"
                 style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <span className={isComplete ? "text-green-400" : "text-white/70"}>
-                {isComplete
-                  ? "🚀 Ready to find amazing candidates!"
-                  : "Complete setup to start searching for candidates"}
-              </span>
-              {!isComplete && (
-                <Button
-                  size="sm"
-                  className="bg-white text-blue-900 hover:bg-blue-50"
-                >
-                  Complete Setup
-                </Button>
-              )}
+              >
+                <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+              </div>
             </div>
           </div>
+
+          {/* Status Message */}
+          <div
+            className={`rounded-lg p-4 backdrop-blur-sm ${
+              isComplete
+                ? "border border-green-400/30 bg-green-500/20"
+                : "border border-amber-400/30 bg-amber-500/20"
+            }`}
+          >
+            <div className="flex items-start gap-3">
+              {isComplete ? (
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/30">
+                  <TrendingUp className="h-4 w-4 text-green-400" />
+                </div>
+              ) : (
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/30">
+                  <Target className="h-4 w-4 text-amber-400" />
+                </div>
+              )}
+              <div className="flex-1">
+                <p
+                  className={`text-sm font-medium ${
+                    isComplete ? "text-green-300" : "text-amber-300"
+                  }`}
+                >
+                  {isComplete
+                    ? "🚀 Your recruiter profile is ready!"
+                    : "📋 Complete your setup to unlock full features"}
+                </p>
+                <p
+                  className={`mt-1 text-xs ${
+                    isComplete ? "text-green-400/80" : "text-amber-400/80"
+                  }`}
+                >
+                  {isComplete
+                    ? "Start discovering and connecting with top talent"
+                    : "Add company details and preferences to get started"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          {!isComplete && (
+            <div className="pt-2">
+              <Button
+                asChild
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 font-medium text-white shadow-lg transition-all duration-200 hover:from-blue-600 hover:to-blue-700 hover:shadow-xl"
+              >
+                <Link href="/onboarding/recruiter">
+                  <User className="mr-2 h-4 w-4" />
+                  Complete Profile Setup
+                </Link>
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -704,109 +753,91 @@ function RecruiterDashboard({
         </CardContent>
       </Card>
 
-      {/* Candidate Search */}
-      <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
-        <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
-          <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <rect
-              x="20"
-              y="20"
-              width="60"
-              height="60"
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="1"
-              rx="10"
-            />
-          </svg>
-        </div>
-        <CardHeader className="relative z-10">
-          <CardTitle className="flex items-center gap-2 text-white">
-            <Search className="h-4 w-4 text-blue-400" />
-            Smart Search
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="relative z-10 space-y-4">
-          <p className="text-sm text-white/70">
-            Use natural language to find the perfect candidates.
-          </p>
-          <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700">
-            Start AI Search
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Active Campaigns */}
-      <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
-        <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
-          <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
-            <polygon
-              points="50,15 85,50 50,85 15,50"
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="1"
-            />
-          </svg>
-        </div>
-        <CardHeader className="relative z-10">
-          <CardTitle className="flex items-center gap-2 text-white">
-            <Users className="h-4 w-4 text-blue-400" />
-            Active Outreach
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="relative z-10">
-          <div className="space-y-3">
-            <div className="rounded-lg border border-green-500/30 bg-green-500/20 p-3 backdrop-blur-sm">
-              <div className="flex items-center justify-between">
-                <span className="font-medium text-white">React Developers</span>
-                <Badge className="border border-green-400/30 bg-green-100/20 text-green-300">
-                  Active
-                </Badge>
-              </div>
-              <p className="text-sm text-white/70">12 contacts, 3 responses</p>
-            </div>
-            <Button className="w-full bg-white text-blue-900 hover:bg-blue-50">
-              Create Campaign
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Recent Matches */}
-      <Card className="relative overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl">
-        <div className="absolute top-0 right-0 h-16 w-16 opacity-10">
-          <svg viewBox="0 0 100 100" className="h-full w-full text-blue-300">
+      {/* AI Candidate Search Campaign Banner */}
+      <Card className="relative max-w-sm overflow-hidden rounded-2xl border border-purple-400/30 bg-gradient-to-br from-purple-800/40 to-blue-900/60 shadow-xl backdrop-blur-xl lg:col-span-2">
+        <div className="absolute top-0 right-0 h-20 w-20 opacity-10">
+          <svg viewBox="0 0 100 100" className="h-full w-full text-purple-300">
             <circle
               cx="50"
               cy="50"
-              r="40"
+              r="35"
               stroke="currentColor"
               fill="none"
               strokeWidth="1"
             />
+            <circle
+              cx="50"
+              cy="50"
+              r="20"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="1"
+            />
+            <circle cx="50" cy="50" r="5" fill="currentColor" />
           </svg>
         </div>
-        <CardHeader className="relative z-10">
+        <div className="absolute top-4 left-4 rounded-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 px-2 py-1 backdrop-blur-sm">
+          <span className="text-xs font-medium text-purple-300">
+            ✨ AI Powered
+          </span>
+        </div>
+        <CardHeader className="relative z-10 pt-12">
           <CardTitle className="flex items-center gap-2 text-white">
-            <Target className="h-4 w-4 text-orange-400" />
-            Top Matches
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-blue-500">
+              <Search className="h-4 w-4 text-white" />
+            </div>
+            AI Candidate Search
           </CardTitle>
         </CardHeader>
-        <CardContent className="relative z-10">
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 rounded-lg border border-blue-500/30 bg-blue-700/40 p-3 backdrop-blur-sm">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600" />
+        <CardContent className="relative z-10 space-y-6">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-white">
+              Find candidates with natural language
+            </p>
+            <p className="text-xs text-white/70">
+              &ldquo;Find senior React developers in San Francisco with startup
+              experience&rdquo;
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs text-purple-300">
+            <div className="h-1.5 w-1.5 rounded-full bg-purple-400"></div>
+            <span>Semantic matching</span>
+            <div className="h-1.5 w-1.5 rounded-full bg-purple-400"></div>
+            <span>Skills analysis</span>
+            <div className="h-1.5 w-1.5 rounded-full bg-purple-400"></div>
+            <span>Culture fit</span>
+          </div>
+
+          {/* Top Match Preview */}
+          <div className="rounded-lg border border-purple-400/30 bg-purple-700/30 p-4 backdrop-blur-sm">
+            <div className="mb-3 flex items-center justify-between">
+              <h4 className="text-sm font-medium text-white">Top Match</h4>
+              <Badge className="border border-purple-400/30 bg-purple-100/20 text-purple-300">
+                97%
+              </Badge>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-blue-600" />
               <div className="flex-1">
                 <p className="font-medium text-white">Sarah Chen</p>
                 <p className="text-sm text-white/70">Senior React Developer</p>
               </div>
-              <Badge className="border border-blue-400/30 bg-blue-100/20 text-blue-300">
-                97%
-              </Badge>
             </div>
-            <Button className="w-full bg-white text-blue-900 hover:bg-blue-50">
-              View All Candidates
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Button className="bg-gradient-to-r from-purple-500 to-blue-600 text-white shadow-lg hover:from-purple-600 hover:to-blue-700">
+              <Search className="mr-2 h-4 w-4" />
+              Start AI Search
             </Button>
+            {/* <Button
+              variant="outline"
+              className="border-purple-400/30 bg-purple-700/20 text-white hover:bg-purple-600/30"
+            >
+              <Target className="mr-2 h-4 w-4" />
+              View All Matches
+            </Button> */}
           </div>
         </CardContent>
       </Card>
