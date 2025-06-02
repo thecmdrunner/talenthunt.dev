@@ -216,8 +216,29 @@ export default function NewJobPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="relative flex w-full max-w-7xl flex-col-reverse justify-between gap-x-3 gap-y-6 pb-40 lg:flex-row">
+    <div className="relative min-h-screen">
+      {/* Geometric Background Elements */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Large Geometric Shapes */}
+        <div className="absolute top-10 -left-20 h-[600px] w-[600px] animate-pulse rounded-full bg-gradient-to-br from-blue-400/15 to-blue-600/10 blur-3xl"></div>
+        <div className="absolute top-40 -right-10 h-[500px] w-[500px] animate-pulse rounded-full bg-gradient-to-tl from-blue-300/12 to-blue-500/8 blur-3xl"></div>
+
+        {/* Grid Pattern */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div
+            className="h-full w-full"
+            style={{
+              backgroundImage: `
+                linear-gradient(90deg, rgba(96,165,250,0.15) 1px, transparent 1px),
+                linear-gradient(rgba(96,165,250,0.15) 1px, transparent 1px)
+              `,
+              backgroundSize: "40px 40px",
+            }}
+          ></div>
+        </div>
+      </div>
+
+      <div className="relative z-10 flex w-full max-w-7xl flex-col-reverse justify-between gap-x-3 gap-y-6 pb-40 lg:flex-row">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -226,29 +247,27 @@ export default function NewJobPage() {
             {/* Section 1: Basic Job Information */}
             <div className="space-y-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-white">
                   Basic Job Information
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-white/70">
                   Define the core details of the position
                 </p>
               </div>
 
-              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+              <div className="space-y-6 rounded-xl border border-blue-400/30 bg-blue-800/40 p-6 backdrop-blur-xl">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="title"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
-                          Job Title
-                        </FormLabel>
+                        <FormLabel className="text-white">Job Title</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="e.g., Senior Frontend Developer"
                             {...field}
-                            className="border-slate-200 bg-white"
+                            className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           />
                         </FormControl>
                         <FormMessage />
@@ -261,14 +280,12 @@ export default function NewJobPage() {
                     name="location"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
-                          Location
-                        </FormLabel>
+                        <FormLabel className="text-white">Location</FormLabel>
                         <FormControl>
                           <Input
                             placeholder="e.g., San Francisco, CA or Remote"
                             {...field}
-                            className="border-slate-200 bg-white"
+                            className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           />
                         </FormControl>
                         <FormMessage />
@@ -283,7 +300,7 @@ export default function NewJobPage() {
                     name="experienceLevel"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
+                        <FormLabel className="text-white">
                           Experience Level
                         </FormLabel>
                         <Select
@@ -291,13 +308,17 @@ export default function NewJobPage() {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger className="border-slate-200 bg-white">
+                            <SelectTrigger className="border-blue-400/30 bg-blue-700/30 text-white">
                               <SelectValue placeholder="Select experience level" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent className="border-blue-400/30 bg-blue-800/95 text-white backdrop-blur-xl">
                             {experienceLevels.map((level) => (
-                              <SelectItem key={level.value} value={level.value}>
+                              <SelectItem
+                                key={level.value}
+                                value={level.value}
+                                className="text-white hover:bg-blue-700/50 focus:bg-blue-700/50"
+                              >
                                 {level.label}
                               </SelectItem>
                             ))}
@@ -313,7 +334,7 @@ export default function NewJobPage() {
                     name="workType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
+                        <FormLabel className="text-white">
                           Employment Type
                         </FormLabel>
                         <Select
@@ -321,13 +342,17 @@ export default function NewJobPage() {
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger className="border-slate-200 bg-white">
+                            <SelectTrigger className="border-blue-400/30 bg-blue-700/30 text-white">
                               <SelectValue placeholder="Select employment type" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent className="border-blue-400/30 bg-blue-800/95 text-white backdrop-blur-xl">
                             {workTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
+                              <SelectItem
+                                key={type.value}
+                                value={type.value}
+                                className="text-white hover:bg-blue-700/50 focus:bg-blue-700/50"
+                              >
                                 {type.label}
                               </SelectItem>
                             ))}
@@ -345,7 +370,7 @@ export default function NewJobPage() {
                     name="yearsOfExperience"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
+                        <FormLabel className="text-white">
                           Years of Experience Required
                         </FormLabel>
                         <FormControl>
@@ -360,7 +385,7 @@ export default function NewJobPage() {
                                   : undefined,
                               )
                             }
-                            className="border-slate-200 bg-white"
+                            className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           />
                         </FormControl>
                         <FormMessage />
@@ -377,13 +402,14 @@ export default function NewJobPage() {
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
+                            className="border-blue-400/50 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel className="text-slate-700">
+                          <FormLabel className="text-white">
                             Remote Position
                           </FormLabel>
-                          <FormDescription>
+                          <FormDescription className="text-white/60">
                             Candidates can work from anywhere
                           </FormDescription>
                         </div>
@@ -397,31 +423,31 @@ export default function NewJobPage() {
             {/* Section 2: Job Details */}
             <div className="space-y-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-white">
                   Job Details
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-white/70">
                   Describe the role and what you&apos;re looking for
                 </p>
               </div>
 
-              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+              <div className="space-y-6 rounded-xl border border-blue-400/30 bg-blue-800/40 p-6 backdrop-blur-xl">
                 <FormField
                   control={form.control}
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700">
+                      <FormLabel className="text-white">
                         Job Description
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Describe the role, company culture, and what makes this opportunity unique..."
-                          className="min-h-[150px] border-slate-200 bg-white"
+                          className="min-h-[150px] border-blue-400/30 bg-blue-700/30 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
+                      <FormDescription className="text-white/60">
                         Minimum 50 characters required
                       </FormDescription>
                       <FormMessage />
@@ -434,13 +460,13 @@ export default function NewJobPage() {
                   name="responsibilities"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700">
+                      <FormLabel className="text-white">
                         Key Responsibilities
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="List the main responsibilities and day-to-day tasks..."
-                          className="min-h-[120px] border-slate-200 bg-white"
+                          className="min-h-[120px] border-blue-400/30 bg-blue-700/30 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           {...field}
                         />
                       </FormControl>
@@ -454,13 +480,13 @@ export default function NewJobPage() {
                   name="requirements"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700">
+                      <FormLabel className="text-white">
                         Requirements & Qualifications
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="List the must-have qualifications, certifications, or experience..."
-                          className="min-h-[120px] border-slate-200 bg-white"
+                          className="min-h-[120px] border-blue-400/30 bg-blue-700/30 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           {...field}
                         />
                       </FormControl>
@@ -474,18 +500,18 @@ export default function NewJobPage() {
             {/* Section 3: Technical Requirements */}
             <div className="space-y-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-white">
                   Technical Requirements
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-white/70">
                   Specify the technical skills and technologies needed
                 </p>
               </div>
 
-              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+              <div className="space-y-6 rounded-xl border border-blue-400/30 bg-blue-800/40 p-6 backdrop-blur-xl">
                 {/* Required Skills */}
                 <div className="space-y-4">
-                  <Label className="text-slate-700">
+                  <Label className="text-white">
                     Required Skills & Technologies
                   </Label>
 
@@ -500,7 +526,7 @@ export default function NewJobPage() {
                           addSkill(skillInput.trim(), "required");
                         }
                       }}
-                      className="border-slate-200 bg-white"
+                      className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                     />
                     <Button
                       type="button"
@@ -536,7 +562,7 @@ export default function NewJobPage() {
                   )}
 
                   <div>
-                    <p className="mb-2 text-sm text-slate-600">
+                    <p className="mb-2 text-sm text-white/70">
                       Suggested skills:
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -546,7 +572,7 @@ export default function NewJobPage() {
                         .map((skill) => (
                           <Badge
                             key={skill}
-                            variant="outline"
+                            variant="secondary"
                             className="cursor-pointer hover:bg-slate-100"
                             onClick={() => addSkill(skill, "required")}
                           >
@@ -559,7 +585,7 @@ export default function NewJobPage() {
 
                 {/* Nice-to-Have Skills */}
                 <div className="space-y-4">
-                  <Label className="text-slate-700">Nice-to-Have Skills</Label>
+                  <Label className="text-white">Nice-to-Have Skills</Label>
 
                   <div className="flex gap-2">
                     <Input
@@ -572,7 +598,7 @@ export default function NewJobPage() {
                           addSkill(niceToHaveInput.trim(), "niceToHave");
                         }
                       }}
-                      className="border-slate-200 bg-white"
+                      className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                     />
                     <Button
                       type="button"
@@ -613,18 +639,18 @@ export default function NewJobPage() {
             {/* Section 4: Compensation & Benefits */}
             <div className="space-y-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-white">
                   Compensation & Benefits
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-white/70">
                   Define the compensation package and perks
                 </p>
               </div>
 
-              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+              <div className="space-y-6 rounded-xl border border-blue-400/30 bg-blue-800/40 p-6 backdrop-blur-xl">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label className="text-slate-700">Salary Range</Label>
+                    <Label className="text-white">Salary Range</Label>
                     <div className="flex items-center gap-2">
                       <FormField
                         control={form.control}
@@ -643,14 +669,14 @@ export default function NewJobPage() {
                                       : undefined,
                                   )
                                 }
-                                className="border-slate-200 bg-white"
+                                className="border-blue-400/30 bg-blue-700/30 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                               />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <span className="text-slate-500">-</span>
+                      <span className="text-white/70">-</span>
                       <FormField
                         control={form.control}
                         name="salaryMax"
@@ -668,7 +694,7 @@ export default function NewJobPage() {
                                       : undefined,
                                   )
                                 }
-                                className="border-slate-200 bg-white"
+                                className="border-blue-400/30 bg-blue-700/30 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                               />
                             </FormControl>
                             <FormMessage />
@@ -683,14 +709,14 @@ export default function NewJobPage() {
                     name="equity"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
+                        <FormLabel className="text-white">
                           Equity Range (Optional)
                         </FormLabel>
                         <FormControl>
                           <Input
                             placeholder="e.g., 0.1% - 0.5%"
                             {...field}
-                            className="border-slate-200 bg-white"
+                            className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           />
                         </FormControl>
                         <FormMessage />
@@ -701,7 +727,7 @@ export default function NewJobPage() {
 
                 {/* Benefits */}
                 <div className="space-y-4">
-                  <Label className="text-slate-700">Benefits & Perks</Label>
+                  <Label className="text-white">Benefits & Perks</Label>
 
                   <div className="flex gap-2">
                     <Input
@@ -714,7 +740,7 @@ export default function NewJobPage() {
                           addBenefit(benefitInput.trim());
                         }
                       }}
-                      className="border-slate-200 bg-white"
+                      className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                     />
                     <Button
                       type="button"
@@ -749,7 +775,7 @@ export default function NewJobPage() {
                   )}
 
                   <div>
-                    <p className="mb-2 text-sm text-slate-600">
+                    <p className="mb-2 text-sm text-white/70">
                       Common benefits:
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -759,7 +785,7 @@ export default function NewJobPage() {
                         .map((benefit) => (
                           <Badge
                             key={benefit}
-                            variant="outline"
+                            variant="secondary"
                             className="cursor-pointer hover:bg-slate-100"
                             onClick={() => addBenefit(benefit)}
                           >
@@ -775,28 +801,26 @@ export default function NewJobPage() {
             {/* Section 5: Company Information */}
             <div className="space-y-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-white">
                   Company Information
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-white/70">
                   Tell candidates about your company
                 </p>
               </div>
 
-              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+              <div className="space-y-6 rounded-xl border border-blue-400/30 bg-blue-800/40 p-6 backdrop-blur-xl">
                 <FormField
                   control={form.control}
                   name="companyName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700">
-                        Company Name
-                      </FormLabel>
+                      <FormLabel className="text-white">Company Name</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="Your company name"
                           {...field}
-                          className="border-slate-200 bg-white"
+                          className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                         />
                       </FormControl>
                       <FormMessage />
@@ -809,17 +833,17 @@ export default function NewJobPage() {
                   name="companyDescription"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700">
+                      <FormLabel className="text-white">
                         Company Description
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Brief description of your company, mission, and culture..."
-                          className="min-h-[100px] border-slate-200 bg-white"
+                          className="min-h-[100px] border-blue-400/30 bg-blue-700/30 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>
+                      <FormDescription className="text-white/60">
                         Help candidates understand your company better
                       </FormDescription>
                       <FormMessage />
@@ -832,29 +856,30 @@ export default function NewJobPage() {
             {/* Section 6: Application Settings */}
             <div className="space-y-6">
               <div className="space-y-1">
-                <h2 className="text-xl font-semibold text-slate-900">
+                <h2 className="text-xl font-semibold text-white">
                   Application Settings
                 </h2>
-                <p className="text-sm text-slate-600">
+                <p className="text-white/70">
                   Control how candidates apply to this position
                 </p>
               </div>
 
-              <div className="border-border space-y-6 rounded-lg border bg-slate-50 p-6">
+              <div className="space-y-6 rounded-xl border border-blue-400/30 bg-blue-800/40 p-6 backdrop-blur-xl">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="applicationDeadline"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
+                        <FormLabel className="text-white">
                           Application Deadline
                         </FormLabel>
                         <FormControl>
                           <Input
                             type="date"
                             {...field}
-                            className="border-slate-200 bg-white"
+                            id="applicationDeadline"
+                            className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20 [&::-webkit-calendar-picker-indicator]:invert"
                           />
                         </FormControl>
                         <FormMessage />
@@ -867,7 +892,7 @@ export default function NewJobPage() {
                     name="maxApplications"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-slate-700">
+                        <FormLabel className="text-white">
                           Maximum Applications
                         </FormLabel>
                         <FormControl>
@@ -882,10 +907,10 @@ export default function NewJobPage() {
                                   : undefined,
                               )
                             }
-                            className="border-slate-200 bg-white"
+                            className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                           />
                         </FormControl>
-                        <FormDescription>
+                        <FormDescription className="text-white/60">
                           Limit the number of applications you receive
                         </FormDescription>
                         <FormMessage />
@@ -899,17 +924,17 @@ export default function NewJobPage() {
                   name="urgency"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700">
+                      <FormLabel className="text-white">
                         Hiring Urgency
                       </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="e.g., Immediate need, flexible timeline, etc."
                           {...field}
-                          className="border-slate-200 bg-white"
+                          className="border-blue-400/30 bg-blue-100/0 text-white placeholder:text-white/60 focus:border-blue-300/50 focus:ring-2 focus:ring-blue-300/20"
                         />
                       </FormControl>
-                      <FormDescription>
+                      <FormDescription className="text-white/60">
                         Let candidates know how urgent this hire is
                       </FormDescription>
                       <FormMessage />
@@ -923,22 +948,14 @@ export default function NewJobPage() {
             <div className="flex gap-3 pt-4">
               <Button
                 type="submit"
-                className="flex-1 border border-blue-200 bg-white text-blue-700 hover:bg-blue-50"
+                variant={"secondary"}
+                className="group relative max-w-sm flex-1 overflow-hidden rounded-xl font-semibold shadow-lg transition-all duration-300"
               >
-                Find Candidates
-                <Search className="ml-2 h-4 w-4" />
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1"
-                onClick={() => {
-                  // Save as draft functionality
-                  console.log("Saving as draft...");
-                }}
-              >
-                Save as Draft
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+                <span className="relative z-10 flex items-center justify-center">
+                  <Search className="mr-2 h-4 w-4" />
+                  Find Candidates
+                </span>
               </Button>
             </div>
           </form>
@@ -946,19 +963,16 @@ export default function NewJobPage() {
 
         {/* AI Tip */}
         <div className="sticky top-0 right-0 z-10">
-          <div className="border-border rounded-xl border bg-slate-50 p-6">
+          <div className="w-max rounded-xl border border-white/20 bg-white/5 p-6 backdrop-blur-xl">
             <div className="mb-6 flex items-center gap-3">
-              {/* <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-white">
-                <Sparkles className="h-5 w-5" />
-              </div> */}
-              <h3 className="text-base font-semibold text-gray-900">
+              <h3 className="text-base font-semibold text-white">
                 Tips for Better Job Posts
               </h3>
             </div>
 
             <div className="relative">
               {/* Vertical line connector */}
-              <div className="absolute top-0 bottom-0 left-4 w-0.5 bg-gray-200" />
+              <div className="absolute top-0 bottom-0 left-4 w-0.5 bg-blue-400/30" />
 
               {/* Roadmap items */}
               <div className="space-y-6">
@@ -988,16 +1002,16 @@ export default function NewJobPage() {
                 ].map((item, index) => (
                   <div key={index} className="relative flex items-start gap-4">
                     {/* Number circle */}
-                    <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-700 text-xs font-bold text-white">
+                    <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-xs font-bold text-white">
                       {item.number}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 pb-2">
-                      <h4 className="mb-1 text-sm font-medium text-gray-900">
+                      <h4 className="mb-1 text-sm font-medium text-white">
                         {item.title}
                       </h4>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-white/70">
                         {item.description}
                       </p>
                     </div>
