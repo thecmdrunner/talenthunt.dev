@@ -8,6 +8,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useTracking } from "@/lib/hooks/use-tracking";
+import { cn, formatShortNumber } from "@/lib/utils";
 import { type RouterOutputs } from "@/trpc/react";
 import {
   Building,
@@ -21,46 +22,27 @@ import {
 import Image from "next/image";
 
 export function getMatchLevel(score: number) {
-  if (score >= 85) {
+  const matchPercentage = Math.round(score * 100);
+
+  if (matchPercentage >= 70) {
     return {
-      label: "Perfect",
+      label: "Great",
       variant: "default" as const,
-      color: "bg-green-500 text-white",
+      color: "bg-gradient-to-tr from-emerald-300 to-cyan-300 text-emerald-900",
       icon: "🎯",
     };
-  } else if (score >= 75) {
-    return {
-      label: "Strong",
-      variant: "default" as const,
-      color: "bg-blue-500 text-white",
-      icon: "⭐",
-    };
-  } else if (score >= 65) {
-    return {
-      label: "Good",
-      variant: "secondary" as const,
-      color: "bg-purple-500 text-white",
-      icon: "💪",
-    };
-  } else if (score >= 50) {
-    return {
-      label: "Decent",
-      variant: "secondary" as const,
-      color: "bg-orange-500 text-white",
-      icon: "👍",
-    };
-  } else if (score >= 35) {
+  } else if (matchPercentage >= 50) {
     return {
       label: "Potential",
-      variant: "outline" as const,
-      color: "bg-yellow-500 text-white",
-      icon: "🤔",
+      variant: "secondary" as const,
+      color: "bg-gradient-to-tr from-orange-300 to-orange-300 text-orange-900",
+      icon: "👍",
     };
   } else {
     return {
-      label: "Basic",
+      label: "Poor",
       variant: "outline" as const,
-      color: "bg-gray-500 text-white",
+      color: "bg-gradient-to-tr from-red-300 to-red-300 text-red-900",
       icon: "📋",
     };
   }
@@ -111,16 +93,31 @@ export const CandidateSheetContent = ({
 
       <div className="space-y-6">
         {/* Match Score */}
-        <div className="rounded-lg border p-4">
+        <div className="w-max rounded-full border p-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Match</span>
-            <Badge
-              variant={getMatchLevel(selectedCandidate.matchScore).variant}
-              className={`${getMatchLevel(selectedCandidate.matchScore).color} text-sm`}
-            >
-              {getMatchLevel(selectedCandidate.matchScore).icon}{" "}
-              {getMatchLevel(selectedCandidate.matchScore).label}
-            </Badge>
+            {/* <span className="text-sm font-medium">Match</span> */}
+            <div className="flex items-center space-x-2">
+              <div
+                className={`h-3 w-3 rounded-full ${
+                  Math.round(selectedCandidate.matchScore * 100) >= 70
+                    ? "bg-gradient-to-tr from-emerald-500 to-cyan-500"
+                    : Math.round(selectedCandidate.matchScore * 100) >= 50
+                      ? "bg-gradient-to-tr from-orange-500 to-orange-600"
+                      : "bg-gradient-to-tr from-red-500 to-red-600"
+                }`}
+              ></div>
+              <span className="text-sm font-medium">
+                {Math.round(selectedCandidate.matchScore * 100) >= 70
+                  ? "Great"
+                  : Math.round(selectedCandidate.matchScore * 100) >= 50
+                    ? "Potential"
+                    : "Poor"}{" "}
+                Match
+              </span>
+              <span className="text-xs text-gray-500">
+                ({Math.round(selectedCandidate.matchScore)}%)
+              </span>
+            </div>
           </div>
           {/* <div className="mt-2 text-xs text-gray-500">
                     Based on skills, experience, and role alignment
@@ -131,7 +128,7 @@ export const CandidateSheetContent = ({
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900">About</h3>
           {selectedCandidate?.bio && (
-            <div className="rounded-xl border border-gray-200 bg-gray-50/50 p-4 shadow-sm">
+            <div className="border-border rounded-xl border bg-neutral-50/50 p-4">
               <p className="text-sm leading-relaxed text-gray-700">
                 {selectedCandidate?.bio}
               </p>
@@ -180,6 +177,44 @@ export const CandidateSheetContent = ({
               <VerifiedIcon className="h-5 w-5" />
               <span className="font-medium">Verified</span>
             </Badge>
+          </div>
+        </div>
+
+        {/* Contact Actions */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              className="h-12 flex-1 bg-gradient-to-r from-blue-600 to-blue-700 font-semibold shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
+              onClick={() => handleContactView(selectedCandidate.id)}
+            >
+              <Mail className="mr-2 h-5 w-5" />
+              Contact
+            </Button>
+            <Button
+              variant="outline"
+              className="h-12 flex-1 border-2 border-gray-300 font-semibold shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
+              onClick={() => {
+                trackButtonClicked("view_resume", "candidate_detail");
+                // Open resume in new tab
+                if (
+                  "resumeUrl" in selectedCandidate &&
+                  selectedCandidate.resumeUrl &&
+                  typeof selectedCandidate.resumeUrl === "string"
+                ) {
+                  window.open(
+                    selectedCandidate.resumeUrl,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
+                } else {
+                  // Fallback - could show a toast or alert
+                  alert("Resume not available for this candidate");
+                }
+              }}
+            >
+              <ExternalLink className="mr-2 h-5 w-5" />
+              View Resume
+            </Button>
           </div>
         </div>
 
@@ -383,118 +418,111 @@ export const CandidateSheetContent = ({
 
         {/* Work Experience */}
         {selectedCandidate?.workExperience.length > 0 && (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Experience</h3>
-            <div className="space-y-3">
-              {selectedCandidate?.workExperience.map(
+          <section className="space-y-3">
+            <h3 className="text-base font-semibold tracking-tight text-gray-900">
+              Experience
+            </h3>
+            <ol className="relative border-l border-gray-200">
+              {selectedCandidate.workExperience.map(
                 (
                   work: (typeof selectedCandidate.workExperience)[0],
                   index: number,
                 ) => (
-                  <div
-                    key={index}
-                    className="group relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md"
-                  >
-                    {/* Timeline dot for visual hierarchy */}
-                    <div className="absolute top-6 -left-2 h-4 w-4 rounded-full border-2 border-white bg-blue-500 shadow-sm" />
-
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-3">
-                          <h4 className="text-lg font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
-                            {work.position}
-                          </h4>
-                          {work.isCurrent && (
-                            <Badge
-                              variant="default"
-                              className="border-green-200 bg-green-100 text-xs font-medium text-green-800"
-                            >
-                              Current
-                            </Badge>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Building className="h-4 w-4 text-gray-400" />
-                          <p className="font-medium text-gray-700">
-                            {work.company}
-                          </p>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-gray-400" />
-                          <p className="text-sm text-gray-600">
-                            {work.startDate
-                              ? new Date(work.startDate).getFullYear()
-                              : "Unknown"}{" "}
-                            -{" "}
-                            {work.isCurrent
-                              ? "Present"
-                              : work.endDate
-                                ? new Date(work.endDate).getFullYear()
-                                : "Unknown"}
-                          </p>
-                        </div>
+                  <li key={index} className="mb-6 ml-4 last:mb-0">
+                    <div className="absolute -left-2.5 mt-1 flex h-3 w-3 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-sm" />
+                    <div
+                      className={cn(
+                        "relative rounded-lg px-0 py-2 transition-colors",
+                        work.isCurrent &&
+                          "bg-gradient-to-r from-green-50/60 to-blue-50/40",
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-gray-900">
+                          {work.position}
+                        </span>
+                        {work.isCurrent && (
+                          <span className="ml-1 rounded border border-green-200 bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                            Current
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+                        <Building className="h-4 w-4 text-gray-300" />
+                        <span className="font-normal">{work.company}</span>
+                      </div>
+                      <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>
+                          {work.startDate
+                            ? new Date(work.startDate).getFullYear()
+                            : "Unknown"}
+                          {" – "}
+                          {work.isCurrent
+                            ? "Present"
+                            : work.endDate
+                              ? new Date(work.endDate).getFullYear()
+                              : "Unknown"}
+                        </span>
                       </div>
                     </div>
-
-                    {/* Add subtle gradient background for current role */}
-                    {work.isCurrent && (
-                      <div className="absolute inset-0 -z-10 rounded-xl bg-gradient-to-r from-green-50/50 to-blue-50/50" />
-                    )}
-                  </div>
+                  </li>
                 ),
               )}
-            </div>
-          </div>
+            </ol>
+          </section>
         )}
 
         {/* Salary Expectations */}
         {(selectedCandidate?.expectedSalaryMin ??
           selectedCandidate?.expectedSalaryMax) && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h3 className="text-lg font-semibold text-gray-900">
               Salary Expectations
             </h3>
-            <div className="relative overflow-hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 p-6 shadow-sm">
-              {/* Decorative background pattern */}
-              <div className="absolute -top-4 -right-4 h-24 w-24 rounded-full bg-emerald-100/40" />
-              <div className="absolute -bottom-2 -left-2 h-16 w-16 rounded-full bg-teal-100/40" />
+            <div className="group relative overflow-hidden rounded-xl border border-gray-200/50 bg-white p-4 shadow-sm transition-all duration-200 hover:shadow-md">
+              {/* Minimal gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-transparent to-emerald-50/15" />
 
               <div className="relative flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-sm">
-                  <span className="text-lg font-bold">$</span>
+                {/* Compact icon */}
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-gray-900 to-gray-700">
+                  <span className="text-xs font-semibold text-white">$</span>
                 </div>
 
                 <div className="flex-1">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-gray-900">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs font-medium text-gray-500">
                       {selectedCandidate?.salaryCurrency ?? "USD"}
                     </span>
-                    <span className="text-3xl font-black text-emerald-600">
+                    <span className="text-xl font-bold text-gray-900">
                       {selectedCandidate?.expectedSalaryMin
-                        ? `${selectedCandidate?.expectedSalaryMin.toLocaleString()}`
+                        ? formatShortNumber(selectedCandidate.expectedSalaryMin)
                         : "Flexible"}
                     </span>
                     {selectedCandidate?.expectedSalaryMax &&
                       selectedCandidate?.expectedSalaryMin && (
                         <>
-                          <span className="text-xl font-semibold text-gray-500">
-                            -
+                          <span className="text-sm font-medium text-gray-400">
+                            –
                           </span>
-                          <span className="text-3xl font-black text-emerald-600">
-                            {selectedCandidate?.expectedSalaryMax.toLocaleString()}
+                          <span className="text-xl font-bold text-gray-900">
+                            {formatShortNumber(
+                              selectedCandidate.expectedSalaryMax,
+                            )}
                           </span>
                         </>
                       )}
                     {selectedCandidate?.expectedSalaryMax &&
                       !selectedCandidate?.expectedSalaryMin && (
                         <>
-                          <span className="text-lg font-medium text-gray-600">
+                          <span className="text-xs font-medium text-gray-500">
                             up to
                           </span>
-                          <span className="text-3xl font-black text-emerald-600">
-                            {selectedCandidate?.expectedSalaryMax.toLocaleString()}
+                          <span className="text-xl font-bold text-gray-900">
+                            {formatShortNumber(
+                              selectedCandidate.expectedSalaryMax,
+                            )}
                           </span>
                         </>
                       )}
@@ -513,45 +541,6 @@ export const CandidateSheetContent = ({
             </div>
           </div>
         )}
-
-        {/* Contact Actions */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Take Action</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              className="h-12 flex-1 bg-gradient-to-r from-blue-600 to-blue-700 font-semibold shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl"
-              onClick={() => handleContactView(selectedCandidate.id)}
-            >
-              <Mail className="mr-2 h-5 w-5" />
-              Contact
-            </Button>
-            <Button
-              variant="outline"
-              className="h-12 flex-1 border-2 border-gray-300 font-semibold shadow-sm transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 hover:shadow-md"
-              onClick={() => {
-                trackButtonClicked("view_resume", "candidate_detail");
-                // Open resume in new tab
-                if (
-                  "resumeUrl" in selectedCandidate &&
-                  selectedCandidate.resumeUrl &&
-                  typeof selectedCandidate.resumeUrl === "string"
-                ) {
-                  window.open(
-                    selectedCandidate.resumeUrl,
-                    "_blank",
-                    "noopener,noreferrer",
-                  );
-                } else {
-                  // Fallback - could show a toast or alert
-                  alert("Resume not available for this candidate");
-                }
-              }}
-            >
-              <ExternalLink className="mr-2 h-5 w-5" />
-              View Resume
-            </Button>
-          </div>
-        </div>
       </div>
     </>
   );
