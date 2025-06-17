@@ -1,4 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 const SignInForm = () => {
   return (
@@ -50,7 +52,13 @@ const SignInForm = () => {
   );
 };
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const { userId } = await auth();
+
+  if (userId) {
+    return redirect("/");
+  }
+
   return (
     <div className="flex min-h-screen">
       {/* Left side - Login form */}

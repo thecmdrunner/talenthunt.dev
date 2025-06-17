@@ -2,6 +2,7 @@ import { env } from "@/env";
 import { supabaseServerClient } from "@/lib/supabase/server";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { clerkClient } from "@clerk/nextjs/server";
+import Exa from "exa-js";
 import { z } from "zod";
 
 const clerk = await clerkClient();
@@ -124,4 +125,24 @@ export const servicesRouter = createTRPCRouter({
       };
     }
   }),
+
+  searchLinkedin: protectedProcedure
+    .input(
+      z.object({
+        query: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const exa = new Exa(env.EXA_API_KEY);
+
+      const result = await exa.search(input.query, {
+        category: "linkedin profile",
+        type: "auto",
+        numResults: 3,
+      });
+
+      console.log(result);
+
+      return result;
+    }),
 });

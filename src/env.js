@@ -20,6 +20,7 @@ export const env = createEnv({
     KV_REST_API_READ_ONLY_TOKEN: z.string(),
     REDIS_URL: z.string(),
     OPENAI_API_KEY: z.string(),
+    EXA_API_KEY: z.string(),
   },
 
   /**
@@ -57,6 +58,7 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    EXA_API_KEY: process.env.EXA_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
