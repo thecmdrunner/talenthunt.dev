@@ -28,7 +28,7 @@ export const metadata: Metadata = {
       url: "/android-chrome-512x512.png",
     },
   ],
-  themeColor: "#ffffff",
+
   manifest: "/site.webmanifest",
 
   openGraph: {
