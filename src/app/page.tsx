@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
-  Brain,
   Briefcase,
   CheckCircle,
   Github,
@@ -20,6 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -164,10 +164,13 @@ export default function LandingPage() {
       <nav className="relative z-10 px-6 py-6">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
-              <div className="absolute inset-2 rounded-lg border border-white/20"></div>
-              <Brain className="relative z-10 h-7 w-7 text-white" />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="TalentHunt"
+              width={400}
+              height={400}
+              className="h-10 w-10 rounded-lg"
+            />
             <span className="text-2xl font-bold text-white">TalentHunt</span>
           </div>
           <div className="hidden items-center space-x-8 md:flex">
@@ -199,7 +202,7 @@ export default function LandingPage() {
       <div className="relative z-10 mx-auto max-w-6xl px-6 pt-8 pb-24">
         {/* Toggle Buttons with blue consistency */}
         <div className="mx-auto mb-12 flex max-w-sm items-center justify-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-600/20 p-1.5 backdrop-blur-sm">
-          <Button 
+          <Button
             onClick={() => setActiveView("hire")}
             className={cn(
               `flex-1 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300`,
@@ -212,7 +215,7 @@ export default function LandingPage() {
             <Zap className="mr-2 inline-block h-4 w-4" />
             <span>Hire Talent</span>
           </Button>
-          <Button 
+          <Button
             onClick={() => setActiveView("find")}
             className={cn(
               `flex-1 rounded-full px-8 py-4 text-lg font-medium transition-all duration-300`,
@@ -351,8 +354,8 @@ export default function LandingPage() {
                 </motion.svg>
                 <div className="absolute right-1/4 -bottom-6 left-1/4 h-0.5 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
               </AnimatePresence>
-          </span>
-        </h1>
+            </span>
+          </h1>
 
           <p className="mx-auto my-12 max-w-xl text-2xl leading-relaxed text-balance text-white/80">
             Connect with the leading companies through intelligent matching.
@@ -400,20 +403,20 @@ export default function LandingPage() {
           </div>
           <div className="hidden items-center md:flex">
             <div className="mx-4 h-0.5 w-8 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent"></div>
-            </div>
+          </div>
           <div className="flex items-center space-x-3">
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">500+ companies hiring</span>
-            </div>
+          </div>
           <div className="hidden items-center md:flex">
             <div className="mx-4 h-0.5 w-8 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent"></div>
-            </div>
+          </div>
           <div className="flex items-center space-x-3">
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">90% faster hiring</span>
           </div>
         </div>
-            </div>
+      </div>
 
       {/* Enhanced Search Interface Demo Card with browser mockup */}
       <div className="relative z-10 mx-auto mb-24 max-w-5xl px-6">
@@ -498,8 +501,8 @@ export default function LandingPage() {
                       <div className="absolute h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-500 opacity-90"></div>
                       <div className="relative h-6 w-6 rounded-full bg-white shadow-lg"></div>
                     </div>
-          </div>
-        </div>
+                  </div>
+                </div>
 
                 {/* Search Button */}
                 <Button
@@ -519,7 +522,7 @@ export default function LandingPage() {
             </div>
           </CardContent>
         </Card>
-            </div>
+      </div>
 
       {/* Enhanced Welcome Cards with perfect blue consistency */}
       <div className="relative z-10 mx-auto mb-24 max-w-6xl px-6">
@@ -539,7 +542,7 @@ export default function LandingPage() {
           <div className="mt-4 flex justify-center">
             <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
           </div>
-              </div>
+        </div>
 
         <div className="grid gap-8 md:grid-cols-2">
           {/* Enhanced Job Seeker Card with blue consistency */}
@@ -668,8 +671,8 @@ export default function LandingPage() {
               </Link>
             </CardContent>
           </Card>
-            </div>
-          </div>
+        </div>
+      </div>
 
       {/* Enhanced Features Section with blue consistency */}
       <div id="features" className="relative z-10">
@@ -738,7 +741,7 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-          </div>
+      </div>
 
       {/* Enhanced Verification Section with blue consistency */}
       <div className="relative z-10">
@@ -787,9 +790,9 @@ export default function LandingPage() {
                   LinkedIn Verified
                 </h3>
                 <p className="text-white/80">
-                All users verify their professional identity through LinkedIn
-                authentication
-              </p>
+                  All users verify their professional identity through LinkedIn
+                  authentication
+                </p>
               </CardContent>
             </Card>
 
@@ -824,9 +827,9 @@ export default function LandingPage() {
                   GitHub Verified
                 </h3>
                 <p className="text-white/80">
-                Developers showcase verified projects and contributions from
-                GitHub
-              </p>
+                  Developers showcase verified projects and contributions from
+                  GitHub
+                </p>
               </CardContent>
             </Card>
           </div>
