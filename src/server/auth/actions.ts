@@ -35,3 +35,7 @@ export const getOrCreateUser = async () => {
 
   return user;
 };
+
+export type PublicMetadata = {
+  earlyAccess?: boolean;
+};

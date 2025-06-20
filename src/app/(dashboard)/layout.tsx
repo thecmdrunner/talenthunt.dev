@@ -1,7 +1,9 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import type { PublicMetadata } from "@/server/auth/actions";
 import { api } from "@/trpc/server";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { type PropsWithChildren } from "react";
 import { PostHogProvider } from "../providers";
@@ -9,6 +11,14 @@ import Shell from "./shell";
 
 export default async function DashboardLayout({ children }: PropsWithChildren) {
   const user = await api.user.getOrCreateUser();
+
+  const authedUser = await currentUser();
+
+  const metadata = authedUser?.publicMetadata as PublicMetadata;
+
+  if (!metadata?.earlyAccess) {
+    return redirect("/waitlist");
+  }
 
   if (!user) {
     return redirect("/");
