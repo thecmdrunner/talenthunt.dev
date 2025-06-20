@@ -1,5 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 const SignInForm = () => {
@@ -92,7 +93,15 @@ export default async function SignInPage() {
 
       {/* Right side - Gray area */}
       {/*will need to update this later*/}
-      <div className="hidden rounded-xl bg-gray-400 lg:m-6 lg:block lg:w-2/3"></div>
+      <div className="hidden rounded-xl bg-gray-400 lg:m-6 lg:block lg:w-2/3">
+        <Image
+          src="/signin2.png"
+          alt="signin1"
+          width={1000}
+          height={1000}
+          className="h-full w-full rounded-xl object-cover"
+        />
+      </div>
     </div>
   );
 }
