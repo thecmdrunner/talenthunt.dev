@@ -126,6 +126,17 @@ export const aiRouter = createTRPCRouter({
 
       console.log(`🎥 Starting video review for user: ${userId}`);
 
+      await new Promise((r) => setTimeout(r, 100));
+
+      return {
+        approved: true,
+        confidence: 2,
+        reasoning: "test",
+        feedback: "test",
+        autoApproved: true,
+        status: "approved",
+      };
+
       try {
         // Get candidate profile
         const candidateProfile = await ctx.db.query.candidateProfiles.findFirst(
@@ -154,6 +165,8 @@ export const aiRouter = createTRPCRouter({
         console.log(
           `📱 Video downloaded: ${(videoData.length / 1024 / 1024).toFixed(2)}MB`,
         );
+
+        console.log({ userId });
 
         // Use Gemini Flash to analyze the video
         const result = await generateObject({

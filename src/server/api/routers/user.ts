@@ -14,6 +14,8 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 const getUser = async (userId: string) => {
+  console.log({ userId });
+
   const user = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.userId, userId),
     with: {

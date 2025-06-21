@@ -12,6 +12,8 @@ import IntroduceYourself from "../introduce-yourself";
 import ProfileReview from "../profile-review";
 import UploadResume from "../upload-resume";
 
+const toastId = "candidate-onboarding";
+
 export default function CandidateOnboardingPage() {
   const router = useRouter();
   const {
@@ -44,18 +46,24 @@ export default function CandidateOnboardingPage() {
   const parseResumeMutation = api.ai.parseResume.useMutation({
     onError: (error) => {
       console.error("Failed to parse resume:", error);
-      toast.error("Failed to parse resume, but you can still continue");
+      toast.error("Failed to parse resume, but you can still continue", {
+        id: toastId,
+      });
     },
   });
 
   const handleContinueToStep2 = useCallback(async (resumeUrl: string) => {
-    const loadingToast = toast.loading("Analyzing your resume...");
+    const loadingToast = toast.loading("Analyzing your resume...", {
+      id: toastId,
+    });
     let parsedData = null;
 
     try {
       parsedData = await parseResumeMutation.mutateAsync({ resumeUrl });
       toast.dismiss(loadingToast);
-      toast.success("Resume analyzed successfully!");
+      toast.success("Resume analyzed successfully!", {
+        id: toastId,
+      });
     } catch (error) {
       toast.dismiss(loadingToast);
       console.error("Resume parsing failed:", error);

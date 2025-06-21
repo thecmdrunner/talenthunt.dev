@@ -4,6 +4,8 @@ import { api } from "@/trpc/react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
+const toastId = "video-review";
+
 export const useDelayedVideoReview = () => {
   const [reviewState, setReviewState] = useState<
     "pending" | "reviewing" | "approved" | "rejected" | "manual_review"
@@ -54,30 +56,41 @@ export const useDelayedVideoReview = () => {
   const triggerReview = useCallback(
     async (videoUrl: string) => {
       setReviewState("reviewing");
-      toast.loading("Reviewing your application...", { id: "video-review" });
+      toast.loading("Reviewing your application...", { id: toastId });
 
       try {
         const reviewResult = await reviewVideo({ videoUrl });
 
-        toast.dismiss("video-review");
+        toast.dismiss(toastId);
 
         if (reviewResult.autoApproved) {
           setReviewState("approved");
-          toast.success("🎉 Video approved! Your profile is now live!");
+          toast.success("🎉 Video approved! Your profile is now live!", {
+            id: toastId,
+          });
           // Refetch user data to get updated profile
           void refetchUser();
         } else if (reviewResult.approved) {
           setReviewState("manual_review");
-          toast.success("Video uploaded! Your profile is under manual review.");
+          toast.success(
+            "Video uploaded! Your profile is under manual review.",
+            {
+              id: toastId,
+            },
+          );
         } else {
           setReviewState("rejected");
-          toast.error("Video needs improvement. Please try recording again.");
+          toast.error("Video needs improvement. Please try recording again.", {
+            id: toastId,
+          });
         }
       } catch (error) {
         console.error("Review failed:", error);
         setReviewState("manual_review");
-        toast.dismiss("video-review");
-        toast.success("Video uploaded! Your profile is under review.");
+        toast.dismiss(toastId);
+        toast.success("Video uploaded! Your profile is under review.", {
+          id: toastId,
+        });
       }
     },
     [reviewVideo, refetchUser],
