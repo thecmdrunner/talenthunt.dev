@@ -12,6 +12,7 @@ import {
   Github,
   Globe,
   Linkedin,
+  MessageSquare,
   Search,
   Sparkles,
   Target,
@@ -833,6 +834,51 @@ export default function LandingPage() {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </div>
+
+      {/* Customer Discovery Calls Section */}
+      <div className="relative z-10">
+        <div className="mx-auto max-w-6xl px-6 py-24">
+          <div className="mb-12 text-center">
+            <div className="mb-6 flex justify-center">
+              <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm">
+                <div className="absolute inset-3 rounded-xl border border-white/20"></div>
+                <MessageSquare className="relative z-10 h-8 w-8 text-white" />
+              </div>
+            </div>
+            <h2 className="mb-4 text-4xl font-bold text-white">
+              Customer Discovery Calls
+            </h2>
+            <p className="mx-auto max-w-2xl text-lg text-white/80">
+              Companies we've talked to and learned from during our discovery
+              process
+            </p>
+            <div className="mt-4 flex justify-center">
+              <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
+            </div>
+          </div>
+
+          <Card className="relative mx-auto flex max-w-xl flex-col items-center overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/60 to-blue-900/80 p-0 shadow-xl backdrop-blur-xl">
+            <CardContent className="relative z-10 flex flex-col items-center gap-4 p-8">
+              <div className="flex items-center gap-3">
+                <MessageSquare className="h-6 w-6 text-blue-300" />
+                <span className="text-lg text-white/90">
+                  See the companies we've talked to and what we've learned.
+                </span>
+              </div>
+              <a
+                href="https://docs.google.com/spreadsheets/d/1rJMeBh_SdlniRoPXbIupiZLU6rXz4V7sWBv_arSPzQY"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-600/20 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:bg-blue-600/30"
+              >
+                <Globe className="h-4 w-4" />
+                View Customer Discovery Sheet
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
