@@ -900,46 +900,49 @@ export default function LandingPage() {
       {/* Customer Discovery Calls Section */}
       <div className="relative z-10">
         <div className="mx-auto max-w-6xl px-6 py-24">
-          <div className="mb-12 text-center">
-            <div className="mb-6 flex justify-center">
-              <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm">
-                <div className="absolute inset-3 rounded-xl border border-white/20"></div>
-                <MessageSquare className="relative z-10 h-8 w-8 text-white" />
+          <div className="mb-12 flex flex-col items-center text-center md:mb-0 md:flex-row md:items-center md:justify-between md:text-left">
+            <div className="flex flex-col items-center md:w-1/2 md:items-start">
+              <div className="mb-6 flex justify-center md:justify-start">
+                <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-blue-400/30 bg-blue-600/30 backdrop-blur-sm">
+                  <div className="absolute inset-3 rounded-xl border border-white/20"></div>
+                  <MessageSquare className="relative z-10 h-8 w-8 text-white" />
+                </div>
+              </div>
+              <h2 className="mb-4 text-4xl font-bold text-white">
+                Customer Discovery Calls
+              </h2>
+              <p className="mx-auto max-w-2xl text-lg text-white/80 md:mx-0">
+                Companies we&apos;ve talked to and learned from during our
+                discovery process
+              </p>
+              <div className="mt-4 flex justify-center md:justify-start">
+                <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
               </div>
             </div>
-            <h2 className="mb-4 text-4xl font-bold text-white">
-              Customer Discovery Calls
-            </h2>
-            <p className="mx-auto max-w-2xl text-lg text-white/80">
-              Companies we&apos;ve talked to and learned from during our
-              discovery process
-            </p>
-            <div className="mt-4 flex justify-center">
-              <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
+            <div className="mt-12 flex w-full justify-center md:mt-0 md:w-1/2 md:justify-end md:pl-12">
+              <Card className="relative flex w-full max-w-xl flex-col items-center overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/60 to-blue-900/80 p-0 shadow-xl backdrop-blur-xl">
+                <CardContent className="relative z-10 flex flex-col items-center gap-4 p-8">
+                  <div className="flex items-center gap-3">
+                    <MessageSquare className="h-6 w-6 text-blue-300" />
+                    <span className="text-lg text-white/90">
+                      See the companies we&apos;ve talked to and what we&apos;ve
+                      learned.
+                    </span>
+                  </div>
+                  <a
+                    href="https://docs.google.com/spreadsheets/d/1rJMeBh_SdlniRoPXbIupiZLU6rXz4V7sWBv_arSPzQY"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-600/20 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:bg-blue-600/30"
+                  >
+                    <Globe className="h-4 w-4" />
+                    View Customer Discovery Sheet
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </CardContent>
+              </Card>
             </div>
           </div>
-
-          <Card className="relative mx-auto flex max-w-xl flex-col items-center overflow-hidden rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-800/60 to-blue-900/80 p-0 shadow-xl backdrop-blur-xl">
-            <CardContent className="relative z-10 flex flex-col items-center gap-4 p-8">
-              <div className="flex items-center gap-3">
-                <MessageSquare className="h-6 w-6 text-blue-300" />
-                <span className="text-lg text-white/90">
-                  See the companies we&apos;ve talked to and what we&apos;ve
-                  learned.
-                </span>
-              </div>
-              <a
-                href="https://docs.google.com/spreadsheets/d/1rJMeBh_SdlniRoPXbIupiZLU6rXz4V7sWBv_arSPzQY"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-flex items-center gap-2 rounded-xl border border-blue-400/30 bg-blue-600/20 px-6 py-3 font-medium text-white backdrop-blur-sm transition-all hover:bg-blue-600/30"
-              >
-                <Globe className="h-4 w-4" />
-                View Customer Discovery Sheet
-                <ArrowRight className="h-4 w-4" />
-              </a>
-            </CardContent>
-          </Card>
         </div>
       </div>
 
@@ -949,13 +952,13 @@ export default function LandingPage() {
           <div className="absolute -inset-8 rounded-3xl border border-blue-400/10"></div>
           <div className="absolute -inset-4 rounded-2xl border border-blue-400/20"></div>
 
-          <h2 className="relative z-10 mb-6 text-5xl font-bold text-white">
+          <h2 className="relative z-10 mb-6 p-10 text-5xl font-bold text-white">
             Ready to Transform Your Hiring?
           </h2>
           <p className="relative z-10 mb-12 text-xl text-white/80">
             Join 500+ companies already using TalentHunt
           </p>
-          <div className="relative z-10 flex flex-col justify-center gap-6 sm:flex-row">
+          <div className="relative z-10 flex flex-col justify-center gap-6 p-3 sm:flex-row">
             <Link href="/recruiter/signup">
               <Button className="group relative overflow-hidden rounded-2xl bg-white px-12 py-6 text-xl font-bold text-blue-900 shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-blue-50">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 transition-opacity group-hover:opacity-100"></div>

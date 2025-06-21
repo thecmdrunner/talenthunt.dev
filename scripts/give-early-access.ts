@@ -1,7 +1,12 @@
 import type { PublicMetadata } from "@/server/auth/actions";
 import { clerkClient } from "@clerk/nextjs/server";
 
-const useremails = ["pranavkulkarni195@gmail.com"];
+const useremails = [
+  "ajinkyabodke678@gmail.com",
+  "nidhiajain2003@gmail.com",
+  "pranavkulkarni195@gmail.com",
+  "notpranavkulkarni@gmail.com",
+];
 
 const clerk = await clerkClient();
 
