@@ -1,7 +1,7 @@
 // "use server";
 
 import { db } from "@/server/db";
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser, type User } from "@clerk/nextjs/server";
 import { users } from "../db/schema";
 
 const getUser = async (userId: string) => {
@@ -38,4 +38,12 @@ export const getOrCreateUser = async () => {
 
 export type PublicMetadata = {
   earlyAccess?: boolean;
+};
+
+export const extractPublicMetadata = (authedUser: User | null) => {
+  if (!authedUser) {
+    return null;
+  }
+
+  return authedUser.publicMetadata as PublicMetadata;
 };

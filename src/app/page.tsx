@@ -855,10 +855,8 @@ export default function LandingPage() {
                 <span className="relative z-10">Start Free Trial</span>
               </Button>
             </Link>
-            <Button className="group relative overflow-hidden rounded-2xl border-2 border-blue-400/30 bg-blue-600/20 px-12 py-6 text-xl font-bold text-white backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-blue-600/30">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
-              <span className="relative z-10">Schedule Demo</span>
-            </Button>
+
+            <ScheduleMeeting />
           </div>
         </div>
       </div>
@@ -1051,5 +1049,27 @@ export default function LandingPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+import { getCalApi } from "@calcom/embed-react";
+import { useEffect } from "react";
+
+function ScheduleMeeting() {
+  useEffect(() => {
+    void (async function () {
+      const cal = await getCalApi({ namespace: "talenthunt-discovery" });
+      cal("ui", { hideEventTypeDetails: false, layout: "month_view" });
+    })();
+  }, []);
+  return (
+    <Button
+      data-cal-namespace="talenthunt-discovery"
+      data-cal-link="thecmdrunner/talenthunt-discovery"
+      data-cal-config='{"layout":"month_view"}'
+      className="group relative overflow-hidden rounded-2xl border-2 border-blue-400/30 bg-blue-600/20 px-12 py-6 text-xl font-bold text-white backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-blue-600/30"
+    >
+      Schedule Demo
+    </Button>
   );
 }

@@ -1,6 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import type { PublicMetadata } from "@/server/auth/actions";
+import { extractPublicMetadata } from "@/server/auth/actions";
 import { api } from "@/trpc/server";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
@@ -14,7 +14,7 @@ export default async function DashboardLayout({ children }: PropsWithChildren) {
 
   const authedUser = await currentUser();
 
-  const metadata = authedUser?.publicMetadata as PublicMetadata;
+  const metadata = extractPublicMetadata(authedUser);
 
   if (!metadata?.earlyAccess) {
     return redirect("/waitlist");
