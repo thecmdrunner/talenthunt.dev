@@ -12,6 +12,7 @@ import {
   Github,
   Globe,
   Linkedin,
+  LucideQuote,
   MessageSquare,
   Search,
   Sparkles,
@@ -416,6 +417,65 @@ export default function LandingPage() {
             <div className="h-3 w-3 animate-pulse rounded-full bg-blue-300"></div>
             <span className="text-lg">90% faster hiring</span>
           </div>
+        </div>
+      </div>
+
+      <div className="relative z-10 mx-auto mb-24 max-w-5xl px-6">
+        <div className="mb-12 text-center">
+          <h2 className="mb-4 text-4xl font-bold text-white">
+            Real Pain Points from the Field
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-white/80">
+            What professionals and hiring teams struggle with before using
+            TalentHunt
+          </p>
+          <div className="mt-4 flex justify-center">
+            <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
+          </div>
+        </div>
+        <div className="grid gap-8 md:grid-cols-3">
+          {[
+            "Too many applicants, not enough real experts.",
+            "Most inbound is ChatGPT-written or irrelevant.",
+            "Finding qualified talent is harder than building the product.",
+            "Hiring AI pros is slow, costly, and full of bias.",
+            "Social posts get noise, not signal.",
+            "We lose top candidates to slow hiring.",
+          ].map((painPoint, i) => (
+            <Card
+              key={painPoint}
+              className={cn(
+                "group relative flex flex-col items-center gap-6 rounded-2xl border border-blue-400/40 bg-gradient-to-br from-white via-blue-50 to-blue-100 p-8 shadow-2xl backdrop-blur-xl transition-transform duration-300 hover:scale-105 hover:shadow-blue-300/30",
+                i === 1 && "md:scale-110 md:border-blue-400/60 md:shadow-2xl",
+              )}
+            >
+              {/* Fancy geometric accent */}
+              <div
+                className={cn(
+                  "pointer-events-none absolute -top-6 right-6 h-12 w-12 opacity-20 blur-sm",
+                  i % 2 === 0 ? "rotate-12" : "-rotate-12",
+                )}
+              >
+                <LucideQuote className="h-12 w-12 text-blue-400" />
+              </div>
+              {/* Animated icon */}
+              <div className="mb-4 flex items-center justify-center">
+                <div
+                  className={cn(
+                    "flex h-12 w-12 items-center justify-center rounded-xl border-2 border-blue-300/40 bg-blue-100/60 shadow-lg transition-transform duration-300 group-hover:scale-110",
+                    i === 1 && "border-blue-400/60 bg-blue-200/80",
+                  )}
+                >
+                  <LucideQuote className="animate-bounce-slow h-7 w-7 text-blue-400" />
+                </div>
+              </div>
+              <p className="mb-0 text-center text-lg font-semibold text-blue-900 drop-shadow-sm">
+                <span className="bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700 bg-clip-text text-transparent">
+                  {painPoint}
+                </span>
+              </p>
+            </Card>
+          ))}
         </div>
       </div>
 
@@ -851,8 +911,8 @@ export default function LandingPage() {
               Customer Discovery Calls
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-white/80">
-              Companies we've talked to and learned from during our discovery
-              process
+              Companies we&apos;ve talked to and learned from during our
+              discovery process
             </p>
             <div className="mt-4 flex justify-center">
               <div className="h-0.5 w-24 bg-gradient-to-r from-transparent via-blue-300 to-transparent"></div>
@@ -864,7 +924,8 @@ export default function LandingPage() {
               <div className="flex items-center gap-3">
                 <MessageSquare className="h-6 w-6 text-blue-300" />
                 <span className="text-lg text-white/90">
-                  See the companies we've talked to and what we've learned.
+                  See the companies we&apos;ve talked to and what we&apos;ve
+                  learned.
                 </span>
               </div>
               <a
