@@ -261,17 +261,17 @@ export default function DiscoverPage() {
 
   // Merge candidates from both sources
   const mergedCandidates: Candidate[] = [
-    ...(searchCandidates.data?.candidates.map((c) => ({
-      ...c,
-      source: "search" as const,
-      matchScore: c.matchScore,
-      vectorSimilarity: undefined,
-    })) ?? []),
     ...(discoverCandidates.data?.candidates.map((c) => ({
       ...c,
       source: "rag" as const,
       matchScore: undefined,
       vectorSimilarity: c.vectorSimilarity,
+    })) ?? []),
+    ...(searchCandidates.data?.candidates.map((c) => ({
+      ...c,
+      source: "search" as const,
+      matchScore: c.matchScore,
+      vectorSimilarity: undefined,
     })) ?? []),
   ];
 
@@ -286,6 +286,7 @@ export default function DiscoverPage() {
         acc[existingIndex] = candidate;
       }
     }
+
     return acc;
   }, [] as Candidate[]);
 
